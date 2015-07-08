@@ -1,0 +1,14 @@
+% Graph 2: Graph mit 6 Knoten und positivem Kreis
+n 50 250
+n 200 250
+n 350 400
+n 350 250
+n 350 100
+n 500 250
+e 0 1 0 0
+e 1 2 3 4.8
+e 1 3 2 2.2
+e 1 4 4 -2
+e 2 5 2 7.5
+e 3 5 6 1
+e 4 5 5 10

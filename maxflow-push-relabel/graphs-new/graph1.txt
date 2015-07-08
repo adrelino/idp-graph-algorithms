@@ -1,0 +1,16 @@
+% Graph 1: Graph mit 6 Knoten und Kanten ohne negative Gewichte
+n 100 250
+n 266 100
+n 266 400
+n 433 100
+n 433 300
+n 600 250
+e 2 4 33
+e 3 5 2
+e 3 4 20
+e 4 5 1
+e 2 3 20
+e 1 4 10
+e 1 3 50
+e 0 2 20
+e 0 1 10

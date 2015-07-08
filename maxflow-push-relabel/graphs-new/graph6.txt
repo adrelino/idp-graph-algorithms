@@ -1,0 +1,15 @@
+% Graph 6: http://en.wikipedia.org/wiki/Push%E2%80%93relabel_maximum_flow_algorithm
+n 130 200
+n 225 300
+n 325 300
+n 175 100
+n 275 100
+n 370 200
+e 0 1 15
+e 1 2 12
+e 2 5 7
+e 0 3 4
+e 3 4 10
+e 4 5 10
+e 2 3 3
+e 4 1 5

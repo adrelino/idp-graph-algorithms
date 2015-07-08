@@ -1,0 +1,41 @@
+% Graph 3: Großstädte Europas
+% Reihenfolge: London, Berlin, Madrid
+% Kiew, Rom, Paris, Minsk, Stockholm, Dublin, Wien
+n 217 221
+n 403 214
+n 118 460
+n 645 217
+n 402 449
+n 245 286
+n 580 154
+n 448 57
+n 146 174
+n 453 305
+e 0 5 343
+e 5 0 343
+e 1 6 954
+e 6 1 954
+e 1 5 879
+e 5 1 879
+e 2 5 1054
+e 5 2 1054
+e 2 4 1364
+e 4 2 1364
+e 3 6 433
+e 6 3 433
+e 4 5 1106
+e 5 4 1106
+e 8 0 464
+e 0 8 464
+e 7 1 811
+e 7 0 1435
+e 0 7 1435
+e 1 7 811
+e 6 7 837
+e 7 6 837
+e 9 4 766
+e 4 9 766
+e 9 3 1053
+e 3 9 1053
+e 9 1 524
+e 1 9 524
