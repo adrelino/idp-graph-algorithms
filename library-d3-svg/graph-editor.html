@@ -2,10 +2,11 @@
 <meta charset="utf-8">
 <head>
 <title>Graph Editor</title>
-<script src="d3/d3.min.js"></script>
+<script src="d3/d3.js"></script>
 <script src="Graph.js"></script>
 <script src="GraphDrawer.js"></script>
 <script src="GraphEditor.js"></script>
+<link rel="stylesheet" type="text/css" href="graph-style.css" />
 </head>
 <body>
 <h2>Graph Editor</h2>
@@ -13,9 +14,9 @@
 var graph,graphDrawer;
 var graphNum = 5;
 d3.text("../maxflow-push-relabel/graphs-new/graph"+graphNum+".txt", function(error,text){
-  graph = new Graph(text);
+  graph = Graph.parse(text);
   var svgOrigin = d3.select("body").append("svg");
-  graphDrawer = new GraphDrawer(graph,svgOrigin); //TODO replace by GraphEditor
+  graphDrawer = new GraphEditor(graph,svgOrigin); //TODO replace by GraphEditor
   graphDrawer.update();
 });
 </script>

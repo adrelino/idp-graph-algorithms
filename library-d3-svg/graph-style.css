@@ -1,0 +1,20 @@
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input.tooltip {
+  position: absolute;
+  text-align: center;
+  width : 30px;
+  padding: 2px;
+/*   font: 10px sans-serif;
+  background: #ddd;
+  border: solid 1px #aaa;
+  border-radius: 8px;
+  pointer-events: none; */
+}
