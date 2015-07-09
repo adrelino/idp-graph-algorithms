@@ -82,6 +82,8 @@ Graph.prototype.addEdgeDirectly = function(edge){
   edge.start.outEdges.set(edge.id,edge);
   edge.end.inEdges.set(edge.id,edge);
   this.edges.set(edge.id,edge);
+  var max = this.getEdgeResourcesSize();
+  while(edge.resources.length<max) edge.resources.push(0);
   return edge;
 }
 
@@ -127,6 +129,22 @@ Graph.prototype.toString = function(){
   });
 
   return lines.join("\n");
+}
+
+Graph.prototype.getNodeResourcesSize = function(){
+  var max=0;
+  this.nodes.forEach(function(key,node){
+     max = Math.max(node.resources.length);
+  });
+  return max;
+}
+
+Graph.prototype.getEdgeResourcesSize = function(){
+  var max=0;
+  this.edges.forEach(function(key,edge){
+     max = Math.max(max,edge.resources.length);
+  });
+  return max;
 }
 
 

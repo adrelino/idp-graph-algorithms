@@ -176,6 +176,7 @@ function dblclick(){
 //Es wird entweder die Auswahl aufgehoben, ein Knoten ausgewählt oder eine Kante zwischen vorhandenen Knoten erstellt.
 function mousedownNode(d,id){
   if(selectedNode == d){// Falls wir wieder auf den selben Knoten geklickt haben, hebe Auswahl auf.
+      if(unfinishedEdge) that.graph.removeEdge(unfinishedEdge.id);
       deselectNode();
   }else if(selectedNode == null) { // Falls wir nichts ausgewählt hatten, wähle den Knoten aus
       dragging = true;
@@ -187,7 +188,7 @@ function mousedownNode(d,id){
       that.updateEdges();
   }
 
-  that.updateNodes();
+  that.update();
 
   blurResourceEditor();
 
