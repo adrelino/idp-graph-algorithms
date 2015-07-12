@@ -28,6 +28,7 @@ var GraphEditor = function(graph, svgOrigin){
       .on("mousedown", mousedownNode)
       .on("mouseup", mouseupNode)
       .on("contextmenu", contextmenuNode)
+      .on("dblclick",dblclickResource);
 //       .style("cursor","move") //crosshair pointer move
 
 //     GraphDrawer.prototype.onNodesEntered.call(this,selection);
@@ -53,9 +54,12 @@ var GraphEditor = function(graph, svgOrigin){
 //     console.log("onEdgesEntered in GraphEditor");
     
     selection
-      .on("dblclick",dblclickEdge)
+//       .on("dblclick",dblclickEdge)
       .on("contextmenu", contextmenuEdge)
       .style("cursor","pointer") //crosshair pointer move
+    
+    var all =selection.on("dblclick",dblclickResource);
+
 
 //     GraphDrawer.prototype.onEdgesEntered.call(this,selection);
   }
@@ -113,8 +117,8 @@ var GraphEditor = function(graph, svgOrigin){
       unfinishedEdge = null;
           that.svgOrigin.style("cursor","default");
 
-blurResourceEditor();
-      that.updateNodes();
+      blurResourceEditor();
+      that.update();
     }
 
     var selectNode = function(selection){
@@ -219,35 +223,33 @@ function blurResourceEditor(){
     .style("top", "0px");
 }
 
-var edgeToModify = null;
-
 var myDiv = d3.select("body").append("input")
-    .attr("type","number")
+    .attr("type","text")
+//     .attr("type","number")
     .attr("class", "tooltip")
     .style("opacity", 1e-6)
-    .on("input", function() {
-      edgeToModify.resources[0]=(+this.value);
-      that.updateEdges();
-    })
 //     .attr("onblur",blurResourceEditor);
 
-function dblclickEdge(d,i,all)
+function dblclickResource(d,i,all)
 {
   d3.event.stopPropagation();d3.event.preventDefault();
 
 //     <input type="number" min="0" max="360" step="5" value="0" id="nValue">
 
-  edgeToModify = d;
-
   myDiv
-    .text("hi")
+    .attr("value","0,0")
     .style("opacity", 1);
 
-  var text = d3.select(this).select("text");
+//   var text = d3.select(this).select("text");
 
-  myDiv.attr("value",d.resources[0])
+  myDiv.attr("value",d.resources.join(","))
       .style("left", (d3.event.pageX - 30) + "px")
-     .style("top", (d3.event.pageY - 10)+ "px");
+      .style("top", (d3.event.pageY - 10)+ "px")
+      .on("input", function() {
+       d.resources=this.value.split(",");
+        that.update()
+      })
+    
 }
 
 function contextmenuNode(d){

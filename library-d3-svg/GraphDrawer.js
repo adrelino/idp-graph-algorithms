@@ -120,8 +120,8 @@ var GraphDrawer = function(graph,svgOrigin){
           .attr({ x:(nodePos(d.start).x+nodePos(d.end).x)*0.5, y:(nodePos(d.start).y+nodePos(d.end).y)*.5});
     };
      
-    var textfun = function(d) { return d.resources.join(" ")};
-
+    var textfun = function(d) { return "[" + d.resources.join(",") + "]"};
+    var textfunNode = function(d) { return "(" + d.resources.join(",") + ")"};
 
 
     /////////////////
@@ -167,6 +167,12 @@ var GraphDrawer = function(graph,svgOrigin){
                 .text(function(d){return d.id})
                 .attr("class","unselectable")
                 .attr("dy", ".35em")           // set offset y position
+                .attr("text-anchor", "middle")
+
+            enterSelection.append("text")
+                .text(textfunNode)
+                .attr("class","resource")
+                .attr("dy",-global_KnotenRadius+"px")           // set offset y position
                 .attr("text-anchor", "middle")
 
 
@@ -229,8 +235,10 @@ var GraphDrawer = function(graph,svgOrigin){
             
 
         selection.selectAll("text")
+            .attr("class","resource")
             .each(textAttribs)
-            .text(textfun);
+            .text(textfun)
+            .attr("vertical-align","middle");
 
         selection.call(this.onEdgesUpdated)
 
