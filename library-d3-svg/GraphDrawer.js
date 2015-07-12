@@ -170,7 +170,6 @@ var GraphDrawer = function(graph,svgOrigin){
                 .attr("text-anchor", "middle")
 
             enterSelection.append("text")
-                .text(textfunNode)
                 .attr("class","resource")
                 .attr("dy",-global_KnotenRadius+"px")           // set offset y position
                 .attr("text-anchor", "middle")
@@ -184,6 +183,8 @@ var GraphDrawer = function(graph,svgOrigin){
 //                 .transition()
                 .attr("transform",transform)
                 .call(this.onNodesUpdated);
+
+            selection.selectAll("text.resource").text(textfunNode);
 
 
         // EXIT

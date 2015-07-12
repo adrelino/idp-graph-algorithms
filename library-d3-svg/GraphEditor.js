@@ -216,40 +216,46 @@ function mousedown(a,b,c){
 }
 
 function blurResourceEditor(){
-  if(!myDiv) return;
-    myDiv
-    .style("opacity",1e-6)
-    .style("left", "0px")
-    .style("top", "0px");
+  updateResources([]);
+//   if(!myDiv) return;
+//     myDiv
+// //     .style("opacity",1e-6)
+// //     .style("left", "0px")
+// //     .style("top", "0px");
 }
 
-var myDiv = d3.select("body").append("input")
-    .attr("type","text")
-//     .attr("type","number")
-    .attr("class", "tooltip")
-    .style("opacity", 1e-6)
-//     .attr("onblur",blurResourceEditor);
+var myDiv = d3.select("body");//.append("div")
 
+function updateResources(data){
+      var selection = myDiv.selectAll("input")
+    .data(data);
+
+  selection.enter().append("input")
+      .attr("type","number")
+      .attr("class", "tooltip")
+//       .style("opacity", 1)
+
+  selection
+  .attr("value",function(a,b,c){ 
+    return +a;
+  })
+  .on("input", function(a,b,c) {
+     data[b]=+this.value;
+     that.update()
+  })
+  .style("left", function(a,b,c){
+    return (d3.event.pageX - 30+40*b) + "px"
+  })
+  .style("top", function(a,b,c){return (d3.event.pageY)+ "px"})
+
+  selection.exit().remove();  
+}
+
+//<input type="number" min="0" max="360" step="5" value="0" id="nValue">
 function dblclickResource(d,i,all)
 {
   d3.event.stopPropagation();d3.event.preventDefault();
-
-//     <input type="number" min="0" max="360" step="5" value="0" id="nValue">
-
-  myDiv
-    .attr("value","0,0")
-    .style("opacity", 1);
-
-//   var text = d3.select(this).select("text");
-
-  myDiv.attr("value",d.resources.join(","))
-      .style("left", (d3.event.pageX - 30) + "px")
-      .style("top", (d3.event.pageY - 10)+ "px")
-      .on("input", function() {
-       d.resources=this.value.split(",");
-        that.update()
-      })
-    
+  updateResources(d.resources);  
 }
 
 function contextmenuNode(d){

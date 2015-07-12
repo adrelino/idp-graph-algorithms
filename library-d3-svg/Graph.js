@@ -50,14 +50,21 @@ Graph.Edge = function(s,t,id){
  * @param {Number|String} x coordinate
  * @param {Number|String} y coordinate
  */
-Graph.prototype.addNode = function(x,y){
+Graph.prototype.addNode = function(x,y,resources){
   var node = new Graph.Node(+x,+y,this.nodeIds++);
+  node.resources=resources || [];
+  for(var i = 0, toAdd = this.getNodeResourcesSize() - node.resources.length; i<toAdd; i++){
+    node.resources.push(0);
+  }
   this.nodes.set(node.id,node);
   return node;
 }
 
 Graph.prototype.addNodeDirectly = function(node){
   node.id = this.nodeIds++;
+  for(var i = 0, toAdd = this.getNodeResourcesSize() - node.resources.length; i<toAdd; i++){
+    node.resources.push(0);
+  }
   this.nodes.set(node.id,node);
   return node;
 }
@@ -67,10 +74,11 @@ Graph.prototype.addNodeDirectly = function(node){
  * @param {Number|String} id of start node
  * @param {Number|String} id of end node
  */
-Graph.prototype.addEdge = function(startId,endId){
+Graph.prototype.addEdge = function(startId,endId,resources){
   var s = this.nodes.get(startId);
   var t = this.nodes.get(endId);
   var edge = new Graph.Edge(s,t,this.edgeIds++);
+  edge.resources=resources;
   edge.start.outEdges.set(edge.id,edge);
   edge.end.inEdges.set(edge.id,edge);
   this.edges.set(edge.id,edge);
@@ -134,7 +142,7 @@ Graph.prototype.toString = function(){
 Graph.prototype.getNodeResourcesSize = function(){
   var max=0;
   this.nodes.forEach(function(key,node){
-     max = Math.max(node.resources.length);
+     max = Math.max(max,node.resources.length);
   });
   return max;
 }
@@ -163,6 +171,14 @@ Graph.parse = function(text){
 
   var graph = new Graph();
 
+  function parseResources(s){
+      var resources = [];
+      for(var i=3; i<s.length; i++){
+          resources.push(+s[i]);
+      }
+      return resources;
+  }
+
   // Nach Zeilen aufteilen
   for (var line in lines) {
       var s = lines[line].split(" ");
@@ -170,22 +186,14 @@ Graph.parse = function(text){
       if (s[0] == "%") { //comment
           continue;
       }
-      var elem = null;
       //x y r1 r2 ...
       if (s[0] == "n") {
-        elem = graph.addNode(s[1],s[2]);
+        graph.addNode(s[1],s[2],parseResources(s));
       }
       //s t r1 r2 ... 
       if (s[0] == "e") {
-        elem = graph.addEdge(s[1],s[2]);
+        graph.addEdge(s[1],s[2],parseResources(s));
       };
-
-      //resource vector / constraint
-      if(elem){
-          for(var i=3; i<s.length; i++){
-              elem.resources.push(+s[i]);
-          }
-      }
   }
 
   return graph;
