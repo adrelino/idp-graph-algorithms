@@ -59,8 +59,8 @@ var GraphDrawer = function(graph,svgOrigin){
     /////////////////
     //PRIVATE
 
-    var xRange = 400,
-        yRange = 300;
+    var xRange = +svgOrigin.attr("width") || 400;
+        yRange = +svgOrigin.attr("height") || 300;
 
     var margin = {top: 20, right: 20, bottom: 20, left: 30},
         width = xRange - margin.left - margin.right,
@@ -96,11 +96,11 @@ var GraphDrawer = function(graph,svgOrigin){
     var y = d3.scale.linear()
         .range([height-margin.top, margin.bottom]);
 
-        x.domain(d3.extent(graph.getNodes(), function(d) { return d.x; }));  //[0,xRange]);
+        x.domain([0,xRange]);//d3.extent(graph.getNodes(), function(d) { return d.x; }));  //[0,xRange]);
      // x.domain([0,Math.max(width,d3.max(nodes, function(d){return d.x;}))]);
      // y1.domain([0,Math.max(height,d3.max(nodes, function(d){return d.y;}))]);
     //   y.domain([0,2*nodes.length]);
-        y.domain(d3.extent(graph.getNodes(), function(d) { return d.y; }));//.nice();
+        y.domain([0,yRange]);//d3.extent(graph.getNodes(), function(d) { return d.y; }));//.nice();
 
     var transform = function(d){
       return "translate(" + x(d.x) + "," + y(d.y) + ")"
@@ -119,13 +119,15 @@ var GraphDrawer = function(graph,svgOrigin){
         d3.select(this)
           .attr({ x:(nodePos(d.start).x+nodePos(d.end).x)*0.5, y:(nodePos(d.start).y+nodePos(d.end).y)*.5});
     };
-     
-    var textfun = function(d) { return "[" + d.resources.join(",") + "]"};
-    var textfunNode = function(d) { return "(" + d.resources.join(",") + ")"};
-
 
     /////////////////
     //PRIVILEDGED
+
+
+    this.clear = function(){
+        svg_nodes.selectAll("g").remove();
+        svg_links.selectAll("g").remove();
+    };
 
     this.type="GraphDrawer";
     this.graph = graph;
@@ -164,13 +166,12 @@ var GraphDrawer = function(graph,svgOrigin){
                 .style("stroke",global_NodeLayout['borderColor'])
 
             enterSelection.append("text")
-                .text(function(d){return d.id})
-                .attr("class","unselectable")
+                .attr("class","label unselectable")
                 .attr("dy", ".35em")           // set offset y position
                 .attr("text-anchor", "middle")
 
             enterSelection.append("text")
-                .attr("class","resource")
+                .attr("class","resource unselectable")
                 .attr("dy",-global_KnotenRadius+"px")           // set offset y position
                 .attr("text-anchor", "middle")
 
@@ -184,7 +185,11 @@ var GraphDrawer = function(graph,svgOrigin){
                 .attr("transform",transform)
                 .call(this.onNodesUpdated);
 
-            selection.selectAll("text.resource").text(textfunNode);
+            selection.selectAll("text.label")
+                 .text(this.nodeLabel);
+
+            selection.selectAll("text.resource")
+                .text(this.nodeText);
 
 
         // EXIT
@@ -223,7 +228,7 @@ var GraphDrawer = function(graph,svgOrigin){
             .style("stroke-width",global_Edgelayout['lineWidth'])
 
         enterSelection.append("text")
-            .attr("class","unselectable");
+            .attr("class","resource unselectable");
 
 
     //ENTER + UPDATE
@@ -235,10 +240,9 @@ var GraphDrawer = function(graph,svgOrigin){
 //             .style("opacity",1);
             
 
-        selection.selectAll("text")
-            .attr("class","resource")
+        selection.selectAll("text.resource")
             .each(textAttribs)
-            .text(textfun)
+            .text(this.edgeText)
             .attr("vertical-align","middle");
 
         selection.call(this.onEdgesUpdated)
@@ -277,4 +281,29 @@ GraphDrawer.prototype.onEdgesUpdated = function(selection) {
 //     console.log(selection[0].length + " edges entered")
 }
 
+GraphDrawer.prototype.edgeText = function(d){
+    var str = d.resources.join(",");
+    if(d.resources.length>1) str = "[" + str + "]";
+    return str;
+}
 
+GraphDrawer.prototype.nodeText = function(d){
+    var str = d.resources.join(",");
+    if(d.resources.length>1) str = "(" + str + ")";
+    return str;   
+}
+
+GraphDrawer.prototype.nodeLabel = function(d){
+    return d.id;  
+}
+
+// GraphDrawer.prototype.destroy = function(){
+    
+// }
+
+GraphDrawer.prototype.setGraph = function(graphPassed){
+    this.clear();
+    this.graph=graphPassed;
+        this.update();
+
+}

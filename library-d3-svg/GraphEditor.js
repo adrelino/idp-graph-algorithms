@@ -283,3 +283,4 @@ function addNode(pos){
 
 }
 GraphEditor.prototype = Object.create(GraphDrawer.prototype);
+GraphEditor.prototype.constructor = GraphEditor;

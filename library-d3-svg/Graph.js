@@ -23,11 +23,20 @@ Graph.Node = function(x,y,id){
   this.x=x;
   this.y=y;
   this.id=id;
-
+  this.resources = [];
+  
   this.outEdges = d3.map();
   this.inEdges = d3.map();
 
-  this.resources = [];
+  this.state={};//changes during algorithm runtime
+}
+
+Graph.Node.prototype.getInEdges = function(){
+  return this.inEdges.values();
+}
+
+Graph.Node.prototype.getOutEdges = function(){
+  return this.outEdges.values();
 }
 
 /**
@@ -38,8 +47,9 @@ Graph.Edge = function(s,t,id){
   this.start=s;
   this.end=t;
   this.id=id;
-
   this.resources=[];
+
+  this.state={}; //changes during algorithm runtime
 }
 
 /////////////////
@@ -155,6 +165,32 @@ Graph.prototype.getEdgeResourcesSize = function(){
   return max;
 }
 
+Graph.prototype.replace = function(oldGraph){
+  this.nodeIds = oldGraph.nodeIds;
+  this.edgeIds = oldGraph.edgeIds;
+  this.nodes = oldGraph.nodes;
+  this.edges = oldGraph.edges;
+}
+
+Graph.prototype.getState = function(){
+  var savedState = { nodes : {}, edges : {} };
+  this.nodes.forEach(function(key,node){
+     savedState.nodes[key] = JSON.stringify(node.state);
+  });
+  this.edges.forEach(function(key,edge){
+     savedState.edges[key] = JSON.stringify(edge.state);
+  });
+  return savedState;
+}
+
+Graph.prototype.setState = function(savedState){
+  this.nodes.forEach(function(key,node){
+     node.state = JSON.parse(savedState.nodes[key]);
+  });
+  this.edges.forEach(function(key,edge){
+     edge.state = JSON.parse(savedState.edges[key]);
+  });
+}
 
 /////////////////
 //STATICS
@@ -197,4 +233,11 @@ Graph.parse = function(text){
   }
 
   return graph;
+}
+
+Graph.load = function(filename, callbackFp){
+  d3.text(filename, function(error,text){
+    var graph = Graph.parse(text);
+    callbackFp(graph);
+  });
 }
