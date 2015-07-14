@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="description" content="Diese Seite demonstriert den Hierholzer Algorithmus zum Finden von Eulertouren." />
+    <meta name="keywords" content="Eulertour, Hierholzer, Algorithmus, TUM, Technische Universität München, Applet">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="author" content="Mark J. Becker">
+    <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="../library/css/style.css" />
+    <link type="text/css" href="../library/css/mmenu/jquery.mmenu.all.css" rel="stylesheet" />
+    <script src="../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../library/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../library/js/mmenu/jquery.mmenu.min.all.js"></script>
+    <script src="../library/js/lang.js" type="text/javascript"></script>
+
+<script src="../library-d3-svg/d3/d3.js"></script>
+<script src="../library-d3-svg/Graph.js"></script>
+<script src="../library-d3-svg/GraphDrawer.js"></script>
+<script src="../library-d3-svg/GraphEditor.js"></script>
+<link rel="stylesheet" type="text/css" href="../library-d3-svg/graph-style.css" />
+
+<!--     <script src="js/utilities.js" type="text/javascript"></script> -->
+    <script src="js/Tab.js" type="text/javascript"></script>
+    <script src="js/FlowGraphEditor.js" type="text/javascript"></script>
+    <script src="js/GoldbergTarjanPushRelabelAlgorithm.js" type="text/javascript"></script>
+
+    <script src="js/siteAnimation.js" type="text/javascript"></script>
+
+
+<!--     <script src="js/aufgabe1.js" type="text/javascript"></script>
+    <script src="js/aufgabe2.js" type="text/javascript"></script> -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            showMathMenu: false,
+            showMathMenuMSIE: false
+        });
+    </script>
+    <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=de"></script>
+
+    <title>Der Hierholzer Algorithmus</title>
+</head>
+<body>
+    <noscript>
+        <div class="ui-widget">
+            <div class="ui-state-error ui-corner-all" style="padding: .7em;">
+                <div class="ui-icon ui-icon-alert errorIcon"></div>
+                <strong>Bitte aktivieren Sie Javascript!</strong>
+                <ul style="margin: 0px;">
+                    <li>
+                        Diese Seite benötigt Javascript, um ordnungsgemäß angezeigt zu werden.
+                    </li>
+                    <li>
+                        In Ihrem Browser ist Javascript aktuell deaktiviert. Eine Anleitung zur Aktivierung von Javascript finden Sie beispielsweise <a href="http://www.enable-javascript.com/">hier</a>.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </noscript>
+    <script>
+        $(function() {
+            initializeSiteLayout();
+            $("#year").html(new Date().getFullYear());
+        });
+//         LNG.setLanguage('de');
+        LNG.setLanguage('en');
+        $(document).ready(function() {
+            $("#menu").mmenu({
+               "navbar": {
+                  "title": "Übersicht"
+               },
+               "offCanvas": {
+                  "zposition": "front"
+               },
+               "counters": true,
+               "slidingSubmenus": true,
+               "classes": "mm-light",
+            });
+         });
+    </script>
+    <a id="menu_link" href="#menu"></a>
+    <nav id="menu">
+        <ul>
+            <li>
+                <a style="white-space:pre-line" href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">
+                <img src="../library/img/logo_ohne.png" alt="Übersichtsseite Graphalgorithmen">
+                Übersichtsseite Graphalgorithmen</a>
+            </li>
+            <li><span>Kürzeste-Wege - Algorithmen</span>
+                <ul>
+                   <li><a href="../spp-dijkstra/index_de.html">Dijkstra - Algorithmus</a></li>
+                   <li><a href="../spp-a-star/index_de.html">A* - Algorithmus</a></li>
+                   <li><a href="../spp-bellman-ford/index_de.html">Bellman-Ford - Algorithmus</a></li>
+                   <li><a href="../spp-floyd-warshall/index_de.html">Floyd-Warshall - Algorithmus</a></li>
+                </ul>
+            </li>
+            <li><span>Spannbaum - Algorithmen</span>
+                <ul>
+                   <li><a href="../mst-prim/index_de.html">Algorithmus von Prim</a></li>
+                   <li><a href="../mst-kruskal/index_de.html">Algorithmus von Kruskal</a></li>
+                </ul>
+            </li>
+            <li><span>Matching - Algorithmen</span>
+                <ul>
+                   <li><a href="../matchings-hopcroft-karp/index_de.html">Algorithmus von Hopcroft-Karp</a></li>
+                   <li><a href="../matchings-hungarian-method/index_de.html">Ungarische Methode</a></li>
+                </ul>
+            </li>
+            <li><span>Eulerwege und Briefträgerproblem</span>
+                <ul>
+                   <li class="Selected"><a href="../hierholzer/index_de.html">Algorithmus von Hierholzer</a></li>
+                   <li><a href="../directed-chinese-postman/index_de.html">Chinesisches Postboten-Problem</a></li>
+                </ul>             
+            </li>
+        </ul>
+    </nav>
+    <div>
+    <header>
+        <img src="img/titel.png" alt="Algorithmus von Hierholzer">
+        <img style="position:absolute; right:0px" src="../library/img/TUMLogo.png" alt="Technische Universität München">
+    </header>
+    <div id="tabs">
+        <ul>
+            <li><a href="#tab_te"><span>Einführung</span></a></li>
+            <li><a href="#tab_tg"><span>Graph erstellen</span></a></li>
+            <li><a href="#tab_ta"><span>Algorithmus ausführen</span></a></li>
+            <li><a href="#tab_ti"><span>Beschreibung des Algorithmus</span></a></li>
+            <li><a href="#tab_tw"><span>Weiteres</span></a></li>
+        </ul>
+
+        <!-- TAB Einführung -->
+        <div id="tab_te">
+            <div id="te_div_Einfuehrungstext">
+
+                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Kantenzüge ohne doppelte Kanten</p></div>
+                <h1>Das Eulertour Problem</h1>
+                <p>Du möchtest beim Zeitungsaustragen die optimalen Route kennen, sodass du keine Straße doppelt abgehen musst? In der Mathematik bezeichnet man das Finden eines Kantenzugs im Graphen ohne doppelte Kanten als das Eulertour Problem. Es ist nach dem Mathematiker Leonhard Euler, der 1736 das s.g. Königsberger Brücken Problem löste, benannt.</p>
+                <h2>Der hier vorgestellte Hierholzer Algorithmus löst das Eulertour Problem für Graphen, die eine Eulertour enthalten.</h2>
+                <div id ="te_div_Entscheidung">
+                    <h2>Was möchtest du zuerst tun?</h2>
+                    <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
+                </div>
+                <p></p>
+                <br style="clear: both;" />
+            </div>
+        </div>
+
+        <!-- TAB Graph Erstellen -->
+        <div id="tab_tg">
+            <div>
+                <div class="canvasWrapper">
+                    <svg class="graphCanvas" id="tg_canvas_graph" width="700" height="500">
+                        Ihr Browser unterstützt kein HTML5 SVG. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
+                    </svg>
+                    <div class="Legende" id="tg_div_Legende">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                        <div class="LegendeText">
+                            <table>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Ungerichtete Kante</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="LegendeMinimized">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                    </div>
+                </div>
+                <div id="tg_div_statusWindow" class="statusWindow">
+                    <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
+                    <div id="tg_div_statusErklaerung">
+                        <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>
+                        <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
+                        <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
+                    </div>
+                    <h3>Keine Lust, selbst einen Graph zu erstellen?<br></h3>
+                    <h3>Nimm ein fertiges Beispiel!<br></h3>
+                    <select id="tg_select_GraphSelector" name="Wähle einen Graphen">
+<!--                         <option selected label="own graph" id="tg_selectoption_empty">graph4</option> -->
+                        <option label="graph 1">graph1</option>
+                        <option label="graph 2">graph2</option>
+                        <option label="graph 3">graph3</option>
+                        <option label="corman page 726">graph4</option>
+                        <option label="ahuja page 227">graph5</option>
+                        <option label="from wikipedia">graph6</option>
+                        <option label="jungnickel page 214">graph7</option>
+                    </select>
+                    <p><button id="tg_button_gotoAlgorithmTab">Fertig &ndash; weiter zum Algorithmus!</button></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB Algorithmus ausführen -->
+        <div id="tab_ta">
+            <div>
+                <div class="canvasWrapper">
+                    <svg class="graphCanvas" id="ta_canvas_graph" width="700" height="500">
+                        Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
+                    </svg>
+                    <div class="Legende">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                        <div class="LegendeText">
+                            <table>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
+                                    <td><span>Knoten</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Kante" class="LegendeIcon"></td>
+                                    <td><span>Ungerichtete Kante</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="LegendeMinimized">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                    </div>
+                </div>
+                <div id="ta_div_statusWindow" class="statusWindow">
+                    <h2 class="">Status des Algorithmus</h2>
+                    <div id="ta_div_abspielbuttons">
+                    </div>
+                    <div id="ta_div_statusTabs">
+                         <ul>
+                            <li><a href="#ta_div_statusErklaerung">Erklärung</a></li>
+                            <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
+                        </ul>
+                        <div id="ta_div_statusErklaerung">
+                            <div>
+                                <h3>First choose a source node</h3>
+                                <p>Click on a node to select it as the source/starting node s</p>
+                            </div>
+                            <div>
+                                <h3>Then choose a target node</h3>
+                                <p>Click on a node to select it as the target/sink node t</p>
+                            </div>
+                            <div>
+                                <h3>Goldberg-Tarjan Push-Relabel maximum flow algorithm</h3>
+                                <p>Now the algorithm can begin. Click on <strong>next</strong> to start it</p>
+                            </div>
+                            <div>
+                                <h3>Initializing the preflow</h3>
+                                <p>Set f(e) = c(e) for all edges emanating s and set f(e) = 0 for all other edges. Add all nodes v &ne; t having (s,v) &isin; E to the queue of active nodes.</p>
+                            </div>
+                            <div>
+                                <h3>Initializing the distance function</h3>
+                                <p>For each node v &ne; s set d(v) to the shortest directed path from v to t in the network G where the length of a path is the number of edges of the path. (In particular, set d(t) = 0).
+
+                                This can be done in time O(|V| + |E|) by a breadth first search starting at t and using all edges in the opposite direction. The source s isn’t reached by this BFS.
+
+                                We initialize d(s) by setting d(s) = |V|.</p>
+                            </div>
+                            <div>
+                                <h3>Main loop</h3>
+                                <p>As long as the queue containing the active nodes isn’t empty pop the first node v from the front of the queue and apply a push/relabel-operation to v.</p>
+                            </div>
+                            <div>
+                                <h3>Check for admissible push operations</h3>
+                                <p>While e(v) > 0 and the residual network G'=(V,E') contains an edge that is legal with respect to the current distance function ( i.e., there is an edge e' = (v, w) having d(v) = d(w) +  1 ) apply a push</p>
+                            </div>
+<!--                             The residual network G'=(V,E') around a node v can be constructed on the fly. For this, we have to consider both the incoming (u,v) as well as the outgoing (v,w) edges in E. -->
+                            <div>
+                                <h3>Push</h3>
+                                <p>Push &delta; = min{e(v), c'(e')} amount of flow from v to w.</p>
+
+                                <p>More precisely, if e' &in; E' is a forward edge with respect to an edge e of G, increase the preflow f(e) of e by &delta;, and if e' is a backward edge, then decrease the preflow f(e) of e by &delta;.</p>
+
+                                <p>By doing so, e(v) is decreased by &delta;, and e(w) is increased by &delta;. If w &ne; s,t, and if w wasn't active before, w becomes active, and is added at the end of the queue containing the active nodes.</p>
+                            </div>
+                            <div>
+                                <h3>Check for an admissible relabel operation</h3>
+                                <p>If v has still excess, i.e., e(v) > 0, and if there is no legal edge emanating from v in the residual network, then apply a relabel operation. </p><!-- as described in the following, and add v at the end of the queue after that. -->
+                            </div>
+                            <div>
+                                <h3>Relabel</h3>
+                                <p>Increase the distance d(v) of v to the value</p>
+                                <p>min{ d(w)+1 | (v,w) is edge of the residual network G'}</p>
+                                <p>add v at the end of the queue after that.</p>
+                            </div>
+                        </div>
+                        <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
+                            <div><p>s &larr; pick(v)</p></div>
+                            <div><p>t &larr; pick(v)</p></div>
+                            <div><p>BEGIN</p></div>
+                            <div><p>(* Initializing the preflow *)</p>
+                                 <p> FOR ALL e  = (u,w) &isin;E DO</p>
+                                 <p>    IF u == s THEN f(e) &larr; c(e)</p>
+                                 <p>    ELSE f(e) &larr; 0</p>
+                                 <p>    IF u == s AND w &ne; t THEN queue.add(w)</p></div>
+                            <div><p>(* Initializing the distance function *)</p>
+                                 <p> d(s) = |V|</p>
+                                 <p> FOR ALL v != s &isin; V DO</p>
+                                 <p>    d(v) &larr; number of segments on directed path to t</p></div>
+                            <div><p>(* Main Loop *)</p>
+                                 <p> WHILE queue &ne; &empty; DO</p>
+                                 <p>    v &larr; queue.pop()</p></div>
+                            <div><p>    WHILE  e(v) > 0 AND &exist; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
+                            <div><p>       (* PUSH *)</p>
+                                 <p>       push min{e(v),c'(e')} flow from v to w</p>
+                                 <p>       IF w != s,t AND w &notin; queue THEN queue.add(w)</p>
+                                 <p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
+                            <div><p>       (* RELABEL *)</p>
+                                 <p>       d(v) &larr; min{d(w)+1 | (v,w) &isin E'</p>
+                                 <p>       queue.add(v)</p></div>
+                            <div><p>END</p></div>
+
+<!--                             <p> d(t) = 0</p> -->
+<!--                             <p>    ELSE f(e)=0</p>
+                                 <p>    IF u==s AND w != t THEN queue.add(w)</p> -->
+<!--                             <p class="pseudocode" id="ta_p_l4">  FOR i = 2,..,n DO</p>
+                            <p class="pseudocode" id="ta_p_l4">    d(v[i]) &larr; &#8734;, parent(v[i]) &larr; NULL</p> -->
+
+<!--                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="ta_p_l2">  d(v[1]) &larr; 0</p>
+                            <p class="pseudocode" id="ta_p_l3">  FOR j = 2,..,n DO</p>
+                            <p class="pseudocode" id="ta_p_l4">    d(v[j]) &larr; &#8734;</p>
+                            <p class="pseudocode" id="ta_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
+                            <p class="pseudocode" id="ta_p_l6">    FOR ALL (u,v) in E DO</p>
+                            <p class="pseudocode" id="ta_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
+                            <p class="pseudocode" id="ta_p_l8">  FOR ALL (u,v) in E DO</p>
+                            <p class="pseudocode" id="ta_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
+                            <p class="pseudocode" id="ta_p_l10">      Message: "Negative Circle"</p>
+                            <p class="pseudocode" id="ta_p_l11">END</p> -->
+
+<!--                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="ta_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="ta_p_l3">  start &larr; geeigneter Knoten</p>
+                            <p class="pseudocode" id="ta_p_l4">  tour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l5">  REPEAT</p>
+                            <p class="pseudocode" id="ta_p_l6">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="ta_p_l7">    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l8">    DO</p>
+                            <p class="pseudocode" id="ta_p_l9">      {akt, u} &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="ta_p_l10">      subtour &larr; subtour &#8746; {u}</p>
+                            <p class="pseudocode" id="ta_p_l11">      akt &larr; u</p>
+                            <p class="pseudocode" id="ta_p_l12">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="ta_p_l13">    Integriere subtour in tour</p>
+                            <p class="pseudocode" id="ta_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="ta_p_l15">END</p>  -->
+                            <h3>Status der Variablen:</h3>
+                            <table class="algoInformationen">
+                                <tr>
+                                    <th class="algoInfoTH"><span>start</span></th>
+                                    <th class="algoInfoTH"><span>akt</span></th>
+                                    <th class="algoInfoTH"><span>subtour</span></th>
+                                    <th class="algoInfoTH"><span>tour</span></th>
+                                </tr>
+                                <tr>
+                                    <td id="ta_td_tourStartVertex" class="algoInfoTD">-</td>
+                                    <td id="ta_td_tourCurrentVertex" class="algoInfoTD">-</td>
+                                    <td id="ta_td_eulerianSubTour" class="algoInfoTD">&#8709;</td>
+                                    <td id="ta_td_eulerianTour" class="algoInfoTD">&#8709;</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="ta_div_confirmTabChange" title="Algorithmus abbrechen?" class="tabChangeWarningDialog">
+                <h2>Beim Wechsel des Tabs wird der Algorithmus abgebrochen.</h2>
+                <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
+            </div>
+        </div>
+
+        <!-- TAB Beschreibung des Algorithmus -->
+        <div id="tab_ti" style="display: none;">
+            <div id="ti_div_Einfuehrungstext">
+                <div class="BeispielbildContainer">
+                    <img id="ti_img_beispiel1" src="img/koenigsberg.png" alt="Königsberger Brücken" /><p>Königsberger Brücken <sup>1</sup></p><br />
+                    <img id="ti_img_beispiel1" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (<span style="color: #0000cc">blau</span>)</p><br />
+                    <img id="ti_img_beispiel1" src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (<span style="color: green;">grün</span>) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p>
+                </div>
+                <h1>Das Eulertour Problem</h1>
+                <p>Das Eulertour Problem kam das erste mal im 18. Jahrhundert auf. In der Stadt Königsberg (heute Kaliningrad) gab es zu der Zeit genau sieben Brücken und es stellte sich die Frage, ob man einen Weg oder sogar einen Rundweg finden kann, sodass man alle Brücken genau einmal überquert. Das gleiche Problem ergibt sich auch beim "Haus vom Nikolaus", bei dem man ein Haus in einem Zug, ohne Absetzen des Stiftes zeichnen muss.</p>
+                <p>In Graphen nennt man diese Fragestellung das Eulertour Problem, benannt nach Leonard Euler. Man versucht eine Folge von Kanten (Kantenzug) so zu finden, dass alle Kanten des Graphen in der Folge genau einmal vorkommen. Wenn man dabei wieder bei dem Knoten ankommt, bei dem man gestartet ist, nennt man diesen Kantenzug Eulertour, andernfalls Eulerweg.</p>
+                <p>&nbsp;</p>
+                
+                <h1>Eulersche Graphen</h1>
+                <p>Leonard Euler fand heraus, welche Voraussetzungen ein Graph erfüllen muss, sodass dieser einen Eulerweg oder eine Eulertour enthält. Hierbei unterscheiden wir von gerichteten und ungerichteten Graphen:</p>
+                <p><strong>Ungerichtete Graphen</strong><br />
+                Ein ungerichteter Graph besitzt mind. eine Eulertour, wenn alle seine Knoten einen geraden Grad haben. Das bedeutet, dass alle Knoten genau durch zwei, vier, sechs, ... Kanten mit anderen Knoten verbunden sein müssen. Klar wird dies, wenn man sich Folgendes überlegt: Für jeden Knoten benötigt man genau zwei Kanten, eine um ihn zu erreichen und eine um ihn wieder zu verlassen, bzw. ein Vielfaches davon, je nach dem, wie oft wir den Knoten besucht. Einen Graph der diese Bedingung für alle Knoten erfüllt, nennt man eulerschen Graph.</p>
+                <p>Für einen Eulerweg kann man diese Bedingung etwas lockern. Und zwar für genau zwei Knoten, deren Grad dann ungerade sein muss. Bei diesen Knoten bleibt dann jeweils eine Kante übrig, sodass man sich ein zusätzliches Mal von dem Knoten entfernen muss bzw. den Knoten besuchen muss. Diese beiden Knoten sind dann genau die Start- und Endknoten des Eulerwegs. Einen solchen Graph nennt man semi-eulersch.</p>
+                <p><strong>Gerichtete Graphen</strong><br />
+                Für gerichtete Graphen gelten die die o.g. Regeln weiterhin, man muss nur zusätzlich zwischen eingehenden und ausgehenden Kanten unterscheiden. Hierfür teilt man den Grad eines Knotens in Ingrad und Ausgrad auf. Der Ingrad beschreibt die Anzahl der eingehenden Kanten und der Ausgrad die Anzahl der ausgehenden Kanten. Für einen gerichteten eulerschen Graph muss dann neben dem geraden Grad auch Ingrad gleich Ausgrad für jeden Knoten gelten.</p>
+                <p>Bei semi-eulerschen Graphen benötigt man weiterhin einen Startknoten mit einer zusätzlichen ausgehenden Kante und einen Zielknoten mit einer zusätzlichen eingehenden Kante.</p>
+                <p>Betrachtet man nun das Königsberger Brückenproblem unter den von Euler gefunden Voraussetzungen, stellt man fest, dass der passende Graph vier Knoten mit einem ungeraden Grad (<span style="color: red">rot</span>) enthält, sodass es dort weder eine Eulertour noch einen Eulerweg geben kann. Hat man aber einen geeigneten Graphen vorliegen, kann man seine Eulertouren bzw. -wege schließlich mittels des Algorithmus von Hierholzer finden.</p>
+                <p>&nbsp;</p>
+
+                <h1>Idee des Algorithmus</h1>
+                <p>Die Grundidee des Hierholzer Algorithmus ist die schrittweise Konstruktion der Eulertour aus mehreren disjunkten Kreisen. Man beginnt mit einem zufällig ausgewähltem Knoten und folgt dann einer beliebigen bisher unbesuchten Kante des Knotens zu einem weiteren Knoten. Dies wiederholt man, bis man wieder am Startknoten angekommen ist. Durch dieses Verfahren erhält man einen ersten Kreis, genannt Tour. Deckt diese Tour bereits alle Kanten des Graphen ab, ist sie eine Eulertour und der Algorithmus terminiert. Andernfalls sucht man sich einen weiteren Startknoten aus der Menge der Knoten der Tour und bildet einen weiteren Kreis, genannt Subtour. Der neue Kreis enthält nun offensichtlich keine Kanten des ersten Kreises, sie sind also disjunkt. Da sich beide Kreise durch die Wahl des Startknotens aus dem ersten Kreis aber in mindestens einem Knoten schneiden, kann man beide zu einem neuen Kreis zusammenfassen. Dazu betrachtet man die Knotenfolge der Tour und ersetzt den Startknoten der Subtour mit der kompletten Knotenfolge des Kreises. Man erweitert also die ursprüngliche Tour um weitere gefundene Kreise. Schließt die erweiterte Tour nun alle Kanten des Graphen ein, terminiert der Algorithmus, andernfalls kann die Tour noch um eine weitere Subtour erweitert werden.</p>
+                <p>Im Falle eines ungerichteten semi-eulerschen Graphen startet der Algorithmus mit einem der beiden Knoten mit ungeradem Grad. Im gerichteten Fall genau mit dem Knoten, mit einer zusätzlichen ausgehenden Kante. Eine der gefundenen Subtouren enthält dann keinen Kreis, ist also ein Weg. Wenn die Tour nun um diesen "Subweg" erweitert wird, muss die Erweiterung so erfolgen, dass Anfangs- und Endknoten des Subweges auch Anfangs- und Endknoten der Gesamttour sind.</p>
+                <p>&nbsp;</p>
+
+                <h1>Was nun?</h1>
+                <br style="clear: both;" />
+                <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
+                    <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
+                    <button id="ti_button_gotoDrawGraph">Graph erstellen und daran den Algorithmus testen</button>
+                    <button id="ti_button_gotoAlgorithm">Algorithmus am fertigen Beispiel ausprobieren</button>
+                </div>
+                <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
+                    <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
+                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button>
+                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Algorithmus am gerichteten Graphen</button>
+                </div>
+                <br style="clear: both;" />
+                <p style="font-size: 10px; text-align: right;"><a name="bridge_copyright"></a><sup>1</sup> Von Bogdan Giuşcă unter GNU Free Documentation License 1.2, vgl. <a href="http://http://commons.wikimedia.org/wiki/File:Konigsberg_bridges.png">Wikimedia</a>.</p>
+            </div>
+        </div>
+
+       
+        <!-- TAB Weiteres -->
+        <div id="tab_tw" style="display: none;">
+            <div id="tw_Accordion">
+                <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
+                <div>
+                    <pre><code>Eingabe: Ungerichteter Graph G=(V,E), keine oder genau zwei Knoten besitzen einen ungeraden Grad
+Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
+<hr>
+<pre>
+<code>BEGIN
+    IF Graph ungültig THEN END
+    IF Graph semi-eulersch THEN
+        start &larr; Knoten mit ungeradem Grad
+    ELSE
+        start &larr; beliebiger Knoten
+    subtour &larr; &empty;
+    tour &larr; {start}
+    REPEAT
+        start &larr;  Knoten aus tour mit unbesuchten Kanten
+        subtour &larr; {start}
+        akt = start
+        DO
+            {akt, u} &larr; Suche unbesuchte Kante von akt aus
+            subtour &larr; subtour &#8746; {u}
+            akt &larr; u
+        WHILE start &#8800; akt
+        Integriere subtour in tour
+    UNTIL tour ist Eulerweg/-tour
+END</code></pre>
+            </div>
+                <h3>Wie schnell ist der Algorithmus?</h3>
+                <div>
+                    <h2>Geschwindigkeit von Algorithmen</h2>
+                    <p>Die Geschwindigkeit von Algorithmen wird üblicherweise in der <strong>Anzahl an Einzelschritten</strong> gemessen, die der Algorithmus bei der Ausführung benötigt.</p>
+                    <p>Einzelschritte sind beispielsweise:</p>
+                    <ul>
+                      <li>Zuweisungen &ndash; Weise Knoten 1 den Wert 20 zu.</li>
+                      <li>Vergleiche  &ndash; Ist 20 größer als 23?</li>
+                      <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
+                      <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
+                    </ul>
+                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
+                    <h2>Laufzeit des Hierholzer Algorithmus</h2>
+                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. Nach jeder vollständigen Subtour wird ein neuer Startknoten für folgende Subtouren bestimmt. Bei der Prüfung auf unbesuchte Kanten müssen im ungünstigsten Fall m Kanten betrachtet werden. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
+                    <p>Der Algorithmus kann weiter optimiert werden, indem man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
+                    <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
+                </div>
+                <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
+                <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
+                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
+                <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p class="Disclaimer">
+            IDP Projekt von Mark J. Becker am Lehrstuhl M9 der Technischen Universität München. <span id="year">2015</span> | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
+        </p>
+    </footer>
+</body>
