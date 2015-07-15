@@ -241,3 +241,21 @@ Graph.load = function(filename, callbackFp){
     callbackFp(graph);
   });
 }
+
+Graph.loadInstance = function(filename){
+  d3.text(filename, function(error,text){
+    Graph.instance = Graph.parse(text);
+//     var graph = Graph.parse(text);
+//     Graph.instance.replace(graph);
+    Graph.onLoadedCbFP.forEach(function(fp){fp()});
+//     callbackFp(graph);
+  });
+}
+
+Graph.instance = null;//new Graph(); //only one static global graph object instance, we just replace its inner properties later one
+
+Graph.onLoadedCbFP = [];
+
+Graph.addChangeListener = function(callbackFp){
+  Graph.onLoadedCbFP.push(callbackFp);
+}

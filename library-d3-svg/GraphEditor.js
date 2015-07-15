@@ -10,8 +10,8 @@
 // - Call the superclass constructor explicitly from subclass construc- tors, passing this as the explicit receiver.
 // - Use Object.create to construct the subclass prototype object to avoid calling the superclass constructor.
 
-var GraphEditor = function(graph, svgOrigin){
-  GraphDrawer.call(this,graph,svgOrigin);
+var GraphEditor = function(svgOrigin){
+  GraphDrawer.call(this,svgOrigin);
 
   this.type="GraphEditor";
 
@@ -137,7 +137,7 @@ var GraphEditor = function(graph, svgOrigin){
       }else if(selectedNode){
         var endNode = new Graph.Node(selectedNode.x, selectedNode.y, "invisible");
         unfinishedEdge = new Graph.Edge(selectedNode,endNode,"unfinished");
-        that.graph.addEdgeDirectly(unfinishedEdge);
+        Graph.instance.addEdgeDirectly(unfinishedEdge);
         svgOrigin.style("cursor","crosshair") //crosshair
       }
       hasDragged = false;
@@ -180,7 +180,7 @@ function dblclick(){
 //Es wird entweder die Auswahl aufgehoben, ein Knoten ausgewählt oder eine Kante zwischen vorhandenen Knoten erstellt.
 function mousedownNode(d,id){
   if(selectedNode == d){// Falls wir wieder auf den selben Knoten geklickt haben, hebe Auswahl auf.
-      if(unfinishedEdge) that.graph.removeEdge(unfinishedEdge.id);
+      if(unfinishedEdge) Graph.instance.removeEdge(unfinishedEdge.id);
       deselectNode();
   }else if(selectedNode == null) { // Falls wir nichts ausgewählt hatten, wähle den Knoten aus
       dragging = true;
@@ -207,7 +207,7 @@ function mousedown(a,b,c){
 //     var end = addNode(pos);
 //     this.graph.addEdge(selectedNode,end);
 //     this.updateEdges();
-    that.graph.addNodeDirectly(unfinishedEdge.end);
+    Graph.instance.addNodeDirectly(unfinishedEdge.end);
     that.updateNodes();
     deselectNode();
   }
@@ -261,21 +261,21 @@ function dblclickResource(d,i,all)
 function contextmenuNode(d){
   deselectNode();
   d3.event.stopPropagation();d3.event.preventDefault();
-  that.graph.removeNode(d.id);
+  Graph.instance.removeNode(d.id);
   that.update();
 }
 
 function contextmenuEdge(d){
   deselectNode();
   d3.event.stopPropagation();d3.event.preventDefault();
-  that.graph.removeEdge(d.id);
+  Graph.instance.removeEdge(d.id);
   that.updateEdges();
 }
 
 
 function addNode(pos){
   var xy = that.screenPosToNodePos(pos);
-  that.graph.addNode(xy.x, xy.y);
+  Graph.instance.addNode(xy.x, xy.y);
   that.update();
 //   return point;
 }

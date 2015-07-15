@@ -54,7 +54,7 @@ var global_NodeLayout = {'fillStyle' : const_Colors.NodeFilling,    // Farbe der
 
 
 
-var GraphDrawer = function(graph,svgOrigin){
+var GraphDrawer = function(svgOrigin){
 
     /////////////////
     //PRIVATE
@@ -130,8 +130,10 @@ var GraphDrawer = function(graph,svgOrigin){
     };
 
     this.type="GraphDrawer";
-    this.graph = graph;
+    this.graph = Graph.instance;
     this.svgOrigin = svgOrigin;
+
+    var that = this;
 
     this.screenPosToNodePos = function(pos){
         return {x: x.invert(pos[0]-margin.left), y: y.invert(pos[1]-margin.top)};
@@ -146,7 +148,7 @@ var GraphDrawer = function(graph,svgOrigin){
         // DATA JOIN
         // Join new data with old elements, if any.
           var selection = svg_nodes.selectAll(".node")
-            .data(graph.getNodes(),function(d){return d.id});
+            .data(Graph.instance.getNodes(),function(d){return d.id});
 
 
         // UPDATE
@@ -183,7 +185,7 @@ var GraphDrawer = function(graph,svgOrigin){
             selection
 //                 .transition()
                 .attr("transform",transform)
-                .call(this.onNodesUpdated);
+                .call(this.onNodesUpdated.bind(this));
 
             selection.selectAll("text.label")
                  .text(this.nodeLabel);
@@ -203,7 +205,7 @@ var GraphDrawer = function(graph,svgOrigin){
     this.updateEdges = function(){
 
         var selection = svg_links.selectAll(".edge")
-            .data(graph.getEdges(),function(d){
+            .data(Graph.instance.getEdges(),function(d){
                 return d.id;
              });
 
@@ -223,7 +225,6 @@ var GraphDrawer = function(graph,svgOrigin){
         
 
         enterSelection.append("line")
-            .attr("marker-end", "url(#arrowhead)")
             .style("stroke","black")
             .style("stroke-width",global_Edgelayout['lineWidth'])
 
@@ -233,6 +234,7 @@ var GraphDrawer = function(graph,svgOrigin){
 
     //ENTER + UPDATE
         selection.selectAll("line")
+            .attr("marker-end", "url(#arrowhead)")
             .each(lineAttribs)
 //             .style("opacity",1e-6)
 //             .transition()
@@ -252,6 +254,16 @@ var GraphDrawer = function(graph,svgOrigin){
 //         console.log("exit",exitSelection);
         exitSelection.remove();
 
+    }
+
+//     Graph.addChangeListener(function(){
+//        that.clear();
+//        if(this.activate) this.activate();
+//        that.update(); 
+//     });
+
+    if(Graph.instance==null){
+       Graph.loadInstance("graphs-new/graph1.txt"); //calls registered event listeners when loaded;
     }
 } //end constructor GraphDrawer
 
@@ -301,9 +313,9 @@ GraphDrawer.prototype.nodeLabel = function(d){
     
 // }
 
-GraphDrawer.prototype.setGraph = function(graphPassed){
-    this.clear();
-    this.graph=graphPassed;
-        this.update();
-
-}
+// GraphDrawer.prototype.setGraph = function(graphPassed){
+//     this.clear();
+// //     this.graph=graphPassed;
+//     this.graph.replace(graphPassed);
+//     this.update();
+// }
