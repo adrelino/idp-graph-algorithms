@@ -18,6 +18,7 @@
 <script src="../library-d3-svg/Graph.js"></script>
 <script src="../library-d3-svg/GraphDrawer.js"></script>
 <script src="../library-d3-svg/GraphEditor.js"></script>
+<script src="../library-d3-svg/Logger.js"></script>
 <link rel="stylesheet" type="text/css" href="../library-d3-svg/graph-style.css" />
 
 <!--     <script src="js/utilities.js" type="text/javascript"></script> -->
@@ -184,7 +185,7 @@
 <!--                         <option selected label="own graph" id="tg_selectoption_empty">graph4</option> -->
                         <option label="graph 1">graph1</option>
                         <option label="graph 2">graph2</option>
-                        <option label="graph 3">graph3</option>
+                        <option label="European capitals (double edges)">graph3</option>
                         <option label="corman page 726">graph4</option>
                         <option label="ahuja page 227">graph5</option>
                         <option label="from wikipedia">graph6</option>
@@ -223,12 +224,22 @@
                 </div>
                 <div id="ta_div_statusWindow" class="statusWindow">
                     <h2 class="">Status des Algorithmus</h2>
-                    <div id="ta_div_abspielbuttons">
+                    <div id="ta_div_abspielbuttons"> <!--class="ui-widget-header ui-corner-all"-->
+                        <input  id="ta_button_rewind" type="checkbox"><label for="ta_button_rewind" id="ta_button_text_rewind">rewind</label>
+                        
+                        <button id="ta_button_Zurueck">prev</button>
+                        
+                        <button id="ta_button_1Schritt">next</button>
+                        
+                        <input  id="ta_button_vorspulen" type="checkbox"><label for="ta_button_vorspulen" id="ta_button_text_fastforward">fast forward</label>
+
+                        <span id="ta_button_text_pause" style="display:none">pause</span>
                     </div>
                     <div id="ta_div_statusTabs">
                          <ul>
                             <li><a href="#ta_div_statusErklaerung">Erklärung</a></li>
                             <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
+                            <li><a href="#ta_div_statusLogger">Logger</a></li>
                         </ul>
                         <div id="ta_div_statusErklaerung">
                             <div>
@@ -282,7 +293,23 @@
                                 <p>min{ d(w)+1 | (v,w) is edge of the residual network G'}</p>
                                 <p>add v at the end of the queue after that.</p>
                             </div>
+                            <div>
+                                <h3>Finished</h3>
+                                <p>The algorithm terminated with a maximum flow value of:</p>
+                                <p id="finalflow" style="color:green"></p>
+                            </div>
                         </div>
+<!--var STATUS_SELECTSOURCE = id++;
+    var STATUS_SELECTTARGET = id++;
+    var STATUS_START = id++;
+    var STATUS_INITPREFLOW = id++;
+    var STATUS_INITDISTANCEFUNCTION = id++;
+    var STATUS_MAINLOOP = id++;
+    var STATUS_ADMISSIBLEPUSH = id++;
+    var STATUS_PUSH = id++;
+    var STATUS_ADMISSIBLERELABEL = id++;
+    var STATUS_RELABEL = id++;
+    var STATUS_FINISHED = id; -->
                         <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
                             <div><p>s &larr; pick(v)</p></div>
                             <div><p>t &larr; pick(v)</p></div>
@@ -302,8 +329,8 @@
                             <div><p>    WHILE  e(v) > 0 AND &exist; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
                             <div><p>       (* PUSH *)</p>
                                  <p>       push min{e(v),c'(e')} flow from v to w</p>
-                                 <p>       IF w != s,t AND w &notin; queue THEN queue.add(w)</p>
-                                 <p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
+                                 <p>       IF w != s,t AND w &notin; queue THEN queue.add(w)</p></div>
+                            <div><p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
                             <div><p>       (* RELABEL *)</p>
                                  <p>       d(v) &larr; min{d(w)+1 | (v,w) &isin E'</p>
                                  <p>       queue.add(v)</p></div>
@@ -357,6 +384,10 @@
                                     <td id="ta_td_eulerianTour" class="algoInfoTD">&#8709;</td>
                                 </tr>
                             </table>
+                        </div>
+                        <div id="ta_div_statusLogger">
+                            <h3>Log of algorithm execution</h3>
+                            <div id="logger"></div>
                         </div>
                     </div>
                 </div>

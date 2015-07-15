@@ -13,6 +13,8 @@ function Tab(algo,p_tab) {
      * @type Object
      */
     this.tab = p_tab;
+
+    this.initialized = false;
     
     /**
      * Initialisiert das Zeichenfeld
@@ -38,6 +40,7 @@ function Tab(algo,p_tab) {
 //         this.needRedraw = true;
         this.minimizeLegend();
         algo.init && algo.init();
+        this.initialized=true;
     };
     
     /**
@@ -45,6 +48,7 @@ function Tab(algo,p_tab) {
      * @method
      */
     this.activate = function() {
+        if(!this.initialized) this.init();
         algo.activate && algo.activate();
     };
     

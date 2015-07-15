@@ -10,7 +10,7 @@
  * durch Tabwechsel abgebrochen würde, so muss der Tabwechsel zunächst abgefangen werden.
  * Das Ergebnis des Dialogs wird gespeichert und ein Tabwechsel wird ausgelöst.
  */
-var graph = null, graphEditorTab = null, algorithmTab = null;
+var graphEditorTab = null, algorithmTab = null;
 
 function initializeSiteLayout() {
 //     $("#tabs").tabs();
@@ -23,6 +23,13 @@ function initializeSiteLayout() {
     $("#ti_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
     $("#ti_button_gotoAlgorithm").click(function() { $("#tabs").tabs("option", "active", 2);});
     $("#tw_Accordion").accordion({heightStyle: "content"});
+    
+                    graphEditorTab = new Tab(new FlowGraphEditor(d3.select("#tg_canvas_graph")),$("#tab_tg"));
+                    algorithmTab = new Tab(new GoldbergTarjanPushRelabelAlgorithm(d3.select("#ta_canvas_graph")),$("#tab_ta"));
+                    graphEditorTab.init();
+                    algorithmTab.init();
+
+
     $("#tabs").tabs({
         beforeActivate: function(event, ui) {
             var id = ui.oldPanel[0].id;
@@ -47,24 +54,16 @@ function initializeSiteLayout() {
         activate: function(event, ui) {
             var id = ui.newPanel[0].id;
             if(id == "tab_tg") {
-                if(graphEditorTab == null){
-                    var algo = new FlowGraphEditor(graph, d3.select("#tg_canvas_graph"));
-                    graphEditorTab = new Tab(algo,$("#tab_tg"));
-                    graphEditorTab.init();
-                }
+//                 if(graphEditorTab == null){
+//                     graphEditorTab.init();
+//                 }
                 graphEditorTab.activate();
             } else if(id == "tab_ta") {
-                if(algorithmTab == null){
-                    var algo = new GoldbergTarjanPushRelabelAlgorithm(graph, d3.select("#ta_canvas_graph"));
-                    algorithmTab = new Tab(algo,$("#tab_ta"));
-                    algorithmTab.init();
-                }
+//                 if(algorithmTab == null){
+//                     algorithmTab.init();
+//                 }
                 algorithmTab.activate();
             }
         }
-    });
-    //load initial graph async in background
-    Graph.load("graphs-new/graph1.txt", function(graphLoaded){
-        graph = graphLoaded;
     });
 }

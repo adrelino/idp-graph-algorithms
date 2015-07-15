@@ -2,8 +2,8 @@
  * A graph editor for network flows.
  * @author Adrian Haarbach
  */
-function FlowGraphEditor(p_graph,p_canvas) {
-    GraphEditor.call(this,p_graph,p_canvas);
+function FlowGraphEditor(svgSelection) {
+    GraphEditor.call(this,svgSelection);
 
     var that = this;
     
@@ -16,6 +16,13 @@ function FlowGraphEditor(p_graph,p_canvas) {
             $("#tabs").tabs("option","active",2);
         });
         $("#tg_select_GraphSelector").on("change.GraphDrawer",this.setGraphHandler);     // Beispielgraph auswählen
+        
+        Graph.addChangeListener(function(){
+//             that.reset();
+            that.clear();
+            that.update();
+        });
+//         this.setGraphHandler(); //triggers loading of first graph
     };
     
     /**
@@ -24,7 +31,7 @@ function FlowGraphEditor(p_graph,p_canvas) {
      * @method
      */
     this.activate = function() {
-        this.update();
+       if(Graph.instance) this.update();
     };
     
     /**
@@ -44,11 +51,11 @@ function FlowGraphEditor(p_graph,p_canvas) {
         var filename = selection + ".txt";
         console.log(filename);
 
-        Graph.load("graphs-new/"+filename, function(graphLoaded){
-            that.clear();
-            that.graph.replace(graphLoaded);
-            that.update();
-        });
+        Graph.loadInstance("graphs-new/"+filename); //calls registered event listeners when loaded;
+
+//         Graph.load("graphs-new/"+filename, function(graphLoaded){
+//             that.setGraph(graphLoaded);
+//         });
     };
 }
 
