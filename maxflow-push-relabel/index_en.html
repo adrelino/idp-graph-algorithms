@@ -1,58 +1,67 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
-    <meta name="description" content="Diese Seite demonstriert den Hierholzer Algorithmus zum Finden von Eulertouren." />
-    <meta name="keywords" content="Eulertour, Hierholzer, Algorithmus, TUM, Technische Universität München, Applet">
+    <meta name="description" content="This applet demonstrates the Goldberg Tarjan Push Relabel algorithm to find a maximum flow" />
+    <meta name="keywords" content="Goldberg, Tarjan, maximum flow, algorithm, TUM, Technische Universität München, applet">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="author" content="Mark J. Becker">
-    <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
+    <meta name="author" content="Adrian Haarbach">
+
+<!--     the whole page layout style -->
     <link rel="stylesheet" type="text/css" href="../library/css/style.css" />
-    <link type="text/css" href="../library/css/mmenu/jquery.mmenu.all.css" rel="stylesheet" />
+
+    <!-- jquery + jqueryui -->
     <script src="../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="../library/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
+<!--     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> -->
+
+<!--     the menu, add back in the end -->
+    <link type="text/css" href="../library/css/mmenu/jquery.mmenu.all.css" rel="stylesheet" />
     <script type="text/javascript" src="../library/js/mmenu/jquery.mmenu.min.all.js"></script>
-    <script src="../library/js/lang.js" type="text/javascript"></script>
 
-<script src="../library-d3-svg/d3/d3.js"></script>
-<script src="../library-d3-svg/Graph.js"></script>
-<script src="../library-d3-svg/GraphDrawer.js"></script>
-<script src="../library-d3-svg/GraphEditor.js"></script>
-<script src="../library-d3-svg/Logger.js"></script>
-<link rel="stylesheet" type="text/css" href="../library-d3-svg/graph-style.css" />
+<!--     Adrians d3 related library code -->
+    <script src="../library-d3-svg/d3/d3.js"></script>
+    <script src="../library-d3-svg/Graph.js"></script>
+    <script src="../library-d3-svg/GraphDrawer.js"></script>
+    <script src="../library-d3-svg/GraphEditor.js"></script>
+    <script src="../library-d3-svg/Logger.js"></script>
+    <link rel="stylesheet" type="text/css" href="../library-d3-svg/graph-style.css" />
+    <link rel="stylesheet" type="text/css" href="../library-d3-svg/style.css" />
 
-<!--     <script src="js/utilities.js" type="text/javascript"></script> -->
+<!--     Files used only for this applet -->
     <script src="js/Tab.js" type="text/javascript"></script>
     <script src="js/FlowGraphEditor.js" type="text/javascript"></script>
     <script src="js/GoldbergTarjanPushRelabelAlgorithm.js" type="text/javascript"></script>
-
     <script src="js/siteAnimation.js" type="text/javascript"></script>
 
 
-<!--     <script src="js/aufgabe1.js" type="text/javascript"></script>
-    <script src="js/aufgabe2.js" type="text/javascript"></script> -->
+<!--     MathJax, used in the more tab in pseudocode -->
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             showMathMenu: false,
             showMathMenuMSIE: false
         });
     </script>
-    <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=de"></script>
+    <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=en"></script>
 
-    <title>Der Hierholzer Algorithmus</title>
+    <title>Goldberg Tarjan Push Relabel Algorithm</title>
 </head>
 <body>
     <noscript>
         <div class="ui-widget">
             <div class="ui-state-error ui-corner-all" style="padding: .7em;">
                 <div class="ui-icon ui-icon-alert errorIcon"></div>
-                <strong>Bitte aktivieren Sie Javascript!</strong>
+                <strong>Please activate Javascript!</strong>
                 <ul style="margin: 0px;">
                     <li>
-                        Diese Seite benötigt Javascript, um ordnungsgemäß angezeigt zu werden.
+                        This website needs Javascript in order to be displayed properly.
                     </li>
                     <li>
-                        In Ihrem Browser ist Javascript aktuell deaktiviert. Eine Anleitung zur Aktivierung von Javascript finden Sie beispielsweise <a href="http://www.enable-javascript.com/">hier</a>.
+                        Javascript is currently deactivated in your browser. A manual for the activation of Javascript can be found <a href="http://www.enable-javascript.com/">here</a>.
                     </li>
                 </ul>
             </div>
@@ -63,8 +72,6 @@
             initializeSiteLayout();
             $("#year").html(new Date().getFullYear());
         });
-//         LNG.setLanguage('de');
-        LNG.setLanguage('en');
         $(document).ready(function() {
             $("#menu").mmenu({
                "navbar": {
@@ -117,29 +124,37 @@
     </nav>
     <div>
     <header>
-        <img src="img/titel.png" alt="Algorithmus von Hierholzer">
+        <img src="img/titel.png" height="100px" alt="Goldberg Tarjan Push Relabel Algorithm">
+        <span class="adrianheader">Goldberg Tarjan Push Relabel Algorithm</span>
         <img style="position:absolute; right:0px" src="../library/img/TUMLogo.png" alt="Technische Universität München">
     </header>
     <div id="tabs">
         <ul>
-            <li><a href="#tab_te"><span>Einführung</span></a></li>
-            <li><a href="#tab_tg"><span>Graph erstellen</span></a></li>
-            <li><a href="#tab_ta"><span>Algorithmus ausführen</span></a></li>
-            <li><a href="#tab_ti"><span>Beschreibung des Algorithmus</span></a></li>
-            <li><a href="#tab_tw"><span>Weiteres</span></a></li>
+            <li><a href="#tab_te"><span>Introduction</span></a></li>
+            <li><a href="#tab_tg"><span>Create a graph</span></a></li>
+            <li><a href="#tab_ta"><span>Run the algorithm</span></a></li>
+            <li><a href="#tab_ti"><span>Description of the algorithm</span></a></li>
+            <li><a href="#tab_tw"><span>More</span></a></li>
         </ul>
 
         <!-- TAB Einführung -->
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
 
-                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1.png" alt="Einfacher Graph mit 4 Knoten."><p>Kantenzüge ohne doppelte Kanten</p></div>
-                <h1>Das Eulertour Problem</h1>
-                <p>Du möchtest beim Zeitungsaustragen die optimalen Route kennen, sodass du keine Straße doppelt abgehen musst? In der Mathematik bezeichnet man das Finden eines Kantenzugs im Graphen ohne doppelte Kanten als das Eulertour Problem. Es ist nach dem Mathematiker Leonhard Euler, der 1736 das s.g. Königsberger Brücken Problem löste, benannt.</p>
-                <h2>Der hier vorgestellte Hierholzer Algorithmus löst das Eulertour Problem für Graphen, die eine Eulertour enthalten.</h2>
+                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1b.png" width="300px"><p>The maximum s-t flow has a value of 6</p></div>
+<!--                 <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="https://i1.wp.com/cs.stanford.edu/people/trevisan/cs261-11/network1.png" alt="Flow problem in network routing capacity"><p>Flow problem in network routing capacity</p></div> -->
+                
+                <h1>The maximum flow problem</h1>
+                <p>Suppose that we have a communication network, in which certain pairs of nodes are linked by connections; each connection has a limit to the rate at which data can be sent.
+                Given two nodes on the network, what is the maximum rate at which one can send data to the other, assuming no other pair of nodes are attempting to communicate? <a href="https://lucatrevisan.wordpress.com/2011/02/04/cs261-lecture-9-maximum-flow/">(source)</a></p>
+                
+                <p>
+                This is a typical instance of a maximum flow problem: given an underlying network, where the edge weights denote the maximum possible capacity per edge, one wants to find out how much can be transerred over the edges from the source node s to the target node t.</p>
+                </p>
+                <h2>This applet presents the generic Goldberg Tarjan's Push Relabel algorithm which calculates the maximum s-t flow on a directed, weighted graph in a fairly good runtime. More classical but slower algorithms are Ford-Fulkerson/Edmonds-Karp/Dinic algorithms</h2>
                 <div id ="te_div_Entscheidung">
-                    <h2>Was möchtest du zuerst tun?</h2>
-                    <button id="te_button_gotoDrawGraph">Den Algorithmus testen!</button> <button id="te_button_gotoIdee">Genauere Beschreibung des Algorithmus lesen</button>
+                    <h2>What do you want to do first?</h2>
+                    <button id="te_button_gotoDrawGraph">Test the algorithm!</button> <button id="te_button_gotoIdee">Read detailed description of the algorithm</button>
                 </div>
                 <p></p>
                 <br style="clear: both;" />
@@ -173,16 +188,10 @@
                     </div>
                 </div>
                 <div id="tg_div_statusWindow" class="statusWindow">
-                    <h2>Auf welchem Graph soll der Algorithmus ausgeführt werden?</h2>
-                    <div id="tg_div_statusErklaerung">
-                        <p>Um einen Knoten zu erstellen, mache einen Doppelklick in das Zeichenfeld.</p>
-                        <p>Um eine Kante zu erstellen, klicke zunächst auf den Ausgangsknoten und dann auf den Zielknoten.</p>
-                        <p>Ein Rechtsklick löscht Kanten und Knoten.</p>
-                    </div>
-                    <h3>Keine Lust, selbst einen Graph zu erstellen?<br></h3>
-                    <h3>Nimm ein fertiges Beispiel!<br></h3>
-                    <select id="tg_select_GraphSelector" name="Wähle einen Graphen">
-<!--                         <option selected label="own graph" id="tg_selectoption_empty">graph4</option> -->
+                    <h2>Which graph do you want to execute the algorithm on?</h2>
+                    <h3>Start with an example graphs:</h3>
+                    <label for="graphSelector">Select </label>
+                    <select name="graphSelector" id="tg_select_GraphSelector">
                         <option label="graph 1">graph1</option>
                         <option label="graph 2">graph2</option>
                         <option label="European capitals (double edges)">graph3</option>
@@ -190,8 +199,40 @@
                         <option label="ahuja page 227">graph5</option>
                         <option label="from wikipedia">graph6</option>
                         <option label="jungnickel page 214">graph7</option>
+                        <option label="corman rotated">corman2</option>
                     </select>
-                    <p><button id="tg_button_gotoAlgorithmTab">Fertig &ndash; weiter zum Algorithmus!</button></p>
+
+
+                    <h3>Modify it to your desire:<br></h3>
+                    <div id="tg_div_statusErklaerung">
+                    <ul>
+                        <li>To create a node, make a double-click in the drawing area.</li>
+                        <li>To create an edge, first click on the output node and then click on the destination node.</li>
+                        <li>The edge weight can be changed by double clicking on the edge.</li>
+                        <li>Right-clicking deletes edges and nodes.</li>
+                    </ul>
+                    </div>
+                    
+                    <h3>Download the modified graph:</h3>
+                    
+                    <a id="fileDownloader" download="graph.txt" href="data:text/plain,test">Download</a>
+                    
+                    <h3>Upload an existing graph:</h3>
+                    <input type="file" id="fileUploader" accept=".txt"/></input> <!--name="files[]" accept="text/*"-->
+                    <div id="ta_div_parseError" title="Error reading graph from file">
+<!--                         <h2>Error code:</h2> -->
+                        A
+                        <h2 style="color:red" id="ta_div_parseErrorText"></h2>
+                        occured when reading from file:
+                        <h3 id="ta_div_parseErrorFilename"></h3>
+                        the contents:
+                        <pre id="ta_div_parseErrorDescription"></pre>
+                    </div>
+
+                    <h3>What next?</h3>
+                   <p><button id="tg_button_gotoAlgorithmTab">Ready &ndash; Run the Algorithm!</button></p>
+
+
                 </div>
             </div>
         </div>
@@ -223,7 +264,7 @@
                     </div>
                 </div>
                 <div id="ta_div_statusWindow" class="statusWindow">
-                    <h2 class="">Status des Algorithmus</h2>
+                    <h2 class="">Algorithm status</h2>
                     <div id="ta_div_abspielbuttons"> <!--class="ui-widget-header ui-corner-all"-->
                         <input  id="ta_button_rewind" type="checkbox"><label for="ta_button_rewind" id="ta_button_text_rewind">rewind</label>
                         
@@ -233,13 +274,15 @@
                         
                         <input  id="ta_button_vorspulen" type="checkbox"><label for="ta_button_vorspulen" id="ta_button_text_fastforward">fast forward</label>
 
+                        <input type="number" id="ta_vorspulen_speed" min="2" max="500" value=5>ms
+
                         <span id="ta_button_text_pause" style="display:none">pause</span>
                     </div>
                     <div id="ta_div_statusTabs">
                          <ul>
-                            <li><a href="#ta_div_statusErklaerung">Erklärung</a></li>
+                            <li><a href="#ta_div_statusErklaerung">Explanation</a></li>
                             <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
-                            <li><a href="#ta_div_statusLogger">Logger</a></li>
+                            <li><a href="#ta_div_statusLogger">Log</a></li>
                         </ul>
                         <div id="ta_div_statusErklaerung">
                             <div>
@@ -369,19 +412,19 @@
                             <p class="pseudocode" id="ta_p_l13">    Integriere subtour in tour</p>
                             <p class="pseudocode" id="ta_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
                             <p class="pseudocode" id="ta_p_l15">END</p>  -->
-                            <h3>Status der Variablen:</h3>
+                            <h3>Variable status</h3>
                             <table class="algoInformationen">
                                 <tr>
-                                    <th class="algoInfoTH"><span>start</span></th>
-                                    <th class="algoInfoTH"><span>akt</span></th>
-                                    <th class="algoInfoTH"><span>subtour</span></th>
-                                    <th class="algoInfoTH"><span>tour</span></th>
+                                    <th class="algoInfoTH"><span>v</span></th>
+                                    <th class="algoInfoTH"><span>queue</span></th>
+                                    <th class="algoInfoTH"><span>e'</span></th>
+                                    <th class="algoInfoTH"><span>c'</span></th>
                                 </tr>
                                 <tr>
-                                    <td id="ta_td_tourStartVertex" class="algoInfoTD">-</td>
-                                    <td id="ta_td_tourCurrentVertex" class="algoInfoTD">-</td>
-                                    <td id="ta_td_eulerianSubTour" class="algoInfoTD">&#8709;</td>
-                                    <td id="ta_td_eulerianTour" class="algoInfoTD">&#8709;</td>
+                                    <td id="ta_td_v" class="algoInfoTD">-</td>
+                                    <td id="ta_td_queue" class="algoInfoTD">&#8709;</td>
+                                    <td id="ta_td_e_dash" class="algoInfoTD">-</td>
+                                    <td id="ta_td_c_dash" class="algoInfoTD">-</td>
                                 </tr>
                             </table>
                         </div>
@@ -402,44 +445,62 @@
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
-                    <img id="ti_img_beispiel1" src="img/koenigsberg.png" alt="Königsberger Brücken" /><p>Königsberger Brücken <sup>1</sup></p><br />
-                    <img id="ti_img_beispiel1" src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br />
-                    <img id="ti_img_beispiel1" src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
-                    <img id="ti_img_beispiel1" src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (<span style="color: #0000cc">blau</span>)</p><br />
-                    <img id="ti_img_beispiel1" src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (<span style="color: green;">grün</span>) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p>
+                    <img src="https://i1.wp.com/cs.stanford.edu/people/trevisan/cs261-11/network1.png" alt="Network " /><p>Network max flow <sup>1</sup></p><br />
+                    <img src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br />
+                    <img src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
+<!--                     <img src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (<span style="color: #0000cc">blau</span>)</p><br /> -->
+<!--                     <img src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (<span style="color: green;">grün</span>) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p> -->
                 </div>
-                <h1>Das Eulertour Problem</h1>
-                <p>Das Eulertour Problem kam das erste mal im 18. Jahrhundert auf. In der Stadt Königsberg (heute Kaliningrad) gab es zu der Zeit genau sieben Brücken und es stellte sich die Frage, ob man einen Weg oder sogar einen Rundweg finden kann, sodass man alle Brücken genau einmal überquert. Das gleiche Problem ergibt sich auch beim "Haus vom Nikolaus", bei dem man ein Haus in einem Zug, ohne Absetzen des Stiftes zeichnen muss.</p>
-                <p>In Graphen nennt man diese Fragestellung das Eulertour Problem, benannt nach Leonard Euler. Man versucht eine Folge von Kanten (Kantenzug) so zu finden, dass alle Kanten des Graphen in der Folge genau einmal vorkommen. Wenn man dabei wieder bei dem Knoten ankommt, bei dem man gestartet ist, nennt man diesen Kantenzug Eulertour, andernfalls Eulerweg.</p>
-                <p>&nbsp;</p>
-                
-                <h1>Eulersche Graphen</h1>
-                <p>Leonard Euler fand heraus, welche Voraussetzungen ein Graph erfüllen muss, sodass dieser einen Eulerweg oder eine Eulertour enthält. Hierbei unterscheiden wir von gerichteten und ungerichteten Graphen:</p>
-                <p><strong>Ungerichtete Graphen</strong><br />
-                Ein ungerichteter Graph besitzt mind. eine Eulertour, wenn alle seine Knoten einen geraden Grad haben. Das bedeutet, dass alle Knoten genau durch zwei, vier, sechs, ... Kanten mit anderen Knoten verbunden sein müssen. Klar wird dies, wenn man sich Folgendes überlegt: Für jeden Knoten benötigt man genau zwei Kanten, eine um ihn zu erreichen und eine um ihn wieder zu verlassen, bzw. ein Vielfaches davon, je nach dem, wie oft wir den Knoten besucht. Einen Graph der diese Bedingung für alle Knoten erfüllt, nennt man eulerschen Graph.</p>
-                <p>Für einen Eulerweg kann man diese Bedingung etwas lockern. Und zwar für genau zwei Knoten, deren Grad dann ungerade sein muss. Bei diesen Knoten bleibt dann jeweils eine Kante übrig, sodass man sich ein zusätzliches Mal von dem Knoten entfernen muss bzw. den Knoten besuchen muss. Diese beiden Knoten sind dann genau die Start- und Endknoten des Eulerwegs. Einen solchen Graph nennt man semi-eulersch.</p>
-                <p><strong>Gerichtete Graphen</strong><br />
-                Für gerichtete Graphen gelten die die o.g. Regeln weiterhin, man muss nur zusätzlich zwischen eingehenden und ausgehenden Kanten unterscheiden. Hierfür teilt man den Grad eines Knotens in Ingrad und Ausgrad auf. Der Ingrad beschreibt die Anzahl der eingehenden Kanten und der Ausgrad die Anzahl der ausgehenden Kanten. Für einen gerichteten eulerschen Graph muss dann neben dem geraden Grad auch Ingrad gleich Ausgrad für jeden Knoten gelten.</p>
-                <p>Bei semi-eulerschen Graphen benötigt man weiterhin einen Startknoten mit einer zusätzlichen ausgehenden Kante und einen Zielknoten mit einer zusätzlichen eingehenden Kante.</p>
-                <p>Betrachtet man nun das Königsberger Brückenproblem unter den von Euler gefunden Voraussetzungen, stellt man fest, dass der passende Graph vier Knoten mit einem ungeraden Grad (<span style="color: red">rot</span>) enthält, sodass es dort weder eine Eulertour noch einen Eulerweg geben kann. Hat man aber einen geeigneten Graphen vorliegen, kann man seine Eulertouren bzw. -wege schließlich mittels des Algorithmus von Hierholzer finden.</p>
-                <p>&nbsp;</p>
-
-                <h1>Idee des Algorithmus</h1>
-                <p>Die Grundidee des Hierholzer Algorithmus ist die schrittweise Konstruktion der Eulertour aus mehreren disjunkten Kreisen. Man beginnt mit einem zufällig ausgewähltem Knoten und folgt dann einer beliebigen bisher unbesuchten Kante des Knotens zu einem weiteren Knoten. Dies wiederholt man, bis man wieder am Startknoten angekommen ist. Durch dieses Verfahren erhält man einen ersten Kreis, genannt Tour. Deckt diese Tour bereits alle Kanten des Graphen ab, ist sie eine Eulertour und der Algorithmus terminiert. Andernfalls sucht man sich einen weiteren Startknoten aus der Menge der Knoten der Tour und bildet einen weiteren Kreis, genannt Subtour. Der neue Kreis enthält nun offensichtlich keine Kanten des ersten Kreises, sie sind also disjunkt. Da sich beide Kreise durch die Wahl des Startknotens aus dem ersten Kreis aber in mindestens einem Knoten schneiden, kann man beide zu einem neuen Kreis zusammenfassen. Dazu betrachtet man die Knotenfolge der Tour und ersetzt den Startknoten der Subtour mit der kompletten Knotenfolge des Kreises. Man erweitert also die ursprüngliche Tour um weitere gefundene Kreise. Schließt die erweiterte Tour nun alle Kanten des Graphen ein, terminiert der Algorithmus, andernfalls kann die Tour noch um eine weitere Subtour erweitert werden.</p>
-                <p>Im Falle eines ungerichteten semi-eulerschen Graphen startet der Algorithmus mit einem der beiden Knoten mit ungeradem Grad. Im gerichteten Fall genau mit dem Knoten, mit einer zusätzlichen ausgehenden Kante. Eine der gefundenen Subtouren enthält dann keinen Kreis, ist also ein Weg. Wenn die Tour nun um diesen "Subweg" erweitert wird, muss die Erweiterung so erfolgen, dass Anfangs- und Endknoten des Subweges auch Anfangs- und Endknoten der Gesamttour sind.</p>
-                <p>&nbsp;</p>
-
-                <h1>Was nun?</h1>
-                <br style="clear: both;" />
+                <h1>Shortest Paths</h1>
+                <p>In many applications one wants to obtain the shortest path from a to b.
+                Depending on the context, the length of the path does not necessarily have to be the length in meter: One can as well look at the cost of a path &ndash; both if we have to pay for using it &ndash; or if we receive some.</p>
+                <p><strong>In general we speak of cost</strong>.
+                Therefore one assigns cost to each part of the path &ndash; also called "edge".</p>
+                <p>Dijkstra's Algorithm computes shortest &ndash; or cheapest paths, if all cost are positive numbers.
+                However, if one allows negative numbers, the algorithm will fail.</p>
+                <p>The Bellman-Ford Algorithm by contrast can also deal with negative cost.</p>
+                <p>These can for example occur when a taxi driver receives more money for a tour than he spends on fuel. If he does not transport somebody, his cost are positive.</p>
+                <h1>Idea of the Algorithm</h1>
+<!--                 <div class="BeispielbildContainer">
+                    <img id="ti_img_beispiel4_1" src="img/graph1.png" alt="Edge before update."><p>This edge is a short-cut:<br> We know that we have to pay 20 in order to go from the starting node to the left node. The path from the left to the right node has cost 1.<br> Therefore one can go from the starting node to the node on the right with a total cost of 21.</p>
+                    <img id="ti_img_beispiel4_2" src="img/graph1.png" alt="Edge before update.">
+                </div> -->
+                <p>The Bellman-Ford Algorithm computes the <strong>cost</strong> of the cheapest paths from a starting node to all other nodes in the graph. Thus, he can also construct the paths afterwards.</p>
+                <p>The algorithm proceeds in an interactive manner, by beginning with a bad estimate of the cost and then improving it until the correct value is found.</p>
+                <p>The first estimate is:</p>
+                <ul>
+                    <li> <strong>The starting node has cost 0</strong>, as his distance to itself is obviously 0.
+                    <li> <strong>All other node have cost infinity</strong>, which is the worst estimate possible.
+                </ul>
+                <p>Afterwards, the algorithm checks every edge for the following condition: <strong>Are the cost of the source of the edge plus the cost for using the edge smaller than the cost of the edge's target?</strong></p>
+                <p>If this is the case, we have found a <strong>short-cut</strong>: It is more profitable to use the edge which was just checked, than using the path used so far. 
+                    Therefore the cost of the edge's target get updated: They are set to the cost of the source plus the cost for using the edge (compare example on the right).</p>
+                <p>Looking at all edges of the graph and updating the cost of the nodes is called a <strong>phase</strong>. Unfortunately, it is not sufficient to look at all edges only once. 
+                    After the first phase, the cost of all nodes for which the shortest path only uses one edge have been calculated correctly. After two phases all paths that use at most two edges have been computed correctly, and so on.</p>
+<!--                 <div class="BeispielbildContainer"><img id="ti_img_beispiel3" src="img/graph1.png" alt="Graph with distances.">
+                    <p>The green path from the starting node is the cheapest path. It uses 3 edges.</p>
+                </div> -->
+                <p>How many phases ware necessary? To answer this question, the observation that <strong>a shortest path has to use less edges than there are nodes in the graph.</strong>
+                    Thus, we need at most one phase less than the number of nodes in the graph. A shortest path that uses more edges than the number of nodes would visit some node twice and thus build a circle.</p>
+                <h1>Construction of the shortest path</h1>
+                <p>Each time when updating the cost of some node, the algorithm saves the edge that was used for the update as the <strong>predecessor</strong> of the node.</p>
+                <p>At the end of the algorithm, the shortest path to each node can be constructed by going backwards using the predecessor edges until the starting node is reached.</p>
+                <h1>Circles with negative weight</h1>
+<!--                 <div class="BeispielbildContainer"><img id="ti_img_beispiel2" src="img/graph1.png" alt="Graph with negative circle."><p>A cheapest path had to use this circle infinitely often. The cost would be reduced in each iteration.</p></div> -->
+                <p>If the graph contains a circle with a negative sum of edge weights &ndash; a <strong>Negative Circle</strong>, the algorithm probably will not find a cheapest path.</p>
+                <p>As can be seen in the example on the right, paths in this case can be infinitely cheap &ndash; one keeps on going through the circle.</p>
+                <p>This problem occurs if the negative circle can be reached from the starting node.
+                    Luckily, the algorithm can detect whether a negative circle exists.
+                    This is checked in the last step of the algorithm.</p>
+                <p>A negative circle can be reached if and only if after iterating all phases, one can still find a short-cut. 
+                    <strong>Therefore, at the end the algorithm checks one more time for all edges </strong>whether the cost of the source node plus the cost of the edge are less than the cost of the target node.
+                    If this is the case for an edge, the message "Negative Circle found" is returned.</p>
+                <p>One can even find the negative circle with the help of the predecessor edges: One just goes back until one traversed a circle (that had negative weight).</p>
+                <h1>What now?</h1>
                 <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
-                    <h3>Einen Graph erstellen und den Algorithmus durchspielen</h3>
-                    <button id="ti_button_gotoDrawGraph">Graph erstellen und daran den Algorithmus testen</button>
-                    <button id="ti_button_gotoAlgorithm">Algorithmus am fertigen Beispiel ausprobieren</button>
-                </div>
-                <div class="Entscheidungsweg" id="ti_div_EntscheidungRight">
-                    <h3>Sein Wissen an den Forschungsaufgaben testen</h3>
-                    <button id="ti_button_gotoFA1">Forschungsaufgabe: Wie würde der Algorithmus entscheiden?</button>
-                    <button id="ti_button_gotoFA2">Forschungsaufgabe: Algorithmus am gerichteten Graphen</button>
+                    <h3>Create a graph and play through the algorithm</h3>
+                    <button id="ti_button_gotoDrawGraph">Try algorithm after creating a graph</button>
+                    <button id="ti_button_gotoAlgorithm">Try algorithm on an example graph</button>
                 </div>
                 <br style="clear: both;" />
                 <p style="font-size: 10px; text-align: right;"><a name="bridge_copyright"></a><sup>1</sup> Von Bogdan Giuşcă unter GNU Free Documentation License 1.2, vgl. <a href="http://http://commons.wikimedia.org/wiki/File:Konigsberg_bridges.png">Wikimedia</a>.</p>
@@ -477,6 +538,26 @@ Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
     UNTIL tour ist Eulerweg/-tour
 END</code></pre>
             </div>
+
+                                <h3>What is the pseudocode of the algorithm?</h3>
+                <div><pre><code>Input: Weighted, undirected graph G=(V,E) with weight function l.
+Output: A list {d(v[j]) : j = 1,..,n} containing the distances dist(v[1],v[j]) = d(v[j]),
+         if there are no negative circles reachable from v[1]. 
+         The message "Negative Circle" is shown, if a negative circle can be reached from v[1].</code></pre>
+<hr><pre><code>
+BEGIN
+   d(v[1]) &larr; 0
+   FOR j = 2,..,n DO
+      d(v[j]) &larr; &#8734;
+   FOR i = 1,..,(|V|-1) DO
+      FOR ALL (u,v) in E DO
+         d(v) &larr; min(d(v), d(u) + l(u,v))
+   FOR ALL (u,v) in E DO
+      IF d(v) > d(u) + l(u,v) DO
+         Message: "Negative Circle"
+END</code></pre></div>
+
+
                 <h3>Wie schnell ist der Algorithmus?</h3>
                 <div>
                     <h2>Geschwindigkeit von Algorithmen</h2>
@@ -494,17 +575,74 @@ END</code></pre>
                     <p>Der Algorithmus kann weiter optimiert werden, indem man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
                     <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
                 </div>
-                <h3>Wo finde ich noch mehr Informationen zu Graphalgorithmen?</h3>
-                <div><p>Weitere Graphalgorithmen werden auf der <a href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">Webseite des Lehrstuhls M9</a> der TU München erklärt.</p>
-                <p>Außerdem es ein interessantes Buch zu kürzesten Wegen: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
-                <p>Ein <a href="http://www.ma.tum.de/Studium/Studieninteressierte">Mathematikstudium an der TU München</a> beantwortet alle Fragen zur Graphentheorie (falls eine Lösung bekannt ist).</p>
+
+
+                <h3>How fast is the algorithm?</h3>
+                <div>
+                    <h2>Speed of the algorithms</h2>
+                    <p>The speed of an algorithm is the <strong>total number of individual steps</strong> which are performed during the execution.</p>
+                    <p>These steps are for example:</p>
+                    <ul>
+                        <li>Assignments &ndash; Set distance of a node to 20.
+                        </li>
+                        <li>Comparisons &ndash; Is 20 greater than 23?
+                        </li>
+                        <li>Comparison and assignment &ndash; If 20 is greater than 15, set variable
+                            <var>n</var>
+                            to 20
+                        </li>
+                        <li>Simple Arithmetic Operations &ndash; What is 5 + 5?
+                        </li>
+                    </ul>
+                    <p>Since it can be very difficult to count all individual steps, it is desirable to only count the approximate magnitude of the number of steps. This is also called the running time of an algorithm. Particularly, it is interesting to know the running time of an algorithm based on the size of the input (in this case the number of the vertices and the edges of the graph).</p>
+                    <h2>Running time of the Bellman-Ford Algorithm</h2>
+                    <p>We assume that the algorithm is run on a graph with <var>n</var> nodes and <var>m</var> edges.</p>
+                    <p>At the beginning, the value &#8734; is assigned to each node. We need <var>n</var> steps for that.</p>
+                    <p>Then we do the <var>n-1</var> phases of the algorithm &ndash; one phase less than the number of nodes. 
+                        In each phase, all edges of the graph are checked, and the distance value of the target node may be changed.
+                        We can interpret this check and assignment of a new value as one step and therefore have <var>m</var> steps in each phase.
+                        In total all phases together require <var>m &middot; (n-1)</var> steps.</p>
+                    <p>Afterwards, the algorithm checks whether there is a negative circle, for which he looks at each edge once.
+                        Altogether he needs <var>m</var> steps for the check.</p>
+                    <p><strong>The total running time of the algorithm </strong> is of the magnitude <var>m &middot; n</var>, as the <var>n</var> steps at the beginning and the <var>m</var>
+                        steps at the end can be neglected compared to the <var>m &middot; (n-1)</var> steps for the phases.</p>
                 </div>
+                <h3>How can one prove that the result is always correct?</h3>
+                <div>
+                    <h2>A mathematical proof</h2>
+                    <p>In this section we will prove that the Bellman-Ford Algorithm always returns a correct result, if the graph does not contain negative circles that can be reached from the starting node.</p>
+                    <h3>The principle of induction</h3>
+                    <p>The proof is based on the principle of induction. We first prove that at the beginning of the first phase, the cost for at least one node have been calculated correctly. Then, we show that in each phase we improve the current estimates.
+                    At the end of each phase, we thus know the correct cost for more nodes than at the beginning of the phase. Additionally, we do not destroy any information in the respective phase
+                    &ndash; the estimates can only get better.</p>
+                    <p>Finally, we conclude that we do not need as many phases as the number of nodes in order to compute the correct cost correctly.</p>
+                    <h3>After phase <var>i</var> the following holds:</h3>
+                    <p>The algorithm has &ndash; as an estimate &ndash; assigned to each node <var>u</var> maximally the length of the shortest path from the starting node to <var>u</var> that uses at most <var>i</var>
+                    edges (if such a path exists).</p>
+                    <p>Let us have a look at this statement in detail for a node <var>u</var> at the end of phase <var>i</var>:</p>
+                    <p>If no path from the starting node to <var>u</var> that uses at most <var>i</var> edges exists, we do not know anything.</p>
+                    <p>If a path from the starting node to <var>u</var> using at most <var>i</var> edges exists, we know that the cost estimate for <var>u</var>
+                    is as high as the cost of the path or lower. The reason is the following: If we consider the path without its last edge, we yield a path using <var>i</var>-1 edges.
+                    The cost of the path's last node has been calculated correctly in the last phase. In this phase we have considered all edges, including the last part of the path.
+                    As we have updated the cost correctly when considering the last part of the path, the cost of the last node of the path (that is using <var>i</var> edges) correctly.</p>
+                    <h3>The number of phases needed is smaller than the number of nodes.</h3>
+                    <p>A path using at least as many edges as the number of nodes cannot be a shortest path if all circle have positive total weight. With each edge the path uses he "sees" another node (the target node of the edge).
+                    Additionally, we have to count the starting node the path saw without using another edge. If he uses as many edges as the number of nodes, it has seen at least one node twice or &ndash; to rephrase it &ndash; has used a circle.
+                    As we have assumed that all circles have positive weight, skipping the circle would have been shorter.</p>
+                    <p>If there are circles with a total weight of 0, it simply is as expensive to use the circle than to not do it. 
+                        In this case paths that use less edges than the number of nodes suffice as well.</p>
+                </div>
+                <h3>Where can I find more information about graph algorithms?</h3>
+                <div><p>Other graph algorithms are explained on the <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Website of Chair M9</a> of the TU München.</p>
+                <p>Furthermore there is an interesting book about shortest paths: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
+                <p><a href="http://www.ma.tum.de/Studium/StudieninteressierteEn">Studying mathematics at the TU München</a> answers all questions about graph theory (if an answer is known).</p>
+                
             </div>
         </div>
     </div>
     <footer>
         <p class="Disclaimer">
-            IDP Projekt von Mark J. Becker am Lehrstuhl M9 der Technischen Universität München. <span id="year">2015</span> | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Disclaimer und Rechtshinweise</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">Impressum</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Anregungen</a>
+            IDP Project of Adrian Haarbach at Chair M9 of Technische Universität München. <span id="year">2015</span> | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Terms of use</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">About Us</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Suggestions</a>
         </p>
     </footer>
 </body>

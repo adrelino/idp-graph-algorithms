@@ -227,12 +227,12 @@ function blurResourceEditor(){
 var myDiv = d3.select("body");//.append("div")
 
 function updateResources(data){
-      var selection = myDiv.selectAll("input")
+      var selection = myDiv.selectAll("input.resourceEditor")
     .data(data);
 
   selection.enter().append("input")
       .attr("type","number")
-      .attr("class", "tooltip")
+      .attr("class", "tooltip resourceEditor")
 //       .style("opacity", 1)
 
   selection

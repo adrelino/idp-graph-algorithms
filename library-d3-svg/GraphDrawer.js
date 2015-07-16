@@ -209,9 +209,6 @@ var GraphDrawer = function(svgOrigin){
                 return d.id;
              });
 
-//                     console.log("update",selection);
-
-
     //ENTER
 
         var enterSelection = selection
@@ -219,9 +216,6 @@ var GraphDrawer = function(svgOrigin){
             .append("g")
             .attr("class","edge")
             .call(this.onEdgesEntered);
-
-//         console.log("enter1",enterSelection1);
-//         console.log("enter",enterSelection);
         
 
         enterSelection.append("line")
@@ -229,7 +223,10 @@ var GraphDrawer = function(svgOrigin){
             .style("stroke-width",global_Edgelayout['lineWidth'])
 
         enterSelection.append("text")
-            .attr("class","resource unselectable");
+//             .style("text-anchor", "middle")
+//             .attr("dominant-baseline","middle")
+//             .attr("dy", "-.5em")           // set offset y position
+            .attr("class","resource unselectable edgeLabel")
 
 
     //ENTER + UPDATE
@@ -241,30 +238,35 @@ var GraphDrawer = function(svgOrigin){
 //             .duration(750)
 //             .style("opacity",1);
             
-
         selection.selectAll("text.resource")
             .each(textAttribs)
             .text(this.edgeText)
-            .attr("vertical-align","middle");
+            .style("text-anchor", function(d){
+                var arrowXProj = d.start.x-d.end.x;
+                return (arrowXProj>0) ? "start" : "end";
+            })
+            .attr("dominant-baseline",function(d){
+                var arrowYProj = d.start.y-d.end.y;
+                return (arrowYProj>0) ? "text-before-edge" : "text-after-edge";
+            })
 
         selection.call(this.onEdgesUpdated)
 
     //EXIT
         var exitSelection = selection.exit()
-//         console.log("exit",exitSelection);
         exitSelection.remove();
 
     }
 
-//     Graph.addChangeListener(function(){
-//        that.clear();
-//        if(this.activate) this.activate();
-//        that.update(); 
-//     });
 
+    //initialize //TODO: is called twice when we init both tabs at the same time
     if(Graph.instance==null){
-       Graph.loadInstance("graphs-new/graph1.txt"); //calls registered event listeners when loaded;
+        //calls registered event listeners when loaded;
+       Graph.loadInstance("graphs-new/graph1.txt",function(error,text,filename){
+           console.log("error loading graph instance "+error + " from " + filename +" text: "+text);
+       }); 
     }
+
 } //end constructor GraphDrawer
 
 
@@ -308,14 +310,3 @@ GraphDrawer.prototype.nodeText = function(d){
 GraphDrawer.prototype.nodeLabel = function(d){
     return d.id;  
 }
-
-// GraphDrawer.prototype.destroy = function(){
-    
-// }
-
-// GraphDrawer.prototype.setGraph = function(graphPassed){
-//     this.clear();
-// //     this.graph=graphPassed;
-//     this.graph.replace(graphPassed);
-//     this.update();
-// }

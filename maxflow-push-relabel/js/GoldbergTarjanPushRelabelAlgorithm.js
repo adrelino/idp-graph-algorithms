@@ -12,6 +12,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
      */
     var fastForwardIntervalID = null;
 
+    var fastForwardSpeed = 5;
+
     /**
      * Closure Variable für dieses Objekt
      * @type HAlgorithm
@@ -60,7 +62,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     }
     
     this.nodeText = function(d) {
-        return d.state.exess + "," + d.state.height;
+        if(s.id != STATUS_FINISHED) return d.state.exess + "," + d.state.height;
+//         return GoldbergTarjanPushRelabelAlgorithm.prototype.nodeText.call(this,d);
+
     }
     
     this.edgeText = function(d) {
@@ -137,7 +141,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         })
         .attr("height", function(d) {
             return flowWidth(Math.abs(d.state.exess))
-        });
+        })
+        .style("display",(s.id != STATUS_FINISHED) ? "block" : "none");
     }
     
     this.onEdgesEntered = function(selection) {
@@ -197,6 +202,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
                 $(this).button("option",this.checked ? pauseOptions : fastforwardOptions);
                 this.checked ? algo.fastForwardAlgorithm() : algo.stopFastForward();
             });
+
+        $("#ta_vorspulen_speed").on("input",function(){
+            fastForwardSpeed=+this.value;  
+        });
+
 
 
         $("#ta_div_statusTabs").tabs();
@@ -298,11 +308,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
 //         $("#ta_button_1Schritt").button("option", "disabled", true);
 //         $("#ta_button_Zurueck").button("option", "disabled", true);
 //         $("#ta_button_rewind").button("option", "disabled", true);
-        var geschwindigkeit = 50; // Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+//         var geschwindigkeit = 5; // Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
         
         fastForwardIntervalID = window.setInterval(function() {
             algo.nextStepChoice();
-        }, geschwindigkeit);
+        }, fastForwardSpeed);
 
         this.update();
     };
@@ -385,6 +395,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         sel.style("display", function(a, divCounter) {
             return (divCounter == s.id) ? "block" : "none";
         });
+
+        d3.select("#ta_td_v").text(s.currentNodeId);
+        d3.select("#ta_td_queue").text(s.activeNodeIds.join(","));
+        d3.select("#ta_td_e_dash");
+        d3.select("#ta_td_c_dash");
 
         if(fastForwardIntervalID != null){
             this.setDisabledForward(true,false);
@@ -559,6 +574,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     function mainLoop() {
         if (s.activeNodeIds.length == 0) {
             s.id = STATUS_FINISHED;
+            s.currentNodeId=-1;
             var finalflow = Graph.instance.nodes.get(s.targetId).state.exess;
             that.stopFastForward();
             d3.select("#finalflow").text(finalflow);
@@ -614,6 +630,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         var e_dash;
         if (v.state.exess > 0 && (e_dash = getLegalResidualEdge(v))) {
             s.id = STATUS_PUSH;
+            d3.select("#ta_td_e_dash").text(e_dash.toString());
+            d3.select("#ta_td_c_dash").text(e_dash.c_dash);
             logger.log2("admissiblePush on residual edge " + e_dash.toString());
         } else {
             s.id = STATUS_ADMISSIBLERELABEL;
@@ -630,6 +648,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         var e_dash = getLegalResidualEdge(v); //e' G'
         var edge = e_dash.correspondingEdge; //e in G
         var w = e_dash.isForwardEdge ? edge.end : edge.start;
+
+        d3.select("#ta_td_e_dash").text(e_dash.toString());
+        d3.select("#ta_td_c_dash").text(e_dash.c_dash);
         
         var delta = Math.min(v.state.exess, e_dash.c_dash);
         
@@ -658,6 +679,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         var e_dash;
         if (v.state.exess > 0 && (e_dash = getLegalResidualEdge(v)) == null) { //todo: check if e_dash can ever be not null here, since we pushed till we saturated all edges beforehand anyways
+            d3.select("#ta_td_e_dash").text(e_dash);
+            d3.select("#ta_td_c_dash").text("-");
             s.id = STATUS_RELABEL;
             logger.log2("admissibleRelabel on edge " + e_dash + " exess" + v.state.exess);
         } else {

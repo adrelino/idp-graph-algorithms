@@ -20,9 +20,9 @@
 }
 
 .node {
-  fill: #99f;
-  stroke: #000;
-  stroke-width: 1.5px;
+  /* fill: #99f; */
+  /* stroke: #000; */
+  /* stroke-width: 1.5px; */
 }
 
 circle.selected{
@@ -53,4 +53,16 @@ circle.selected{
 
 #testArc.hidden {
   display: none;
+}
+
+
+/* for html page */
+.adrianheader {
+  font-size: 35px;
+  color: #1B66B0;
+  font-family: sans-serif;
+  font-weight:bold;
+  line-height:100px;
+  vertical-align: top;
+  padding: 20px;
 }

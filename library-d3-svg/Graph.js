@@ -138,12 +138,14 @@ Graph.prototype.toString = function(){
   lines.push("% Graph saved at "+new Date());
 
   this.nodes.forEach(function(key,node){
-//       lines.push("% node id "+node.id);
-      lines.push("n " + node.x + " " + node.y + " " + node.resources.join(" "));
+      var line = "n " + node.x + " " + node.y;
+      if(node.resources.length>0) line +=" "+node.resources.join(" ");
+      lines.push(line);
   });
   this.edges.forEach(function(key,edge){
-//       lines.push("% edge id "+edge.id);
-      lines.push("e " + edge.start.id + " " + edge.end.id + " " + edge.resources.join(" "));
+      var line = "e " + edge.start.id + " " + edge.end.id;
+      if(edge.resources.length>0) line +=" "+edge.resources.join(" ");
+      lines.push(line);
   });
 
   return lines.join("\n");
@@ -232,6 +234,10 @@ Graph.parse = function(text){
       };
   }
 
+  if(graph.nodeIds==0 && graph.edgeIds==0){
+    throw "parse error";
+  }
+
   return graph;
 }
 
@@ -242,20 +248,58 @@ Graph.load = function(filename, callbackFp){
   });
 }
 
-Graph.loadInstance = function(filename){
+Graph.setInstance = function(error,text,filename,exceptionFp){
+    if(error != null){
+      exceptionFp(error,text,filename);
+      return;
+    };
+    try{
+      Graph.instance = Graph.parse(text);
+      Graph.onLoadedCbFP.forEach(function(fp){fp()});
+    }catch(ex){
+      exceptionFp(ex,text,filename);
+    }
+}
+
+Graph.loadInstance = function(filename,exceptionFp){
   d3.text(filename, function(error,text){
-    Graph.instance = Graph.parse(text);
-//     var graph = Graph.parse(text);
-//     Graph.instance.replace(graph);
-    Graph.onLoadedCbFP.forEach(function(fp){fp()});
-//     callbackFp(graph);
+    Graph.setInstance(error,text,filename,exceptionFp)
   });
 }
 
-Graph.instance = null;//new Graph(); //only one static global graph object instance, we just replace its inner properties later one
+Graph.instance = null;
 
 Graph.onLoadedCbFP = [];
 
 Graph.addChangeListener = function(callbackFp){
   Graph.onLoadedCbFP.push(callbackFp);
+}
+
+Graph.handleFileSelect = function(evt,exceptionFp) {
+    var files = evt.target.files; // FileList object
+
+    // Loop through the FileList and render image files as thumbnails.
+    for (var i = 0, f; f = files[i]; i++) {
+
+      // Only process image files.
+      if (!f.type.match('text/plain')) {
+        exceptionFp("wrong mimetype",f.type);
+        continue;
+      }
+
+      var reader = new FileReader();
+
+      // Closure to capture the file information.
+      reader.onload = (function(theFile) {
+        return function(e) {
+          var error = e.target.error;
+          var text = e.target.result;
+          var filename = theFile.name;
+          Graph.setInstance(error,text,filename,exceptionFp)
+        };
+      })(f);
+
+      // Read in the image file as a data URL.
+      reader.readAsText (f);
+    }
 }

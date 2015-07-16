@@ -29,6 +29,49 @@ function initializeSiteLayout() {
                     graphEditorTab.init();
                     algorithmTab.init();
 
+//     $('#tg_select_GraphSelector').selectmenu();
+
+    $('#fileDownloader').on('click',function(foo){
+        var ahref = $(this);
+        var text = Graph.instance.toString();
+//         text.replace("\r\n", "\\r\\n");
+        text = "data:text/plain,"+encodeURIComponent(text);
+        ahref.prop("href",text);
+    });
+
+    $('#ta_div_parseError').dialog({
+                autoOpen: false,
+                resizable: false,
+//                 modal: true,
+                buttons: {
+                    "Ok": function() {
+//                             $("#tabs").removeData("requestedTab");
+//                             $("#tabs").removeData("tabChangeDialogOpen");
+                        $(this).dialog( "close" );
+                    }
+//                         "Tab wechseln": function() {
+//                             $(this).dialog( "close" );
+//                             var newTabID =$("#tabs").data("requestedTab");
+//                             $("#tabs").removeData("requestedTab");
+//                             $("#tabs").tabs("option", "active", newTabID);
+//                             $("#tabs").removeData("tabChangeDialogOpen");
+//                         }   
+                }
+            }); 
+
+
+    $('#fileUploader').on('change',function(ev){
+        Graph.handleFileSelect(ev,function(errCode,errDescription,filename){
+                $('#ta_div_parseError').dialog("open");
+                $('#ta_div_parseErrorText').text(errCode);
+                $('#ta_div_parseErrorFilename').text(filename);
+                $('#ta_div_parseErrorDescription').text(errDescription);
+        })
+    });
+   
+
+
+
 
     $("#tabs").tabs({
         beforeActivate: function(event, ui) {
