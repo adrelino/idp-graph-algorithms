@@ -1,3 +1,9 @@
+/**
+ * Writes to the Log tab in the algorithm
+ * @author Adrian Haarbach
+ * @class
+ * @param {Object} parentDiv - a d3 selector
+ */
 Logger = function(parentDiv){
     parentDiv.style("text-align","left");
     var outerList = parentDiv.append("ol").attr("class","level1");
@@ -50,32 +56,32 @@ function updateRecursive(arr,selection){
   }
 }
 
-function updateSingle(arr){
-var selection = outerList.selectAll("li.level1").data(arr);
+// function updateSingle(arr){
+// var selection = outerList.selectAll("li.level1").data(arr);
    
-   //enter
-   var enterSelection = selection
-    .enter()
-    .append("li")
-    .attr("class","level1");
+//    //enter
+//    var enterSelection = selection
+//     .enter()
+//     .append("li")
+//     .attr("class","level1");
 
-    enterSelection.append("p").attr("class","level1");
-    enterSelection.append("ol").attr("class","level2");
+//     enterSelection.append("p").attr("class","level1");
+//     enterSelection.append("ol").attr("class","level2");
 
 
-   //update
-   selection.selectAll("p.level1").text(function(d,i){return d.text})
-//     .style("background-color","lightgray")
-  selection.selectAll("ol.level2").selectAll("li.level2")
-    .data(function(d1){return d1.children;})
-    .enter()
-    .append("li")
-    .attr("class","level2")
-    .text(function(d2){return d2.text})
-//     .style("background-color","white");
+//    //update
+//    selection.selectAll("p.level1").text(function(d,i){return d.text})
+// //     .style("background-color","lightgray")
+//   selection.selectAll("ol.level2").selectAll("li.level2")
+//     .data(function(d1){return d1.children;})
+//     .enter()
+//     .append("li")
+//     .attr("class","level2")
+//     .text(function(d2){return d2.text})
+// //     .style("background-color","white");
 
-// elem.exit().remove();
+// // elem.exit().remove();
 
-}
+// }
 
 }

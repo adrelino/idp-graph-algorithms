@@ -4,7 +4,7 @@
  * @global
  * @function
  */
-function initializeSiteLayout() {
+function initializeSiteLayout(GraphAlgorithmConstructor) {
     var graphEditorTab = null, algorithmTab = null;
 
     $("button").button();
@@ -14,40 +14,12 @@ function initializeSiteLayout() {
     $("#ti_button_gotoAlgorithm").click(function() { $("#tabs").tabs("option", "active", 2);});
     $("#tw_Accordion").accordion({heightStyle: "content"});
     
-    graphEditorTab = new Tab(new FlowGraphEditor(d3.select("#tg_canvas_graph")),$("#tab_tg"));
+    graphEditorTab = new GraphEditorTab(new GraphEditor(d3.select("#tg_canvas_graph")),$("#tab_tg"));
     graphEditorTab.init();
     
-    algorithmTab = new Tab(new GoldbergTarjanPushRelabelAlgorithm(d3.select("#ta_canvas_graph")),$("#tab_ta"));
+    algorithmTab = new AlgorithmTab(new GraphAlgorithmConstructor(d3.select("#ta_canvas_graph")),$("#tab_ta"));
     algorithmTab.init();
-
-    $('#fileDownloader').on('click',function(foo){
-        var ahref = $(this);
-        var text = Graph.instance.toString();
-        text = "data:text/plain,"+encodeURIComponent(text);
-        ahref.prop("href",text);
-    });
-
-    $('#ta_div_parseError').dialog({
-        autoOpen: false,
-        resizable: false,
-//      modal: true,
-        buttons: {
-            "Ok": function() {
-                $(this).dialog( "close" );
-            } 
-        }
-    }); 
-
-    $('#fileUploader').on('change',function(ev){
-        Graph.handleFileSelect(ev,function(errCode,errDescription,filename){
-                $('#ta_div_parseError').dialog("open");
-                $('#ta_div_parseErrorText').text(errCode);
-                $('#ta_div_parseErrorFilename').text(filename);
-                $('#ta_div_parseErrorDescription').text(errDescription);
-        })
-    });
-   
-
+  
     $("#tabs").tabs({
         beforeActivate: function(event, ui) {
             var id = ui.oldPanel[0].id;

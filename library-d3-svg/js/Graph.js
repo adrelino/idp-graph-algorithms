@@ -257,7 +257,8 @@ Graph.setInstance = function(error,text,filename,exceptionFp){
       Graph.instance = Graph.parse(text);
       Graph.onLoadedCbFP.forEach(function(fp){fp()});
     }catch(ex){
-      exceptionFp(ex,text,filename);
+      if(exceptionFp) exceptionFp(ex,text,filename);
+      else console.log(ex,text,filename);
     }
 }
 

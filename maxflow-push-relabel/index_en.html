@@ -19,25 +19,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> -->
 
-<!--     the menu, add back in the end -->
+<!--     the menu  -->
     <link type="text/css" href="../library/css/mmenu/jquery.mmenu.all.css" rel="stylesheet" />
     <script type="text/javascript" src="../library/js/mmenu/jquery.mmenu.min.all.js"></script>
-
-<!--     Adrians d3 related library code -->
-    <script src="../library-d3-svg/d3/d3.js"></script>
-    <script src="../library-d3-svg/Graph.js"></script>
-    <script src="../library-d3-svg/GraphDrawer.js"></script>
-    <script src="../library-d3-svg/GraphEditor.js"></script>
-    <script src="../library-d3-svg/Logger.js"></script>
-    <link rel="stylesheet" type="text/css" href="../library-d3-svg/graph-style.css" />
-    <link rel="stylesheet" type="text/css" href="../library-d3-svg/style.css" />
-
-<!--     Files used only for this applet -->
-    <script src="js/Tab.js" type="text/javascript"></script>
-    <script src="js/FlowGraphEditor.js" type="text/javascript"></script>
-    <script src="js/GoldbergTarjanPushRelabelAlgorithm.js" type="text/javascript"></script>
-    <script src="js/siteAnimation.js" type="text/javascript"></script>
-
 
 <!--     MathJax, used in the more tab in pseudocode -->
     <script type="text/x-mathjax-config">
@@ -47,6 +31,24 @@
         });
     </script>
     <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=en"></script>
+
+
+<!--     Adrians d3 related library code -->
+    <script src="../library-d3-svg/js/d3/d3.js"></script>
+    <script src="../library-d3-svg/js/Graph.js"></script>
+    <script src="../library-d3-svg/js/GraphDrawer.js"></script>
+    <script src="../library-d3-svg/js/GraphEditor.js"></script>
+    <script src="../library-d3-svg/js/Logger.js"></script>
+    <script src="../library-d3-svg/js/Tab.js"></script>
+    <script src="../library-d3-svg/js/AlgorithmTab.js"></script>
+    <script src="../library-d3-svg/js/GraphEditorTab.js"></script>
+    <script src="../library-d3-svg/js/siteAnimation.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/graph-style.css" />
+    <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/style.css" />
+
+<!--     Files used only for this applet -->
+    <script src="js/GoldbergTarjanPushRelabelAlgorithm.js" type="text/javascript"></script>
 
     <title>Goldberg Tarjan Push Relabel Algorithm</title>
 </head>
@@ -69,7 +71,7 @@
     </noscript>
     <script>
         $(function() {
-            initializeSiteLayout();
+            initializeSiteLayout(GoldbergTarjanPushRelabelAlgorithm);
             $("#year").html(new Date().getFullYear());
         });
         $(document).ready(function() {

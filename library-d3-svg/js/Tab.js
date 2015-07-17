@@ -22,7 +22,7 @@ function Tab(algo,p_tab) {
      * Initialisiert das Zeichenfeld
      * @method
      */
-    this.init = function() {
+    this._init = function() {
         legendeMax = this.tab.find(".Legende");
         legendeMin = this.tab.find(".LegendeMinimized");
         legendeMaxButton = legendeMax.find(".LegendeMin");
@@ -49,7 +49,7 @@ function Tab(algo,p_tab) {
      * when tab is openend
      * @method
      */
-    this.activate = function() {
+    this._activate = function() {
         if(!this.initialized) this.init();
         algo.activate && algo.activate();
     };
@@ -58,7 +58,7 @@ function Tab(algo,p_tab) {
      * when tab is closed
      * @method
      */
-    this.deactivate = function() {
+    this._deactivate = function() {
         algo.deactivate && algo.deactivate();
     };
 
@@ -246,4 +246,16 @@ function Tab(algo,p_tab) {
 //         $("#tabs").find(".ui-icon-refresh").remove();
 //         $("#tabs").tabs("refresh");
 //     };
+}
+
+Tab.prototype.init = function(){
+    this._init();
+}
+
+Tab.prototype.activate = function(){
+    this._activate();
+}
+
+Tab.prototype.deactivate = function(){
+    this._deactivate();
 }

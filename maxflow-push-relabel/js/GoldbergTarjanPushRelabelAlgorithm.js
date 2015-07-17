@@ -8,18 +8,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     GraphDrawer.call(this, svgSelection);
 
     /**
-     * ID of the fast forward interval
-     * @type Number
-     */
-    var fastForwardIntervalID = null;
-
-    /**
-     * Timeout speed in milliseconds for fast forward
-     * @type Number
-     */
-    var fastForwardSpeed = 5;
-
-    /**
      * closure for this class
      * @type GoldbergTarjanPushRelabelAlgorithm
      */
@@ -178,54 +166,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
      */
     this.init = function() {
 
-        var pauseOptions = {label: $("#ta_button_text_pause").text(), icons: {primary: "ui-icon-pause"}};
-
-        if(algo.rewindStart && algo.rewindStop){
-        var rewindOptions = {label: $("#ta_button_text_rewind").text(), icons: {primary: "ui-icon-seek-prev"}};
-            $("#ta_button_rewind")
-            .button(rewindOptions)
-            .click(function() {
-                $(this).button("option",this.checked ? pauseOptions : rewindOptions);
-                this.checked ? algo.rewindStart() : algo.rewindStop();
-            })
-        }else{
-            $("#ta_button_rewind").hide();
-            $("#ta_button_text_rewind").hide();
-        }
-        
-        $("#ta_button_Zurueck")
-            .button({icons: {primary: "ui-icon-seek-start"}})
-            .click(function() {
-                algo.previousStepChoice();
-            });
-        
-        $("#ta_button_1Schritt")
-            .button({icons: {primary: "ui-icon-seek-end"}})
-            .click(function() {
-                algo.singleStepHandler();
-            });
-
-        $("#ta_button_vorspulen")
-            .button(fastforwardOptions)
-            .click(function() {
-                $(this).button("option",this.checked ? pauseOptions : fastforwardOptions);
-                this.checked ? algo.fastForwardAlgorithm() : algo.stopFastForward();
-            });
-
-        $("#ta_vorspulen_speed").on("input",function(){
-            fastForwardSpeed=+this.value;  
-        });
-
-
-
-        $("#ta_div_statusTabs").tabs();
-        $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
-        
-        var sel = d3.select("#ta_div_statusPseudocode").selectAll("div").selectAll("p")
-        sel.attr("class", function(a, pInDivCounter, divCounter) {
-            return "pseudocode";
-        });
-
         Graph.addChangeListener(function(){
             that.clear();
             that.reset();
@@ -295,46 +235,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         this.stopFastForward();
         this.replayHistory = [];
     //         this.deregisterEventHandlers();
-    };
-
-    /**
-     * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.
-     * @method
-     */
-    this.singleStepHandler = function() {
-        this.nextStepChoice();
-    };
-
-    /**
-     * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
-     * @method
-     */
-    this.fastForwardAlgorithm = function() {
-//         $("#ta_button_1Schritt").button("option", "disabled", true);
-//         $("#ta_button_Zurueck").button("option", "disabled", true);
-//         $("#ta_button_rewind").button("option", "disabled", true);
-//         var geschwindigkeit = 5; // Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
-        
-        fastForwardIntervalID = window.setInterval(function() {
-            algo.nextStepChoice();
-        }, fastForwardSpeed);
-
-        this.update();
-    };
-
-    /**
-     * Stoppt das automatische Abspielen des Algorithmus
-     * @method
-     */
-    this.stopFastForward = function() {
-//         $("#ta_button_1Schritt").button("option", "disabled", false);
-//         $("#ta_button_Zurueck").button("option", "disabled", false);
-//         $("#ta_button_rewind").button("option", "disabled", false);
-        window.clearInterval(fastForwardIntervalID);
-        fastForwardIntervalID = null;
-        d3.select("#ta_button_vorspulen").property("checked",false);
-        $("#ta_button_vorspulen").button("option",fastforwardOptions);
-        this.update();
     };
     
     
@@ -406,7 +306,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         d3.select("#ta_td_e_dash");
         d3.select("#ta_td_c_dash");
 
-        if(fastForwardIntervalID != null){
+        if(this.fastForwardIntervalID != null){
             this.setDisabledForward(true,false);
             this.setDisabledBackward(true);
         }else if (s.id == STATUS_SELECTSOURCE) {
