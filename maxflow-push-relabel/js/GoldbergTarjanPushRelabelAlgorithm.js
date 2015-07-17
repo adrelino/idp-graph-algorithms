@@ -1,22 +1,27 @@
- /**
+/**
+ * Goldberg Tarjan's Push-Relabel Algorithmus
  * @author Adrian Haarbach
- * Tarjan Goldberg's Push-Relabel Algorithmus
+ * @augments GraphDrawer
+ * @class
  */
-
 function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     GraphDrawer.call(this, svgSelection);
 
     /**
-     * ID des Intervals, der für das "Vorspulen" genutzt wurde.
+     * ID of the fast forward interval
      * @type Number
      */
     var fastForwardIntervalID = null;
 
+    /**
+     * Timeout speed in milliseconds for fast forward
+     * @type Number
+     */
     var fastForwardSpeed = 5;
 
     /**
-     * Closure Variable für dieses Objekt
-     * @type HAlgorithm
+     * closure for this class
+     * @type GoldbergTarjanPushRelabelAlgorithm
      */
     var that = this;
     var algo = that;
@@ -36,10 +41,15 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     var STATUS_RELABEL = id++;
     var STATUS_FINISHED = id;
     
+    /**
+     * the logger instance
+     * @type Logger
+     */
     var logger = new Logger(d3.select("#logger"));
 
     /**
      * status variables
+     * @type Object
      */
     var s = null;
     
@@ -160,13 +170,12 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
      */
     var replayHistory = new Array();
 
+    var fastforwardOptions = {label: $("#ta_button_text_fastforward").text(), icons: {primary: "ui-icon-seek-next"}};
 
     /**
      * Initialisiert das Zeichenfeld
      * @method
      */
-             var fastforwardOptions = {label: $("#ta_button_text_fastforward").text(), icons: {primary: "ui-icon-seek-next"}};
-
     this.init = function() {
 
         var pauseOptions = {label: $("#ta_button_text_pause").text(), icons: {primary: "ui-icon-pause"}};
@@ -227,7 +236,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         this.update();
     };
 
-    //clear all states
+    /**
+     * clear all states
+     */
     this.reset = function(){
         s = {
             id: 0, //status id
@@ -253,7 +264,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         }
     }
 
-    //make the view consistent with all states
+    /**
+     * Makes the view consistent with the state
+     * @method
+     */
     this.update = function(){
 
         this.updateDescriptionAndPseudocode();
@@ -282,15 +296,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         this.replayHistory = [];
     //         this.deregisterEventHandlers();
     };
-
-    /**
-     * Zeigt and, in welchem Zustand sich der Algorithmus im Moment befindet.
-     * @returns {Number} StatusID des Algorithmus
-     */
-    this.getStatusID = function() {
-        return statusID;
-    };
-
 
     /**
      * Wird aufgerufen, wenn der "1 Schritt" Button gedrückt wird.
@@ -429,7 +434,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     ///Actual algorithm steps
 
     /**
-     * Führt den nächsten Algorithmenschritt aus
+     * Executes the next step in the algorithm
      * @method
      */
     this.nextStepChoice = function(d) {

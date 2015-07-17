@@ -1,6 +1,8 @@
 /**
  * A graph editor for network flows.
  * @author Adrian Haarbach
+ * @augments GraphEditor
+ * @class
  */
 function FlowGraphEditor(svgSelection) {
     GraphEditor.call(this,svgSelection);
@@ -8,7 +10,7 @@ function FlowGraphEditor(svgSelection) {
     var that = this;
     
     /**
-     * Initialisiert das Zeichenfeld
+     * Wires up the events on button clicks or selection changes and listens to a Graph change event
      * @method
      */
     this.init = function() {
@@ -26,8 +28,7 @@ function FlowGraphEditor(svgSelection) {
     };
     
     /**
-     * When Tab comes into view
-     * speichert das Ergebnis im .data() Feld von body
+     * When Tab comes into view we update the view
      * @method
      */
     this.activate = function() {
@@ -35,7 +36,7 @@ function FlowGraphEditor(svgSelection) {
     };
     
     /**
-     * tab disappears from view
+     * Tab disappears from view
      * @method
      */
     this.deactivate = function() {
@@ -43,8 +44,8 @@ function FlowGraphEditor(svgSelection) {
     };
     
     /**
-     * Setzt den Graph auf einen der Beispielgraphen. Fügt auch die 
-     * Hintergrundbilder per CSS hinzu.
+     * A different example graph was selected. Triggers the loader
+     * @method
      */
     this.setGraphHandler = function() {
         var selection = $("#tg_select_GraphSelector>option:selected").val();
@@ -59,6 +60,6 @@ function FlowGraphEditor(svgSelection) {
     };
 }
 
-// Vererbung realisieren
+//Prototypal inheritance
 FlowGraphEditor.prototype = Object.create(GraphEditor.prototype);
 FlowGraphEditor.prototype.constructor = FlowGraphEditor;
