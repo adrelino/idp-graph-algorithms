@@ -40,6 +40,8 @@ function initializeSiteLayout(GraphAlgorithmConstructor) {
         }
     });
 
+    $("#tabs").tabs("option", "active", 2);
+
 
 //http://www.mediaevent.de/svg-in-html-seiten/
    var imgs = d3.selectAll("img");

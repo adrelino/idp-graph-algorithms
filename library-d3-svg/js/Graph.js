@@ -39,6 +39,20 @@ Graph.Node.prototype.getOutEdges = function(){
   return this.outEdges.values();
 }
 
+function styleResources(resources,left,right,f){
+  var f = f || function(d){return d};
+  var str = resources.map(f).join(",");
+  if(resources.length>1) str = left + str + right;
+  return str;
+}
+
+Graph.Node.prototype.toString = function(full,f){
+  var str="";
+  if(full) str += this.id+" ";
+  str +=styleResources(this.resources,"[","]",f);
+  return str;
+}
+
 /**
  * Represents a graph edge
  * @constructor
@@ -50,6 +64,13 @@ Graph.Edge = function(s,t,id){
   this.resources=[];
 
   this.state={}; //changes during algorithm runtime
+}
+
+Graph.Edge.prototype.toString = function(full,f){
+  var str="";
+  if(full) str += this.start.id+"->"+this.end.id+" ";
+  str += styleResources(this.resources,"(",")",f);
+  return str;
 }
 
 /////////////////

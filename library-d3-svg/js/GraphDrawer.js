@@ -302,17 +302,13 @@ GraphDrawer.prototype.onEdgesUpdated = function(selection) {
 }
 
 GraphDrawer.prototype.edgeText = function(d){
-    var str = d.resources.join(",");
-    if(d.resources.length>1) str = "[" + str + "]";
-    return str;
+    return d.toString();
 }
 
 GraphDrawer.prototype.nodeText = function(d){
-    var str = d.resources.join(",");
-    if(d.resources.length>1) str = "(" + str + ")";
-    return str;   
+    return d.toString();   
 }
 
 GraphDrawer.prototype.nodeLabel = function(d){
-    return d.id;  
+    return d.id;
 }

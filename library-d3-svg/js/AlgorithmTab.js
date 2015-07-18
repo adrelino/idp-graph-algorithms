@@ -78,6 +78,8 @@ function AlgorithmTab(algo,p_tab) {
 
 
         $("#ta_div_statusTabs").tabs();
+        $("#ta_div_statusTabs").tabs("option", "active", 2);
+
         $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
         
         var sel = d3.select("#ta_div_statusPseudocode").selectAll("div").selectAll("p")

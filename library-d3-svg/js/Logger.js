@@ -11,6 +11,8 @@ Logger = function(parentDiv){
     this.currentNodeLevel2 = null;
     this.currentNodeLevel3 = null;
 
+    this.listTypes=["ol","ol","ul","ul","ul"];
+
     var that = this;
 
 
@@ -39,19 +41,19 @@ this.log3 = function(val){
 
 function update(){
 //   updateSingle([]);
-  parentDiv.select("ol").remove();
-  updateRecursive(that.data,parentDiv);
+  parentDiv.selectAll("ol").remove();
+  updateRecursive(that.data,parentDiv,0);
 }
 
 this.update = update;
 
-function updateRecursive(arr,selection){
+function updateRecursive(arr,selection,depth){
   if(arr){
-    var childContainer = selection.append("ol");
+    var childContainer = selection.append(that.listTypes[depth]);
     arr.forEach(function(childItem){
             var listItem = childContainer.append("li");
-            listItem.text(childItem.text);
-            updateRecursive(childItem.children,listItem);
+            listItem.html(childItem.text);
+            updateRecursive(childItem.children,listItem,depth+1);
     });
   }
 }
