@@ -23,6 +23,72 @@ function Tab(algo,p_tab) {
      * @method
      */
     this._init = function() {
+
+
+        //http://spin.atomicobject.com/2014/01/21/convert-svg-to-png/
+        //http://techslides.com/save-svg-as-an-image
+        this.tab.find('.svgDownloader').on('click',function(foo){
+        
+            var ahref = $(this);
+
+            var nodes = Graph.instance.getNodes();
+
+            var screenCoords = nodes.map(algo.nodePos);
+
+            var xR = d3.extent(screenCoords,function(d){return d.x});
+            var yR = d3.extent(screenCoords,function(d){return d.y});
+
+            var transl = "translate(-"+xR[0]+",-"+yR[0]+")";
+
+            var width = xR[1]-xR[0]+algo.margin.left+algo.margin.right;
+            var height = yR[1]-yR[0]+algo.margin.top+algo.margin.bottom;
+
+
+            //use d3 to select transform, doesnt work with jqyery since it selects all g's, not just the top level one;
+            var oldTra = algo.svgOrigin.select("g").attr("transform");
+            var oldWidth = algo.svgOrigin.attr("width");
+            var oldHeight = algo.svgOrigin.attr("height");
+
+            algo.svgOrigin.select("g").attr("transform",oldTra+","+transl);//.each("end",function(){
+                algo.svgOrigin.attr("width",width);
+                algo.svgOrigin.attr("height",height);
+
+                //use jquery to get the svg xml, doesnt work with d3.
+                var svgContainer = that.tab.find('.svgContainer');//.clone();
+                var svg = svgContainer.find("svg");
+                svg.attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
+                var svgHtml = svgContainer.html();
+
+                var seed = 50 + Math.floor(Math.random()*1000000); //lower 50 ones are reserved for my own use
+
+                svgHtml = svgHtml.replace(/arrowhead2/g,"arrowhead"+seed);
+
+//                 svgHtml = '<?xml-stylesheet type="text/css" href="href="../library-d3-svg/css/graph-style.css" ?>' + svgHtml;
+
+                var b64 = btoa(svgHtml); // or use btoa if supported
+
+             // Works in recent Webkit(Chrome)
+        //      $("body").append($("<img src='data:image/svg+xml;base64,\n"+b64+"' alt='file.svg'/>"));
+
+             // Works in Firefox 3.6 and Webit and possibly any browser which supports the data-uri
+        //      $("body").append($("<a href-lang='image/svg+xml' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download</a>"));
+
+
+                var href = "data:image/svg+xml;base64,\n"+b64;
+                ahref.prop("href-lang","image/svg+xml");
+                ahref.prop("href",href);
+
+                //move back
+                algo.svgOrigin.attr("width",oldWidth);
+                algo.svgOrigin.attr("height",oldHeight);
+                algo.svgOrigin.select("g").attr("transform",oldTra);
+//             })
+           
+
+        });
+
+
+
         legendeMax = this.tab.find(".Legende");
         legendeMin = this.tab.find(".LegendeMinimized");
         legendeMaxButton = legendeMax.find(".LegendeMin");

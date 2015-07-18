@@ -1,3 +1,11 @@
+/* for graph svg */
+
+.svgText {
+  font-family: sans-serif
+;
+  font-size: 12px;
+}
+
 .unselectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -26,4 +34,61 @@ input.tooltip {
   border: solid 1px #aaa;
   border-radius: 8px;
   pointer-events: none; */
+}
+
+.exessBar {
+  fill: #a00;
+  stroke-width: 1.5px;
+}
+
+/* .link {
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.flow {
+  stroke: lightblue;
+  stroke-width: 1.5px;
+}
+
+
+.cap {
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.node {
+  fill: #99f;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+circle.selected{
+    stroke: rgba(174,219,33, 0.7);
+    stroke-width: 7px;
+}
+
+.exess{
+  stroke: #a00;
+}
+
+.height{
+  stroke: #0a0;
+} */
+
+
+/*  only in shortest paths */
+.timewindow {
+  fill: lavender;
+  fill-opacity: 0.5;
+}
+
+#testArc {
+  stroke: #ccc;
+  stroke-width: 1.5px;
+  fill: none;
+}
+
+#testArc.hidden {
+  display: none;
 }

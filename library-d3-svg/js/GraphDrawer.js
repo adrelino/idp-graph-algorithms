@@ -54,17 +54,21 @@ var global_NodeLayout = {'fillStyle' : const_Colors.NodeFilling,    // Farbe der
 
 
 
-var GraphDrawer = function(svgOrigin){
+var GraphDrawer = function(svgOrigin,additionalMarginTop){
 
     /////////////////
     //PRIVATE
 
+    var additionalMarginTop = additionalMarginTop || 0;
+
     var xRange = +svgOrigin.attr("width") || 400;
         yRange = +svgOrigin.attr("height") || 300;
-
-    var margin = {top: 20, right: 20, bottom: 20, left: 30},
+    var wS = global_NodeLayout['borderWidth'];
+    var margin = {top: global_KnotenRadius+wS+additionalMarginTop, right: global_KnotenRadius+wS, bottom: global_KnotenRadius+wS, left: global_KnotenRadius+wS},
         width = xRange - margin.left - margin.right,
         height = yRange - margin.top - margin.bottom;
+
+    this.margin = margin;
 
     var radius = global_KnotenRadius;//20;
 
@@ -72,10 +76,10 @@ var GraphDrawer = function(svgOrigin){
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
 
-    // d3.select("body").selectAll("svg")
+//     //d3.select("body").selectAll("svg")
     svgOrigin
         .append("defs").append("marker")
-        .attr("id", "arrowhead")
+        .attr("id", "arrowhead2")
         .attr("refX",12) /*must be smarter way to calculate shift*/
         .attr("refY",2)
         .attr("markerWidth", 12)
@@ -109,6 +113,8 @@ var GraphDrawer = function(svgOrigin){
     var nodePos = function(d){
         return {x:x(d.x), y:y(d.y)};
     };
+
+    this.nodePos = nodePos;
 
     function lineAttribs(d){
      d3.select(this)
@@ -231,7 +237,7 @@ var GraphDrawer = function(svgOrigin){
 
     //ENTER + UPDATE
         selection.selectAll("line")
-            .attr("marker-end", "url(#arrowhead)")
+            .attr("marker-end", "url(#arrowhead2)")
             .each(lineAttribs)
 //             .style("opacity",1e-6)
 //             .transition()

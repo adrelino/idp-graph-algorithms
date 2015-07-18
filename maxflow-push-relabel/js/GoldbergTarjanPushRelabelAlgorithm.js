@@ -5,7 +5,7 @@
  * @class
  */
 function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
-    GraphDrawer.call(this, svgSelection);
+    GraphDrawer.call(this, svgSelection,15);
 
     /**
      * closure for this class

@@ -126,10 +126,15 @@
     </nav>
     <div>
     <header>
-        <img src="img/titel.png" height="100px" alt="Goldberg Tarjan Push Relabel Algorithm">
+        <img src="img/ahuja-small-progress.svg" alt="A maximum flow"></img>
         <span class="adrianheader">Goldberg Tarjan Push Relabel Algorithm</span>
         <img style="position:absolute; right:0px" src="../library/img/TUMLogo.png" alt="Technische Universität München">
     </header>
+<!--     <svg height="0px" widht ="0px">
+        <defs>
+        <marker id="arrowhead2" refX="12" refY="2" markerWidth="12" markerHeight="4" orient="auto"><path d="M 0,0 V 4 L6,2 Z"></path></marker>
+        </defs>
+    </svg> -->
     <div id="tabs">
         <ul>
             <li><a href="#tab_te"><span>Introduction</span></a></li>
@@ -143,7 +148,18 @@
         <div id="tab_te">
             <div id="te_div_Einfuehrungstext">
 
-                <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="img/beispiel1b.png" width="300px"><p>The maximum s-t flow has a value of 6</p></div>
+                <div id="te_div_beispiel1Container">
+                <div id="svgtest"></div>
+                <img id="te_img_beispiel1" src="img/ahuja.svg" alt="ahuja">
+<!--                 <object data="img/ahuja.svg" type="image/svg+xml" width="300px"> -->
+<!--                 type="image/svg+xml"-->
+
+<!--                 <svg> 
+                    <image xlink:href="img/ahuja.svg" src="svg.png">
+                </svg> -->
+
+
+                <p>The maximum s-t flow has a value of 6</p></div>
 <!--                 <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="https://i1.wp.com/cs.stanford.edu/people/trevisan/cs261-11/network1.png" alt="Flow problem in network routing capacity"><p>Flow problem in network routing capacity</p></div> -->
                 
                 <h1>The maximum flow problem</h1>
@@ -167,20 +183,19 @@
         <div id="tab_tg">
             <div>
                 <div class="canvasWrapper">
-                    <svg class="graphCanvas" id="tg_canvas_graph" width="700" height="500">
-                        Ihr Browser unterstützt kein HTML5 SVG. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
-                    </svg>
+                    <div class="svgContainer"><svg class="graphCanvas" id="tg_canvas_graph" width="700" height="500"></svg></div>
+                    <a class="svgDownloader" download="graph-editor.svg" href="data:text/plain,test">SVG Download</a>
                     <div class="Legende" id="tg_div_Legende">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Knoten</span></td>
+                                    <td class="LegendeTabelle"><img src="img/node.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>node</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Ungerichtete Kante</span></td>
+                                    <td class="LegendeTabelle"><img src="img/edge.svg" alt="edge" class="LegendeIcon"></td>
+                                    <td><span>edge with capacity cap</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -243,20 +258,31 @@
         <div id="tab_ta">
             <div>
                 <div class="canvasWrapper">
-                    <svg class="graphCanvas" id="ta_canvas_graph" width="700" height="500">
-                        Ihr Browser unterstützt kein HTML5 Canvas. Bitte verwenden Sie einen modernen Browser, z.B.<a href="http://www.mozilla.org/de/firefox">Mozilla Firefox</a>
-                    </svg>
+                    <div class="svgContainer"><svg class="graphCanvas" id="ta_canvas_graph" width="700" height="500"></svg></div>
+                    <a class="svgDownloader" download="graph-algorithm.svg" href="data:text/plain,test">SVG Download</a>
                     <div class="Legende">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
                             <table>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/knoten.png" alt="Knoten" class="LegendeIcon"></td>
-                                    <td><span>Knoten</span></td>
+                                    <td class="LegendeTabelle"><img src="img/node-e-h.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>node with exess flow and height function</span></td>
                                 </tr>
                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/kante.png" alt="Kante" class="LegendeIcon"></td>
-                                    <td><span>Ungerichtete Kante</span></td>
+                                    <td class="LegendeTabelle"><img src="img/node-current.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>current node</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/nodes-active.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>active nodes</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/edge-flow.svg" alt="edge" class="LegendeIcon"></td>
+                                    <td><span>edge with flow &le; cap</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/st-flow.svg" alt="edge" class="LegendeIcon"></td>
+                                    <td><span>s-t flow</span></td>
                                 </tr>
                             </table>
                         </div>
@@ -448,8 +474,8 @@
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
                     <img src="https://i1.wp.com/cs.stanford.edu/people/trevisan/cs261-11/network1.png" alt="Network " /><p>Network max flow <sup>1</sup></p><br />
-                    <img src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br />
-                    <img src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br />
+<!--                     <img src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br /> -->
+<!--                     <img src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br /> -->
 <!--                     <img src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (<span style="color: #0000cc">blau</span>)</p><br /> -->
 <!--                     <img src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (<span style="color: green;">grün</span>) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p> -->
                 </div>
