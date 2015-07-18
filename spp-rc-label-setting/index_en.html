@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="description" content="This applet demonstrates the a label setting algorithm for Shortest Path Problems with Resource Constraints" />
+    <meta name="keywords" content="SPPRC, label setting, algorithm, TUM, Technische Universität München, applet">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="author" content="Adrian Haarbach">
+
+<!--     the whole page layout style -->
+    <link rel="stylesheet" type="text/css" href="../library/css/style.css" />
+
+    <!-- jquery + jqueryui -->
+    <script src="../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="../library/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="../library/css/tum-theme2/jquery-ui-1.10.1.custom.min.css" />
+<!--     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css"> -->
+
+<!--     the menu  -->
+    <link type="text/css" href="../library/css/mmenu/jquery.mmenu.all.css" rel="stylesheet" />
+    <script type="text/javascript" src="../library/js/mmenu/jquery.mmenu.min.all.js"></script>
+
+<!--     MathJax, used in the more tab in pseudocode -->
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            showMathMenu: false,
+            showMathMenuMSIE: false
+        });
+    </script>
+    <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=en"></script>
+
+
+<!--     Adrians d3 related library code -->
+    <script src="../library-d3-svg/js/d3/d3.js"></script>
+    <script src="../library-d3-svg/js/Graph.js"></script>
+    <script src="../library-d3-svg/js/GraphDrawer.js"></script>
+    <script src="../library-d3-svg/js/GraphEditor.js"></script>
+    <script src="../library-d3-svg/js/Logger.js"></script>
+    <script src="../library-d3-svg/js/Tab.js"></script>
+    <script src="../library-d3-svg/js/AlgorithmTab.js"></script>
+    <script src="../library-d3-svg/js/GraphEditorTab.js"></script>
+    <script src="../library-d3-svg/js/siteAnimation.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/graph-style.css" />
+    <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/style.css" />
+
+<!--     Files used only for this applet -->
+    <script src="js/SPPRCLabelSettingAlgorithm.js" type="text/javascript"></script>
+
+    <title>Shortest Paths with Resource Constraints</title>
+</head>
+<body>
+    <noscript>
+        <div class="ui-widget">
+            <div class="ui-state-error ui-corner-all" style="padding: .7em;">
+                <div class="ui-icon ui-icon-alert errorIcon"></div>
+                <strong>Please activate Javascript!</strong>
+                <ul style="margin: 0px;">
+                    <li>
+                        This website needs Javascript in order to be displayed properly.
+                    </li>
+                    <li>
+                        Javascript is currently deactivated in your browser. A manual for the activation of Javascript can be found <a href="http://www.enable-javascript.com/">here</a>.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </noscript>
+    <script>
+        $(function() {
+            initializeSiteLayout(SPPRCLabelSettingAlgorithm);
+            $("#year").html(new Date().getFullYear());
+        });
+        $(document).ready(function() {
+            $("#menu").mmenu({
+               "navbar": {
+                  "title": "Übersicht"
+               },
+               "offCanvas": {
+                  "zposition": "front"
+               },
+               "counters": true,
+               "slidingSubmenus": true,
+               "classes": "mm-light",
+            });
+         });
+    </script>
+    <a id="menu_link" href="#menu"></a>
+    <nav id="menu">
+        <ul>
+            <li>
+                <a style="white-space:pre-line" href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">
+                <img src="../library/img/logo_ohne.png" alt="Übersichtsseite Graphalgorithmen">
+                Übersichtsseite Graphalgorithmen</a>
+            </li>
+            <li><span>Kürzeste-Wege - Algorithmen</span>
+                <ul>
+                   <li><a href="../spp-dijkstra/index_de.html">Dijkstra - Algorithmus</a></li>
+                   <li><a href="../spp-a-star/index_de.html">A* - Algorithmus</a></li>
+                   <li><a href="../spp-bellman-ford/index_de.html">Bellman-Ford - Algorithmus</a></li>
+                   <li><a href="../spp-floyd-warshall/index_de.html">Floyd-Warshall - Algorithmus</a></li>
+                </ul>
+            </li>
+            <li><span>Spannbaum - Algorithmen</span>
+                <ul>
+                   <li><a href="../mst-prim/index_de.html">Algorithmus von Prim</a></li>
+                   <li><a href="../mst-kruskal/index_de.html">Algorithmus von Kruskal</a></li>
+                </ul>
+            </li>
+            <li><span>Matching - Algorithmen</span>
+                <ul>
+                   <li><a href="../matchings-hopcroft-karp/index_de.html">Algorithmus von Hopcroft-Karp</a></li>
+                   <li><a href="../matchings-hungarian-method/index_de.html">Ungarische Methode</a></li>
+                </ul>
+            </li>
+            <li><span>Eulerwege und Briefträgerproblem</span>
+                <ul>
+                   <li class="Selected"><a href="../hierholzer/index_de.html">Algorithmus von Hierholzer</a></li>
+                   <li><a href="../directed-chinese-postman/index_de.html">Chinesisches Postboten-Problem</a></li>
+                </ul>             
+            </li>
+        </ul>
+    </nav>
+    <div>
+    <header>
+        <img src="img/ahuja-small-progress.svg" alt="A feasible path"></img>
+        <span class="adrianheader">Shortest Paths with Resource Constraints</span>
+        <img style="position:absolute; right:0px" src="../library/img/TUMLogo.png" alt="Technische Universität München">
+    </header>
+<!--     <svg height="0px" widht ="0px">
+        <defs>
+        <marker id="arrowhead2" refX="12" refY="2" markerWidth="12" markerHeight="4" orient="auto"><path d="M 0,0 V 4 L6,2 Z"></path></marker>
+        </defs>
+    </svg> -->
+    <div id="tabs">
+        <ul>
+            <li><a href="#tab_te"><span>Introduction</span></a></li>
+            <li><a href="#tab_tg"><span>Create a graph</span></a></li>
+            <li><a href="#tab_ta"><span>Run the algorithm</span></a></li>
+            <li><a href="#tab_ti"><span>Description of the algorithm</span></a></li>
+            <li><a href="#tab_tw"><span>More</span></a></li>
+        </ul>
+
+        <!-- TAB Einführung -->
+        <div id="tab_te">
+            <div id="te_div_Einfuehrungstext">
+
+                <div id="te_div_beispiel1Container">
+                <img id="te_img_beispiel1" src="img/ahuja.svg" alt="ahuja"><p>What's are the best (shortest / cheapest) paths from left to right?</p></div>
+                <h1>Shortest path problem with resource constraints (SPPRC)</h1>
+<h3>Introduction and Problem Description</h3>
+
+The shortest path problem with resource constraints (SPPRC) seeks a shortest (cheapest, fastest) path in a directed graph with arbitrary arc lengths (travel times, costs) from an origin node to a destination node subject to one or more resource constraints. For example, one might seek a path of minimum length from <i>s</i> to <i>t</i> subject to the constraints that
+<ul>
+<li>
+the total travel time must not exceed some upper bound and/or
+<li>
+the total amount of some good that has to be picked up at the vertices along the path be less than or equal to some capacity limit and/or
+<li>
+if two vertices <i>i</i> and <i>j</i> are visited on a path, then <i>i</i> must be visited before <i>j</i>
+<li>
+etc.
+</ul>
+
+<p>
+The problem is NP-hard in the strong sense. If the path need not be elementary, i.e., if it is allowed that vertices are visited more than once, the problem can be solved in pseudopolynomial time. A central aspect is that two (partial) paths in an SPPRC can be incomparable, contrary to the SPP without resource constraints. This makes the SPPRC similar to a multi-criteria decision problem.<br>
+<br>
+A recent survey on the problem is:<br>
+<a href="http://www.researchgate.net/profile/Stefan_Irnich2/publication/227142556_Shortest_Path_Problems_with_Resource_Constraints/links/0deec523898ae43b84000000.pdf">
+<!-- Irnich, Stefan, and Guy Desaulniers. Shortest path problems with resource constraints. Springer US, 2005.</a> -->
+Irnich, S.; Desaulniers, G. (2005):<br>
+Shortest Path Problems with Resource Constraints<br>
+in:<br>
+Desaulniers, G.; Desrosiers, J.; Solomon, M. (eds.) (2005):<br>
+Column Generation<br>
+Springer, New York, pp. 33&ndash;65<br></a>
+<p>
+
+<p>
+The present document cannot give a complete introduction to SPPRCs. To get a thorough understanding of the problem, the reader is referred to the above paper. However, to understand the algorithm and its implementation, it is necessary to explain some fundamental ideas and point out the differences to a labelling algorithm for the shortest path problem without resource constraints (SPP).
+</p>
+
+<p>
+The standard solution technique for SPPRCs is a labelling algorithm based on dynamic programming. This approach uses the concepts of <i>resources</i> and <i>resource extension functions</i>. A resource is an arbitrarily scaled one-dimensional piece of information that can be determined or measured at the vertices of a directed walk in a graph. Examples are cost, time, load, or the information &lsquo;Is a vertex <i>i</i> visited on the current path?&rsquo;. A resource is <i>constrained</i> if there is at least one vertex in the graph where the resource must not take all possible values. The <i>resource window</i> of a resource at a vertex is the set of allowed values for the resource at this vertex.
+</p>
+
+<p>
+A resource extension function is defined on each arc in a graph for each resource considered. A resource extension function for a resource maps the set of all possible vectors (in a mathematical sense, not to be confused with a <tt>std::vector</tt>) of resource values at the source of an arc to the set of possible values of the resource at the target of the arc. This means that the value of a resource at a vertex may depend on the values of one or more other resources at the preceding vertex.
+</p>
+
+<p>
+<i>Labels</i> are used to store the information on the resource values for partial paths. A label in an SPPRC labelling algorithm is not a mere triple of resident vertex, current cost and predecessor vertex, as it is the case in labelling algorithms for the SPP. A label for an SPPRC labelling algorithm stores its resident vertex, its predecessor <i>arc</i> over which it has been extended, its predecessor label, and its current vector of resource values. The criterion to be minimized (cost, travel time, travel distance, whatsoever) is also treated as a (possibly unconstrained) resource. It is necessary to store the predecessor arc instead of the predecessor vertex, because, due to the resource constraints, one can not assume that the underlying graph is simple. Labels reside at vertices, and they are propagated via resource extension functions when they are extended along an arc. An <i>extension</i> of a label along an arc (<i>i</i>, <i>j</i>) is <i>feasible</i> if the resulting label <i>l</i> at <i>j</i> is feasible, which is the case if and only if all resource values of <i>l</i> are within their resource windows.
+</p>
+
+<p>
+To keep the number of labels as small as possible, it is decisive to perform a <i>dominance step</i> for eliminating unnecessary labels. A label <i>l</i><sub>1</sub> <i>dominates</i> a label <i>l</i><sub>2</sub> if both reside at the same vertex and if, for each feasible extension of <i>l</i><sub>2</sub>, there is also a feasible extension of <i>l</i><sub>1</sub> where the value of each cardinally scaled resource is less than or equal to the value of the resource in the extension of <i>l</i><sub>2</sub>, and where the value of each nominally scaled resource is equal to the value of the resource in the extension of <i>l</i><sub>2</sub>. Dominated labels need not be extended. A label which is not dominated by any other label is called undominated or Pareto-optimal. The application of the dominance principle is optional&mdash;at least from a theoretical perspective.
+</p>
+
+<p>
+The implementation is a label-setting algorithm. This means that there must be one or more resources whose cumulated consumption(s) after extension is/are always at least as high as before. This is similar to the Dijkstra algorithm for the SPP without resource constraints where the distance measure must be non-negative. It is sufficient if there is one resource with a non-negative resource consumption along all arcs (for example, non-negative arc lengths or non-negative arc traversal times).
+</p>
+
+<a href="http://www.boost.org/doc/libs/1_58_0/libs/graph/doc/r_c_shortest_paths.html"> source: Boost C++ library documentation</a>
+
+<h3>Irnich</h3>
+
+                <p>The SPPRC was introduced in the Ph.D. dissertation of Desrochers (1986) as a sub- problem of a bus driver scheduling problem. It consists of finding a shortest path among all paths that start from a source node, end at a sink node, and satisfy a set of constraints defined over a set of resources. A resource corresponds to a quantity, such as the time, the load picked-up by a vehicle, or the duration of a break in a work shift, that varies along a path according to functions, called resource extension functions (REFs)
+                </p>
+                <p>The two-resource SPPRC, better known as the shortest path problem with time windows (SPPTW), was first studied in Desrosiers et al. (1983) and Desrosiers et al. (1984). The resource cost is unconstrained while the resource time is restricted by corresponding time windows.</p>
+                <h2>This applet presents a simple label-setting algorithm, which solves the two dimensional SPPTW with resources time and cost. No negative cycles are allowed</h2>
+                <div id ="te_div_Entscheidung">
+                    <h2>What do you want to do first?</h2>
+                    <button id="te_button_gotoDrawGraph">Test the algorithm!</button> <button id="te_button_gotoIdee">Read detailed description of the algorithm</button>
+                </div>
+                <p></p>
+                <br style="clear: both;" />
+            </div>
+        </div>
+
+        <!-- TAB Graph Erstellen -->
+        <div id="tab_tg">
+            <div>
+                <div class="canvasWrapper">
+                    <div class="svgContainer"><svg class="graphCanvas" id="tg_canvas_graph" width="700" height="500"></svg></div>
+                    <a class="svgDownloader" download="graph-editor.svg" href="data:text/plain,test">SVG Download</a>
+                    <div class="Legende" id="tg_div_Legende">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                        <div class="LegendeText">
+                            <table>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/node.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>node</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/edge.svg" alt="edge" class="LegendeIcon"></td>
+                                    <td><span>edge with capacity cap</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="LegendeMinimized">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                    </div>
+                </div>
+                <div id="tg_div_statusWindow" class="statusWindow">
+                    <h2>Which graph do you want to execute the algorithm on?</h2>
+                    <h3>Start with an example graphs:</h3>
+                    <label for="graphSelector">Select </label>
+                    <select name="graphSelector" id="tg_select_GraphSelector">
+                        <option label="graph 1">graph1</option>
+                        <option label="graph 2">graph2</option>
+                        <option label="graph3">graph3</option>
+                    </select>
+
+
+                    <h3>Modify it to your desire:<br></h3>
+                    <div id="tg_div_statusErklaerung">
+                    <ul>
+                        <li>To create a node, make a double-click in the drawing area.</li>
+                        <li>To create an edge, first click on the output node and then click on the destination node.</li>
+                        <li>The edge weight can be changed by double clicking on the edge.</li>
+                        <li>Right-clicking deletes edges and nodes.</li>
+                    </ul>
+                    </div>
+                    
+                    <h3>Download the modified graph:</h3>
+                    
+                    <a id="fileDownloader" download="graph.txt" href="data:text/plain,test">Download</a>
+                    
+                    <h3>Upload an existing graph:</h3>
+                    <input type="file" id="fileUploader" accept=".txt"/></input> <!--name="files[]" accept="text/*"-->
+                    <div id="ta_div_parseError" title="Error reading graph from file">
+<!--                         <h2>Error code:</h2> -->
+                        A
+                        <h2 style="color:red" id="ta_div_parseErrorText"></h2>
+                        occured when reading from file:
+                        <h3 id="ta_div_parseErrorFilename"></h3>
+                        the contents:
+                        <pre id="ta_div_parseErrorDescription"></pre>
+                    </div>
+
+                    <h3>What next?</h3>
+                   <p><button id="tg_button_gotoAlgorithmTab">Ready &ndash; Run the Algorithm!</button></p>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB Algorithmus ausführen -->
+        <div id="tab_ta">
+            <div>
+                <div class="canvasWrapper">
+                    <div class="svgContainer"><svg class="graphCanvas" id="ta_canvas_graph" width="700" height="500"></svg></div>
+                    <a class="svgDownloader" download="graph-algorithm.svg" href="data:text/plain,test">SVG Download</a>
+                    <div class="Legende">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                        <div class="LegendeText">
+                            <table>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/node-e-h.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>node with exess flow and height function</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/node-current.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>current node</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/nodes-active.svg" alt="node" class="LegendeIcon"></td>
+                                    <td><span>active nodes</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/edge-flow.svg" alt="edge" class="LegendeIcon"></td>
+                                    <td><span>edge with flow &le; cap</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="LegendeTabelle"><img src="img/st-flow.svg" alt="edge" class="LegendeIcon"></td>
+                                    <td><span>s-t flow</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="LegendeMinimized">
+                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                    </div>
+                </div>
+                <div id="ta_div_statusWindow" class="statusWindow">
+                    <h2 class="">Algorithm status</h2>
+                    <div id="ta_div_abspielbuttons"> <!--class="ui-widget-header ui-corner-all"-->
+                        <input  id="ta_button_rewind" type="checkbox"><label for="ta_button_rewind" id="ta_button_text_rewind">rewind</label>
+                        
+                        <button id="ta_button_Zurueck">prev</button>
+                        
+                        <button id="ta_button_1Schritt">next</button>
+                        
+                        <input  id="ta_button_vorspulen" type="checkbox"><label for="ta_button_vorspulen" id="ta_button_text_fastforward">fast forward</label>
+
+                        <input type="number" id="ta_vorspulen_speed" min="2" max="500" value=5>ms
+
+                        <span id="ta_button_text_pause" style="display:none">pause</span>
+                    </div>
+                    <div id="ta_div_statusTabs">
+                         <ul>
+                            <li><a href="#ta_div_statusErklaerung">Explanation</a></li>
+                            <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
+                            <li><a href="#ta_div_statusLogger">Log</a></li>
+                        </ul>
+                        <div id="ta_div_statusErklaerung">
+                            <div>
+                                <h3>First choose a source node</h3>
+                                <p>Click on a node to select it as the source/starting node s</p>
+                            </div>
+                            <div>
+                                <h3>Shortest Path Problem with Time Windows Label Setting Algorithm/h3>
+                                <p>Now the algorithm can begin. Click on <strong>next</strong> to start it</p>
+                            </div>
+                            <div>
+                                <h3>Initialize</h3>
+                                <p>The algorithm is initialized with U = {trivial label/path} and P = &empty</p>
+                            </div>
+                            <div>
+                                <h3>Main loop</h3>
+                                <p>As long as the queue containing the unprocessed labels isn’t empty pop the first label l from the front of the queue.</p>
+                            </div>
+                            <div>
+                                <h3>Path extension step 1/2: extend the label</h3>
+                                <p>Extend the current path with label l=(~,v) along the edge e=(v,w) to get a new extended path with label l'=(l,w)</p>
+
+                                <p>The accumulated resource consumption of this label is given by
+                                    r(l') = max(r_lower(w),r(l)+r(e))</p>
+                            </div>
+                            <div>
+                                <h3>Path extension step 2/2: check feasability</h3>
+                                <p>Check if the extended path with label l'=(l,w) is feasible in w, meaning that the accumulated resource consumption r(l') along the path is not larger than the upper resource constraint at its end node w.</p>
+
+                                <p>l' &isin; FEASIBLE(w) &hArr; r(l') &le; r_upper(w)</p>
+
+                                <p>If it is feasible, add l' to the set Q of unprocessed labels/paths</p>
+                            </div>
+                            <div>
+                                <h3>Label processed</h3>
+                                <p>In the absence of cycles of negative length, a label which has once been fully extended will never be touched again, which is why we speak of a Label Setting algorithm.</p>
+
+                                <p>Thus, the current label l is now moved to the set of processed labels P, which we will later search for for our solution</p>
+<!--                                 <p>This is similar to Dijkstra's algorithm, only that the dynamic programming approach is slightly more involved</p> -->
+
+<!--                                 <p>If negative cycles were allowed, one would need to employ a Label Correcting algorithm in the style of Bellmann-Ford</p> -->
+                            </div>
+                            <div>
+                                <h3>Dominance step</h3>
+                                <p>For all the paths which end in some node v, prune the paths/labels which are striclty dominated in both sets U and P</p>
+                                <p>l_1=(~,v) dominates l_2=(~,v) &hArr; time(l1) &lt; time(l2) AND cost(l1) &lt; cost(l2) </p>
+                            </div>
+                            <div>
+                                <h3>Finished</h3>
+                                <p>The algorithm terminated since there are no more unprocessed labels to extend</p>
+                                <p id="finalflow" style="color:green"></p>
+                                <h3>Filtering step</h3>
+                                <p>Hover over a node to see the set of all feasible paths ending in it</p>
+                            </div>
+                        </div>
+<!--var STATUS_SELECTSOURCE = id++;
+    var STATUS_START = id++;
+    var STATUS_INIT= id++;
+    var STATUS_MAINLOOP = id++;
+    var STATUS_PATH_EXTEND = id++;
+    var STATUS_PATH_EXTEND_FEASIBLE = id++;
+    var STATUS_LABEL_PROCESSED = id++;
+    var STATUS_DOMINANCE = id++;
+    var STATUS_FINISHED = id;-->
+                        <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
+                            <div><p>s &larr; pick(v)</p></div>
+                            <div><p>BEGIN</p></div>
+                            <div><p>(* Initialize *)</p>
+                                 <p>P &larr; &empty;</p>
+                                 <p>U &larr; { (&epsilon;,s) }</p></div>
+                            <div><p>(* Main Loop *)</p>
+                                 <p>WHILE &exist; l=(~,v) &in; U</p></div>
+<!--                                  <p>WHILE U &ne; &empty; DO</p>
+                                 <p>   l=(~,v) &larr; U.pop()</p></div> -->
+                            <div><p>   (* Path extension step *)</p>
+                                 <p>   FORALL e=(v,w) &isin; E</p>
+                                 <p>      l'=(l,w) &larr; EXTEND(l,e)</p></div>
+                            <div><p>      IF l' &isin; FEASIBLE(w)</p> 
+                                 <p>         U &larr; U &cup; {l'}</p></div>
+                            <div><p>   P &larr; P &cup; {l}</p></div>
+                            <div><p>   (* Dominance step *)</p>
+                                 <p>   U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
+                            <div><p>END</p>
+                                 <p>(* Filtering step *)</p>
+                                 <p>t &larr; hover(v)</p>
+                                 <p>FORALL l=(~,t) &in; P</p>
+                                 <p>   highlight(l)</p></div>
+
+<!--                             <p> d(t) = 0</p> -->
+<!--                             <p>    ELSE f(e)=0</p>
+                                 <p>    IF u==s AND w != t THEN queue.add(w)</p> -->
+<!--                             <p class="pseudocode" id="ta_p_l4">  FOR i = 2,..,n DO</p>
+                            <p class="pseudocode" id="ta_p_l4">    d(v[i]) &larr; &#8734;, parent(v[i]) &larr; NULL</p> -->
+
+<!--                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="ta_p_l2">  d(v[1]) &larr; 0</p>
+                            <p class="pseudocode" id="ta_p_l3">  FOR j = 2,..,n DO</p>
+                            <p class="pseudocode" id="ta_p_l4">    d(v[j]) &larr; &#8734;</p>
+                            <p class="pseudocode" id="ta_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
+                            <p class="pseudocode" id="ta_p_l6">    FOR ALL (u,v) in E DO</p>
+                            <p class="pseudocode" id="ta_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
+                            <p class="pseudocode" id="ta_p_l8">  FOR ALL (u,v) in E DO</p>
+                            <p class="pseudocode" id="ta_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
+                            <p class="pseudocode" id="ta_p_l10">      Message: "Negative Circle"</p>
+                            <p class="pseudocode" id="ta_p_l11">END</p> -->
+
+<!--                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
+                            <p class="pseudocode" id="ta_p_l2">  IF Graph ungültig THEN END</p>
+                            <p class="pseudocode" id="ta_p_l3">  start &larr; geeigneter Knoten</p>
+                            <p class="pseudocode" id="ta_p_l4">  tour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l5">  REPEAT</p>
+                            <p class="pseudocode" id="ta_p_l6">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
+                            <p class="pseudocode" id="ta_p_l7">    subtour &larr; {start}</p>
+                            <p class="pseudocode" id="ta_p_l8">    DO</p>
+                            <p class="pseudocode" id="ta_p_l9">      {akt, u} &larr; Suche unbesuchte Kante</p>
+                            <p class="pseudocode" id="ta_p_l10">      subtour &larr; subtour &#8746; {u}</p>
+                            <p class="pseudocode" id="ta_p_l11">      akt &larr; u</p>
+                            <p class="pseudocode" id="ta_p_l12">    WHILE start &#8800; akt</p>
+                            <p class="pseudocode" id="ta_p_l13">    Integriere subtour in tour</p>
+                            <p class="pseudocode" id="ta_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
+                            <p class="pseudocode" id="ta_p_l15">END</p>  -->
+                            <h3>Variable status</h3>
+                            <table class="algoInformationen">
+                                <tr>
+                                    <th class="algoInfoTH"><span>U</span></th>
+                                    <th class="algoInfoTH"><span>l</span></th>
+                                    <th class="algoInfoTH"><span>P</span></th>
+                                    <th class="algoInfoTH"><span>l'</span></th>
+                                </tr>
+                                <tr>
+                                    <td id="ta_td_U" class="algoInfoTD">-</td>
+                                    <td id="ta_td_l" class="algoInfoTD">&#8709;</td>
+                                    <td id="ta_td_P" class="algoInfoTD">-</td>
+                                    <td id="ta_td_l_dash" class="algoInfoTD">-</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="ta_div_statusLogger">
+                            <h3>Log of algorithm execution</h3>
+                            <div id="logger"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="ta_div_confirmTabChange" title="Algorithmus abbrechen?" class="tabChangeWarningDialog">
+                <h2>Beim Wechsel des Tabs wird der Algorithmus abgebrochen.</h2>
+                <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
+            </div>
+        </div>
+
+        <!-- TAB Beschreibung des Algorithmus -->
+        <div id="tab_ti" style="display: none;">
+            <div id="ti_div_Einfuehrungstext">
+                <div class="BeispielbildContainer">
+                    <img src="https://i1.wp.com/cs.stanford.edu/people/trevisan/cs261-11/network1.png" alt="Network " /><p>Network max flow <sup>1</sup></p><br />
+<!--                     <img src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br /> -->
+<!--                     <img src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br /> -->
+<!--                     <img src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (<span style="color: #0000cc">blau</span>)</p><br /> -->
+<!--                     <img src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (<span style="color: green;">grün</span>) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p> -->
+                </div>
+                <h1>Shortest Paths</h1>
+                <p>In many applications one wants to obtain the shortest path from a to b.
+                Depending on the context, the length of the path does not necessarily have to be the length in meter: One can as well look at the cost of a path &ndash; both if we have to pay for using it &ndash; or if we receive some.</p>
+                <p><strong>In general we speak of cost</strong>.
+                Therefore one assigns cost to each part of the path &ndash; also called "edge".</p>
+                <p>Dijkstra's Algorithm computes shortest &ndash; or cheapest paths, if all cost are positive numbers.
+                However, if one allows negative numbers, the algorithm will fail.</p>
+                <p>The Bellman-Ford Algorithm by contrast can also deal with negative cost.</p>
+                <p>These can for example occur when a taxi driver receives more money for a tour than he spends on fuel. If he does not transport somebody, his cost are positive.</p>
+                <h1>Idea of the Algorithm</h1>
+<!--                 <div class="BeispielbildContainer">
+                    <img id="ti_img_beispiel4_1" src="img/graph1.png" alt="Edge before update."><p>This edge is a short-cut:<br> We know that we have to pay 20 in order to go from the starting node to the left node. The path from the left to the right node has cost 1.<br> Therefore one can go from the starting node to the node on the right with a total cost of 21.</p>
+                    <img id="ti_img_beispiel4_2" src="img/graph1.png" alt="Edge before update.">
+                </div> -->
+                <p>The Bellman-Ford Algorithm computes the <strong>cost</strong> of the cheapest paths from a starting node to all other nodes in the graph. Thus, he can also construct the paths afterwards.</p>
+                <p>The algorithm proceeds in an interactive manner, by beginning with a bad estimate of the cost and then improving it until the correct value is found.</p>
+                <p>The first estimate is:</p>
+                <ul>
+                    <li> <strong>The starting node has cost 0</strong>, as his distance to itself is obviously 0.
+                    <li> <strong>All other node have cost infinity</strong>, which is the worst estimate possible.
+                </ul>
+                <p>Afterwards, the algorithm checks every edge for the following condition: <strong>Are the cost of the source of the edge plus the cost for using the edge smaller than the cost of the edge's target?</strong></p>
+                <p>If this is the case, we have found a <strong>short-cut</strong>: It is more profitable to use the edge which was just checked, than using the path used so far. 
+                    Therefore the cost of the edge's target get updated: They are set to the cost of the source plus the cost for using the edge (compare example on the right).</p>
+                <p>Looking at all edges of the graph and updating the cost of the nodes is called a <strong>phase</strong>. Unfortunately, it is not sufficient to look at all edges only once. 
+                    After the first phase, the cost of all nodes for which the shortest path only uses one edge have been calculated correctly. After two phases all paths that use at most two edges have been computed correctly, and so on.</p>
+<!--                 <div class="BeispielbildContainer"><img id="ti_img_beispiel3" src="img/graph1.png" alt="Graph with distances.">
+                    <p>The green path from the starting node is the cheapest path. It uses 3 edges.</p>
+                </div> -->
+                <p>How many phases ware necessary? To answer this question, the observation that <strong>a shortest path has to use less edges than there are nodes in the graph.</strong>
+                    Thus, we need at most one phase less than the number of nodes in the graph. A shortest path that uses more edges than the number of nodes would visit some node twice and thus build a circle.</p>
+                <h1>Construction of the shortest path</h1>
+                <p>Each time when updating the cost of some node, the algorithm saves the edge that was used for the update as the <strong>predecessor</strong> of the node.</p>
+                <p>At the end of the algorithm, the shortest path to each node can be constructed by going backwards using the predecessor edges until the starting node is reached.</p>
+                <h1>Circles with negative weight</h1>
+<!--                 <div class="BeispielbildContainer"><img id="ti_img_beispiel2" src="img/graph1.png" alt="Graph with negative circle."><p>A cheapest path had to use this circle infinitely often. The cost would be reduced in each iteration.</p></div> -->
+                <p>If the graph contains a circle with a negative sum of edge weights &ndash; a <strong>Negative Circle</strong>, the algorithm probably will not find a cheapest path.</p>
+                <p>As can be seen in the example on the right, paths in this case can be infinitely cheap &ndash; one keeps on going through the circle.</p>
+                <p>This problem occurs if the negative circle can be reached from the starting node.
+                    Luckily, the algorithm can detect whether a negative circle exists.
+                    This is checked in the last step of the algorithm.</p>
+                <p>A negative circle can be reached if and only if after iterating all phases, one can still find a short-cut. 
+                    <strong>Therefore, at the end the algorithm checks one more time for all edges </strong>whether the cost of the source node plus the cost of the edge are less than the cost of the target node.
+                    If this is the case for an edge, the message "Negative Circle found" is returned.</p>
+                <p>One can even find the negative circle with the help of the predecessor edges: One just goes back until one traversed a circle (that had negative weight).</p>
+                <h1>What now?</h1>
+                <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
+                    <h3>Create a graph and play through the algorithm</h3>
+                    <button id="ti_button_gotoDrawGraph">Try algorithm after creating a graph</button>
+                    <button id="ti_button_gotoAlgorithm">Try algorithm on an example graph</button>
+                </div>
+                <br style="clear: both;" />
+                <p style="font-size: 10px; text-align: right;"><a name="bridge_copyright"></a><sup>1</sup> Von Bogdan Giuşcă unter GNU Free Documentation License 1.2, vgl. <a href="http://http://commons.wikimedia.org/wiki/File:Konigsberg_bridges.png">Wikimedia</a>.</p>
+            </div>
+        </div>
+
+       
+        <!-- TAB Weiteres -->
+        <div id="tab_tw" style="display: none;">
+            <div id="tw_Accordion">
+                <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
+                <div>
+                    <pre><code>Eingabe: Ungerichteter Graph G=(V,E), keine oder genau zwei Knoten besitzen einen ungeraden Grad
+Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
+<hr>
+<pre>
+<code>BEGIN
+    IF Graph ungültig THEN END
+    IF Graph semi-eulersch THEN
+        start &larr; Knoten mit ungeradem Grad
+    ELSE
+        start &larr; beliebiger Knoten
+    subtour &larr; &empty;
+    tour &larr; {start}
+    REPEAT
+        start &larr;  Knoten aus tour mit unbesuchten Kanten
+        subtour &larr; {start}
+        akt = start
+        DO
+            {akt, u} &larr; Suche unbesuchte Kante von akt aus
+            subtour &larr; subtour &#8746; {u}
+            akt &larr; u
+        WHILE start &#8800; akt
+        Integriere subtour in tour
+    UNTIL tour ist Eulerweg/-tour
+END</code></pre>
+            </div>
+
+                                <h3>What is the pseudocode of the algorithm?</h3>
+                <div><pre><code>Input: Weighted, undirected graph G=(V,E) with weight function l.
+Output: A list {d(v[j]) : j = 1,..,n} containing the distances dist(v[1],v[j]) = d(v[j]),
+         if there are no negative circles reachable from v[1]. 
+         The message "Negative Circle" is shown, if a negative circle can be reached from v[1].</code></pre>
+<hr><pre><code>
+BEGIN
+   d(v[1]) &larr; 0
+   FOR j = 2,..,n DO
+      d(v[j]) &larr; &#8734;
+   FOR i = 1,..,(|V|-1) DO
+      FOR ALL (u,v) in E DO
+         d(v) &larr; min(d(v), d(u) + l(u,v))
+   FOR ALL (u,v) in E DO
+      IF d(v) > d(u) + l(u,v) DO
+         Message: "Negative Circle"
+END</code></pre></div>
+
+
+                <h3>Wie schnell ist der Algorithmus?</h3>
+                <div>
+                    <h2>Geschwindigkeit von Algorithmen</h2>
+                    <p>Die Geschwindigkeit von Algorithmen wird üblicherweise in der <strong>Anzahl an Einzelschritten</strong> gemessen, die der Algorithmus bei der Ausführung benötigt.</p>
+                    <p>Einzelschritte sind beispielsweise:</p>
+                    <ul>
+                      <li>Zuweisungen &ndash; Weise Knoten 1 den Wert 20 zu.</li>
+                      <li>Vergleiche  &ndash; Ist 20 größer als 23?</li>
+                      <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
+                      <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
+                    </ul>
+                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
+                    <h2>Laufzeit des Hierholzer Algorithmus</h2>
+                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. Nach jeder vollständigen Subtour wird ein neuer Startknoten für folgende Subtouren bestimmt. Bei der Prüfung auf unbesuchte Kanten müssen im ungünstigsten Fall m Kanten betrachtet werden. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
+                    <p>Der Algorithmus kann weiter optimiert werden, indem man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
+                    <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
+                </div>
+
+
+                <h3>How fast is the algorithm?</h3>
+                <div>
+                    <h2>Speed of the algorithms</h2>
+                    <p>The speed of an algorithm is the <strong>total number of individual steps</strong> which are performed during the execution.</p>
+                    <p>These steps are for example:</p>
+                    <ul>
+                        <li>Assignments &ndash; Set distance of a node to 20.
+                        </li>
+                        <li>Comparisons &ndash; Is 20 greater than 23?
+                        </li>
+                        <li>Comparison and assignment &ndash; If 20 is greater than 15, set variable
+                            <var>n</var>
+                            to 20
+                        </li>
+                        <li>Simple Arithmetic Operations &ndash; What is 5 + 5?
+                        </li>
+                    </ul>
+                    <p>Since it can be very difficult to count all individual steps, it is desirable to only count the approximate magnitude of the number of steps. This is also called the running time of an algorithm. Particularly, it is interesting to know the running time of an algorithm based on the size of the input (in this case the number of the vertices and the edges of the graph).</p>
+                    <h2>Running time of the Bellman-Ford Algorithm</h2>
+                    <p>We assume that the algorithm is run on a graph with <var>n</var> nodes and <var>m</var> edges.</p>
+                    <p>At the beginning, the value &#8734; is assigned to each node. We need <var>n</var> steps for that.</p>
+                    <p>Then we do the <var>n-1</var> phases of the algorithm &ndash; one phase less than the number of nodes. 
+                        In each phase, all edges of the graph are checked, and the distance value of the target node may be changed.
+                        We can interpret this check and assignment of a new value as one step and therefore have <var>m</var> steps in each phase.
+                        In total all phases together require <var>m &middot; (n-1)</var> steps.</p>
+                    <p>Afterwards, the algorithm checks whether there is a negative circle, for which he looks at each edge once.
+                        Altogether he needs <var>m</var> steps for the check.</p>
+                    <p><strong>The total running time of the algorithm </strong> is of the magnitude <var>m &middot; n</var>, as the <var>n</var> steps at the beginning and the <var>m</var>
+                        steps at the end can be neglected compared to the <var>m &middot; (n-1)</var> steps for the phases.</p>
+                </div>
+                <h3>How can one prove that the result is always correct?</h3>
+                <div>
+                    <h2>A mathematical proof</h2>
+                    <p>In this section we will prove that the Bellman-Ford Algorithm always returns a correct result, if the graph does not contain negative circles that can be reached from the starting node.</p>
+                    <h3>The principle of induction</h3>
+                    <p>The proof is based on the principle of induction. We first prove that at the beginning of the first phase, the cost for at least one node have been calculated correctly. Then, we show that in each phase we improve the current estimates.
+                    At the end of each phase, we thus know the correct cost for more nodes than at the beginning of the phase. Additionally, we do not destroy any information in the respective phase
+                    &ndash; the estimates can only get better.</p>
+                    <p>Finally, we conclude that we do not need as many phases as the number of nodes in order to compute the correct cost correctly.</p>
+                    <h3>After phase <var>i</var> the following holds:</h3>
+                    <p>The algorithm has &ndash; as an estimate &ndash; assigned to each node <var>u</var> maximally the length of the shortest path from the starting node to <var>u</var> that uses at most <var>i</var>
+                    edges (if such a path exists).</p>
+                    <p>Let us have a look at this statement in detail for a node <var>u</var> at the end of phase <var>i</var>:</p>
+                    <p>If no path from the starting node to <var>u</var> that uses at most <var>i</var> edges exists, we do not know anything.</p>
+                    <p>If a path from the starting node to <var>u</var> using at most <var>i</var> edges exists, we know that the cost estimate for <var>u</var>
+                    is as high as the cost of the path or lower. The reason is the following: If we consider the path without its last edge, we yield a path using <var>i</var>-1 edges.
+                    The cost of the path's last node has been calculated correctly in the last phase. In this phase we have considered all edges, including the last part of the path.
+                    As we have updated the cost correctly when considering the last part of the path, the cost of the last node of the path (that is using <var>i</var> edges) correctly.</p>
+                    <h3>The number of phases needed is smaller than the number of nodes.</h3>
+                    <p>A path using at least as many edges as the number of nodes cannot be a shortest path if all circle have positive total weight. With each edge the path uses he "sees" another node (the target node of the edge).
+                    Additionally, we have to count the starting node the path saw without using another edge. If he uses as many edges as the number of nodes, it has seen at least one node twice or &ndash; to rephrase it &ndash; has used a circle.
+                    As we have assumed that all circles have positive weight, skipping the circle would have been shorter.</p>
+                    <p>If there are circles with a total weight of 0, it simply is as expensive to use the circle than to not do it. 
+                        In this case paths that use less edges than the number of nodes suffice as well.</p>
+                </div>
+                <h3>References</h3>
+                <div>
+                <h4>Literature</h4>
+<dl>
+<dt>[GT88]</dt><dd>Andrew V. Goldberg und Robert E. Tarjan. „A new approach to the maximum-flow problem“. In: J. Assoc. Comput. Mach. 35.4 (1988), S. 921–940. issn: 0004-5411. doi: 10.1145/48014.61051. url: <a href="http://dx.doi.org/10.1145/48014.61051">http://dx.doi.org/10.1145/48014.61051</a>.</dt>
+<dt>[AMO93]</dt><dd>Ravindra K. Ahuja, Thomas L. Magnanti und James B. Orlin. Network flows. Theory, algorithms, and applications. Prentice Hall, Inc., Englewood Cliffs, NJ, 1993, S. xvi+846. isbn: 0-13-617549-X.</dt>
+<!-- <dt>[ID05]</dt><dd>Stefan Irnich und Guy Desaulniers. „Shortest Path Problems with Resource Constraints“. English. In: Column Generation. Hrsg. von Guy Desaulniers, Jacques Desrosiers und MariusM. Solomon. Springer US, 2005, S. 33–65. isbn: 978-0-387-25485-2. doi: 10.1007/ 0-387-25486-2_2. url: http://dx.doi.org/10.1007/0-387-25486-2_2.</dt> -->
+<dt>[Jun13]</dt><dd>Dieter Jungnickel. Graphs, networks and algorithms. Fourth. Bd. 5. Algorithms and Com- putation in Mathematics. Springer, Heidelberg, 2013, S. xx+675. isbn: 978-3-642-32277-8; 978-3-642-32278-5. doi: 10.1007/978-3-642-32278-5. url: http://dx.doi.org/10. 1007/978-3-642-32278-5.</dt>
+<dt>[Cor09]</dt><dd>Thomas H. Cormen. Introduction to algorithms. MIT press, 2009.</dd>
+<dl>
+
+<h4>Web resources</h4>
+                <ol>
+<!--                 <li>Goldberg, Andrew V., and Robert E. Tarjan. "A new approach to the maximum-flow problem." Journal of the ACM (JACM) 35.4 (1988): 921-940.</li>
+                <li>Ahuja, Ravindra K., Thomas L. Magnanti, and James B. Orlin. "Network flows. 1993." Pg 39: 193-196.</li>
+                <li>Ahuja, Ravindra K., Thomas L. Magnanti, and James B. Orlin. Network flows. No. MIT-WP-2059-88. ALFRED P SLOAN SCHOOL OF MANAGEMENT CAMBRIDGE MA, 1988.</li>
+                <li>Jungnickel, Dieter. Graphs, networks and algorithms. Heidelberg: Springer, 2008.</li>
+                <li>Cormen, Thomas H. Introduction to algorithms. MIT press, 2009.</li> -->
+                <li><a href="http://wwwmayr.in.tum.de/lehre/2013WS/algoprak/uebung/tutorial6.english.pdf">http://wwwmayr.in.tum.de/lehre/2013WS/algoprak/uebung/tutorial6.english.pdf</a></li>
+                <li><a href="http://people.mpi-inf.mpg.de/~mehlhorn/DatAlg/Maxflow.pdf">http://people.mpi-inf.mpg.de/~mehlhorn/DatAlg/Maxflow.pdf</a></li>
+                <li><a href="https://en.wikipedia.org/wiki/Maximum_flow_problem">https://en.wikipedia.org/wiki/Maximum_flow_problem</a></li>
+                <li><a href="https://lucatrevisan.wordpress.com/2011/02/04/cs261-lecture-9-maximum-flow/">https://lucatrevisan.wordpress.com/2011/02/04/cs261-lecture-9-maximum-flow/</a></li>
+                <li><a href="https://www.topcoder.com/community/data-science/data-science-tutorials/maximum-flow-section-1/">https://www.topcoder.com/community/data-science/data-science-tutorials/maximum-flow-section-1/</a></li>
+                </ol>
+                </div>
+                <h3>Where can I find more information about graph algorithms?</h3>
+                <div><p>Other graph algorithms are explained on the <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Website of Chair M9</a> of the TU München.</p>
+                <p>Furthermore there is an interesting book about shortest paths: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
+                <p><a href="http://www.ma.tum.de/Studium/StudieninteressierteEn">Studying mathematics at the TU München</a> answers all questions about graph theory (if an answer is known).</p>
+                
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p class="Disclaimer">
+            IDP Project of Adrian Haarbach at Chair M9 of Technische Universität München. <span id="year">2015</span> | <a href="http://www-m9.ma.tum.de/Allgemeines/Rechtliches">Terms of use</a> | <a href="http://www-m9.ma.tum.de/Allgemeines/Impressum">About Us</a> | <a href="mailto&#58;m&#46;ritter&#64;ma&#46;tum&#46;de&#63;subject&#61;M9&#45;Web&#45;Feedback">Suggestions</a>
+        </p>
+    </footer>
+</body>
