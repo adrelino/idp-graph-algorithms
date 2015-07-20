@@ -223,10 +223,10 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
             return (divCounter == s.id) ? "block" : "none";
         });
 
-        d3.select("#ta_td_U").text(s.U.map(function(d){return d.id}).join(","));
-        if(s.currentLabel) d3.select("#ta_td_l").text(s.currentLabel.id);
-        d3.select("#ta_td_P").text(s.P.map(function(d){return d.id}).join(","));
-        d3.select("#ta_td_l_dash");
+        d3.select("#ta_td_U").text("{"+s.U.map(function(d){return d.id}).join(",")+"}");
+        d3.select("#ta_td_l").text(s.currentLabel ? s.currentLabel.id : "-");
+        d3.select("#ta_td_P").text("{"+s.P.map(function(d){return d.id}).join(",")+"}");
+        d3.select("#ta_td_l_dash").text(s.l_dash ? s.l_dash.id : "-");
 
         if(this.fastForwardIntervalID != null){
             this.setDisabledForward(true,false);
@@ -292,6 +292,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
                 dominance();
                 break;
             case STATUS_FINISHED:
+                this.filter();
                 this.stopFastForward();
                 break;
             default:
@@ -346,7 +347,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
             // var finalflow = Graph.instance.nodes.get(s.targetId).state.exess;
             // that.stopFastForward();
             // d3.select("#finalflow").text(finalflow);
-            // logger.log("Finished with a max flow of "+finalflow);
+            logger.log("Finished");
             return;
         }
         
@@ -406,7 +407,17 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
      */
     function dominance() {
         //TODO
+        logger.log2("dominance step")
         s.id = STATUS_MAINLOOP;
+    }
+
+    /**
+     * discard strictly dominated labels in both P and U
+     */
+    function filter() {
+        //TODO
+        logger.log("filter solution step")
+        s.id = STATUS_FINISHED;
     }
 
     var constrainedEdgeResourceIndex = 0; //the other one is unconstrained but should be minimized. E.g.: min cost, constrained time
@@ -420,7 +431,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
         //just save both ids (a little reduntant) for easy access and serialization 
         this.arcId = arc.id; //incoming arc
         this.nodeId = arc.end.id; //this label is resident (==ending) at node node
-        this.id = (parent ? (parent.id + "->") : "") + this.nodeId;
+        this.id = (parent ? (parent.id + "->") : "" ) + that.nodeLabel(Graph.instance.nodes.get(this.nodeId));
 
         this.resources = [];
         if(parent==null){

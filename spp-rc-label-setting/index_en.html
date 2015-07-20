@@ -415,8 +415,7 @@ The implementation is a label-setting algorithm. This means that there must be o
                             <div><p>s &larr; pick(v)</p></div>
                             <div><p>BEGIN</p></div>
                             <div><p>(* Initialize *)</p>
-                                 <p>P &larr; &empty;</p>
-                                 <p>U &larr; { (&epsilon;,s) }</p></div>
+                                 <p>U &larr; {(&epsilon;,s)}, P &larr; &empty;</p></div>
                             <div><p>(* Main Loop *)</p>
                                  <p>WHILE &exist; l=(~,v) &in; U</p></div>
 <!--                                  <p>WHILE U &ne; &empty; DO</p>
@@ -471,16 +470,16 @@ The implementation is a label-setting algorithm. This means that there must be o
                             <h3>Variable status</h3>
                             <table class="algoInformationen">
                                 <tr>
+                                    <th class="algoInfoTH"><span>l'</span></th>
                                     <th class="algoInfoTH"><span>U</span></th>
                                     <th class="algoInfoTH"><span>l</span></th>
                                     <th class="algoInfoTH"><span>P</span></th>
-                                    <th class="algoInfoTH"><span>l'</span></th>
                                 </tr>
                                 <tr>
-                                    <td id="ta_td_U" class="algoInfoTD">-</td>
-                                    <td id="ta_td_l" class="algoInfoTD">&#8709;</td>
-                                    <td id="ta_td_P" class="algoInfoTD">-</td>
                                     <td id="ta_td_l_dash" class="algoInfoTD">-</td>
+                                    <td id="ta_td_U" class="algoInfoTD">&empty;</td>
+                                    <td id="ta_td_l" class="algoInfoTD">-</td>
+                                    <td id="ta_td_P" class="algoInfoTD">&empty;</td>
                                 </tr>
                             </table>
                         </div>
@@ -692,9 +691,8 @@ END</code></pre></div>
                 <div>
                 <h4>Literature</h4>
 <dl>
-<dt>[GT88]</dt><dd>Andrew V. Goldberg und Robert E. Tarjan. „A new approach to the maximum-flow problem“. In: J. Assoc. Comput. Mach. 35.4 (1988), S. 921–940. issn: 0004-5411. doi: 10.1145/48014.61051. url: <a href="http://dx.doi.org/10.1145/48014.61051">http://dx.doi.org/10.1145/48014.61051</a>.</dt>
+<dt>[ID05]</dt><dd>Stefan Irnich und Guy Desaulniers. „Shortest Path Problems with Resource Constraints“. English. In: Column Generation. Hrsg. von Guy Desaulniers, Jacques Desrosiers und MariusM. Solomon. Springer US, 2005, S. 33–65. isbn: 978-0-387-25485-2. doi: 10.1007/ 0-387-25486-2_2. url: http://dx.doi.org/10.1007/0-387-25486-2_2.</dt>
 <dt>[AMO93]</dt><dd>Ravindra K. Ahuja, Thomas L. Magnanti und James B. Orlin. Network flows. Theory, algorithms, and applications. Prentice Hall, Inc., Englewood Cliffs, NJ, 1993, S. xvi+846. isbn: 0-13-617549-X.</dt>
-<!-- <dt>[ID05]</dt><dd>Stefan Irnich und Guy Desaulniers. „Shortest Path Problems with Resource Constraints“. English. In: Column Generation. Hrsg. von Guy Desaulniers, Jacques Desrosiers und MariusM. Solomon. Springer US, 2005, S. 33–65. isbn: 978-0-387-25485-2. doi: 10.1007/ 0-387-25486-2_2. url: http://dx.doi.org/10.1007/0-387-25486-2_2.</dt> -->
 <dt>[Jun13]</dt><dd>Dieter Jungnickel. Graphs, networks and algorithms. Fourth. Bd. 5. Algorithms and Com- putation in Mathematics. Springer, Heidelberg, 2013, S. xx+675. isbn: 978-3-642-32277-8; 978-3-642-32278-5. doi: 10.1007/978-3-642-32278-5. url: http://dx.doi.org/10. 1007/978-3-642-32278-5.</dt>
 <dt>[Cor09]</dt><dd>Thomas H. Cormen. Introduction to algorithms. MIT press, 2009.</dd>
 <dl>
