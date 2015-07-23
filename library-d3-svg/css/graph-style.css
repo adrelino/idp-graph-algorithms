@@ -92,3 +92,30 @@ circle.selected{
 #testArc.hidden {
   display: none;
 }
+
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.axis .minor line {
+  stroke: #777;
+  stroke-dasharray: 2,2;
+}
+
+/*.x.axis line {
+  stroke: #fff;
+}*/
+
+/*.x.axis .minor {
+  stroke-opacity: .5;
+}*/
+
+/*.x.axis path {
+  display: none;
+}*/
+
+.axis line, .axis path {
+  fill: none;
+  stroke: #000;
+}

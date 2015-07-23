@@ -12,7 +12,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
      * @type SPPRCLabelSettingAlgorithm
      */
     var that = this;
-    var algo = that;
     
     var debugConsole = false;
     
@@ -32,6 +31,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
      * @type Logger
      */
     var logger = new Logger(d3.select("#logger"));
+
+    var labelDrawer = new LabelDrawer(d3.select("#ta_canvas_graph2"),this);
 
     /**
      * status variables
@@ -99,7 +100,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
         Graph.addChangeListener(function(){
             that.clear();
             that.reset();
+                         that.squeeze();
             that.update();
+
         });
 
         this.reset();
@@ -134,6 +137,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
 
         this.updateDescriptionAndPseudocode();
         logger.update();
+
+        labelDrawer.updateLabels(s);
 
         if(Graph.instance){
              SPPRCLabelSettingAlgorithm.prototype.update.call(this); //updates the graph
@@ -470,8 +475,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
             if(lstar.resources[constrainedEdgeResourceIndex]>=residentVertex.resources[0]){ //nothing to do
 //                console.log2("waiting time of "+diff+" at "+lstar.nodeId);
             }else{
-               var diff = residentVertex.resources[0] - lstar.resources[constrainedEdgeResourceIndex];
-               logger.log3("waiting time of "+residentVertex.resources[0]+"-"+lstar.resources[constrainedEdgeResourceIndex]+"="+diff+" at "+lstar.nodeId);
+               lstar.wait = residentVertex.resources[0] - lstar.resources[constrainedEdgeResourceIndex]; //saved so we can draw a nice path
+               logger.log3("waiting time of "+residentVertex.resources[0]+"-"+lstar.resources[constrainedEdgeResourceIndex]+"="+lstar.wait+" at "+lstar.nodeId);
                lstar.resources[constrainedEdgeResourceIndex]=residentVertex.resources[0];
             }
             return true;

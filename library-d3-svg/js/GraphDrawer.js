@@ -116,6 +116,21 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
 
     this.nodePos = nodePos;
 
+    this.squeeze = function(){
+        var nodes = Graph.instance.getNodes();
+
+        if(nodes){
+        x.domain(d3.extent(nodes, function(d) { return d.x; }));
+        y.domain(d3.extent(nodes, function(d) { return d.y; }));
+
+        nodePos = function(d){
+            return {x:x(d.x), y:y(d.y)};
+        };
+
+        this.nodePos=nodePos
+        }
+    }
+
     function lineAttribs(d){
      d3.select(this)
       .attr({ x1:nodePos(d.start).x, y1:nodePos(d.start).y, x2:nodePos(d.end).x, y2:nodePos(d.end).y });

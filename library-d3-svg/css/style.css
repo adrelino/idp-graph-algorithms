@@ -36,3 +36,8 @@ div.LegendeMinimized {
     bottom: 0px;
     right:  0px;
 }
+
+td.algoInfoTD {
+  border-radius: 50%;
+  background-clip: content-box;
+}
