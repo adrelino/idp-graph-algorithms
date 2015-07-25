@@ -52,21 +52,36 @@ var global_NodeLayout = {'fillStyle' : const_Colors.NodeFilling,    // Farbe der
                          'fontSize' : 14                            // Schriftgrösse in Pixeln
                         };
 
+function translate(x,y){
+    return "translate("+x+","+y+")";
+}
 
-
-var GraphDrawer = function(svgOrigin,additionalMarginTop){
+var GraphDrawer = function(svgOrigin,extraMargin,filename,transTime){
 
     /////////////////
     //PRIVATE
 
-    var additionalMarginTop = additionalMarginTop || 0;
+    var transTime = (transTime!=null) ? transTime : 250;
+
+    this.filename = filename || "graph1.txt";
+
+    var extraMargin = extraMargin || {};
 
     var xRange = +svgOrigin.attr("width") || 400;
         yRange = +svgOrigin.attr("height") || 300;
     var wS = global_NodeLayout['borderWidth'];
-    var margin = {top: global_KnotenRadius+wS+additionalMarginTop, right: global_KnotenRadius+wS, bottom: global_KnotenRadius+wS, left: global_KnotenRadius+wS},
+    
+    var margin = {
+            top: global_KnotenRadius+wS+ (extraMargin.top || 10),
+            right: global_KnotenRadius+wS,
+            bottom: global_KnotenRadius+wS,
+            left: global_KnotenRadius+wS +(extraMargin.left || 0)}
+
         width = xRange - margin.left - margin.right,
         height = yRange - margin.top - margin.bottom;
+
+    this.height = height;
+    this.width = width;
 
     this.margin = margin;
 
@@ -91,54 +106,57 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
     var svg = svgOrigin.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    this.svg=svg;
+
     var svg_links=svg.append("g").attr("id", "edges");
     var svg_nodes=svg.append("g").attr("id", "nodes");
 
-    var x = d3.scale.linear()
-        .range([margin.left, width-margin.right]);
+    this.x = d3.scale.linear()
+        .range([margin.left, width-margin.right])
+        .domain([0,xRange]);
 
-    var y = d3.scale.linear()
-        .range([height-margin.top, margin.bottom]);
-
-        x.domain([0,xRange]);//d3.extent(graph.getNodes(), function(d) { return d.x; }));  //[0,xRange]);
-     // x.domain([0,Math.max(width,d3.max(nodes, function(d){return d.x;}))]);
-     // y1.domain([0,Math.max(height,d3.max(nodes, function(d){return d.y;}))]);
-    //   y.domain([0,2*nodes.length]);
-        y.domain([0,yRange]);//d3.extent(graph.getNodes(), function(d) { return d.y; }));//.nice();
+    this.y = d3.scale.linear()
+        .range([height-margin.top, margin.bottom])
+        .domain([0,yRange]);
 
     var transform = function(d){
-      return "translate(" + x(d.x) + "," + y(d.y) + ")"
-    ;};
-
-    var nodePos = function(d){
-        return {x:x(d.x), y:y(d.y)};
-    };
-
-    this.nodePos = nodePos;
+        return translate(this.x(this.nodeX(d)),this.y(this.nodeY(d)));
+    }
+    transform = transform.bind(this);
 
     this.squeeze = function(){
-        var nodes = Graph.instance.getNodes();
+        var nodes;
 
-        if(nodes){
-        x.domain(d3.extent(nodes, function(d) { return d.x; }));
-        y.domain(d3.extent(nodes, function(d) { return d.y; }));
-
-        nodePos = function(d){
-            return {x:x(d.x), y:y(d.y)};
-        };
-
-        this.nodePos=nodePos
+        if(Graph.instance && (nodes = Graph.instance.getNodes())){
+            this.x.domain(d3.extent(nodes, function(d) { return d.x; }));
+            this.y.domain(d3.extent(nodes, function(d) { return d.y; }));
         }
     }
 
-    function lineAttribs(d){
-     d3.select(this)
-      .attr({ x1:nodePos(d.start).x, y1:nodePos(d.start).y, x2:nodePos(d.end).x, y2:nodePos(d.end).y });
+    //somehow we get old copies of nodes in d where the state is outdated
+    //-> workaround: get the correct node from the Graph instance using its id
+    var xfun = function(d){
+        return this.x(this.nodeX(Graph.instance.nodes.get(d.id) || d));
+    }
+
+    var yfun = function(d){
+        return this.y(this.nodeY(Graph.instance.nodes.get(d.id) || d));
+    }
+
+    xfun = xfun.bind(this);
+
+    yfun = yfun.bind(this);
+
+    function lineAttribs(d,a,b){
+        var attr = { x1:xfun(d.start), y1:yfun(d.start), x2:xfun(d.end), y2:yfun(d.end)};
+        if(transTime) d3.select(this).transition().duration(transTime).attr(attr)
+        else d3.select(this).attr(attr);
     };
 
     function textAttribs(d){
-        d3.select(this)
-          .attr({ x:(nodePos(d.start).x+nodePos(d.end).x)*0.5, y:(nodePos(d.start).y+nodePos(d.end).y)*.5});
+        var attr = { x : (xfun(d.start)+xfun(d.end))*0.5 , y : ( yfun(d.start)+yfun(d.end))*.5};
+        if(transTime) d3.select(this).transition().duration(transTime).attr(attr)
+        else d3.select(this).attr(attr);
     };
 
     /////////////////
@@ -157,7 +175,7 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
     var that = this;
 
     this.screenPosToNodePos = function(pos){
-        return {x: x.invert(pos[0]-margin.left), y: y.invert(pos[1]-margin.top)};
+        return {x: that.x.invert(pos[0]-margin.left), y: that.y.invert(pos[1]-margin.top)};
     };
 
     this.screenPosToTransform = function(pos){
@@ -203,10 +221,16 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
         // Appending to the enter selection expands the update selection to include
         // entering elements; so, operations on the update selection after appending to
         // the enter selection will apply to both entering and updating nodes.
+            if(transTime){
             selection
-//                 .transition()
+                .transition().duration(transTime)
                 .attr("transform",transform)
-                .call(this.onNodesUpdated.bind(this));
+                .call(this.onNodesUpdated);
+            }else{
+            selection
+                .attr("transform",transform)
+                .call(this.onNodesUpdated);
+            }
 
             selection.selectAll("text.label")
                  .text(this.nodeLabel);
@@ -240,6 +264,8 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
         
 
         enterSelection.append("line")
+            .attr("class","arrow")
+            .attr("marker-end", "url(#arrowhead2)")
             .style("stroke","black")
             .style("stroke-width",global_Edgelayout['lineWidth'])
 
@@ -248,19 +274,21 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
 //             .attr("dominant-baseline","middle")
 //             .attr("dy", "-.5em")           // set offset y position
             .attr("class","resource unselectable edgeLabel")
+   
+
+    var that = this;
 
 
     //ENTER + UPDATE
-        selection.selectAll("line")
-            .attr("marker-end", "url(#arrowhead2)")
+        var selt = selection;//.transition().duration(1000);
+        selt.selectAll("line")
             .each(lineAttribs)
 //             .style("opacity",1e-6)
 //             .transition()
 //             .duration(750)
 //             .style("opacity",1);
             
-        selection.selectAll("text.resource")
-            .each(textAttribs)
+        selt.selectAll("text.resource")
             .text(this.edgeText)
             .style("text-anchor", function(d){
                 var arrowXProj = d.start.x-d.end.x;
@@ -270,6 +298,8 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
                 var arrowYProj = d.start.y-d.end.y;
                 return (arrowYProj>0) ? "text-before-edge" : "text-after-edge";
             })
+            .each(textAttribs)
+
 
         selection.call(this.onEdgesUpdated)
 
@@ -283,7 +313,7 @@ var GraphDrawer = function(svgOrigin,additionalMarginTop){
     //initialize //TODO: is called twice when we init both tabs at the same time
     if(Graph.instance==null){
         //calls registered event listeners when loaded;
-       Graph.loadInstance("graphs-new/graph1.txt",function(error,text,filename){
+       Graph.loadInstance("graphs-new/"+this.filename,function(error,text,filename){
            console.log("error loading graph instance "+error + " from " + filename +" text: "+text);
        }); 
     }
@@ -326,4 +356,22 @@ GraphDrawer.prototype.nodeText = function(d){
 
 GraphDrawer.prototype.nodeLabel = function(d){
     return d.id;
+}
+
+GraphDrawer.prototype.nodeX = function(d){
+    if(!d){
+        console.log(d);
+    }
+    return d.x;
+};
+
+GraphDrawer.prototype.nodeY = function(d){
+    return d.y;
+};
+
+GraphDrawer.prototype.nodePos = function(d){
+    var obj = {};
+    obj.x = this.x(this.nodeX(d));
+    obj.y = this.y(this.nodeY(d));
+    return obj;
 }

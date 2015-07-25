@@ -5,7 +5,7 @@
  * @class
  */
 function SPPRCLabelSettingAlgorithm(svgSelection) {
-    GraphDrawer.call(this, svgSelection,15);
+    GraphDrawer.call(this,svgSelection,null,"graph2.txt");
 
     /**
      * closure for this class
@@ -100,7 +100,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
         Graph.addChangeListener(function(){
             that.clear();
             that.reset();
-                         that.squeeze();
+            that.squeeze();
             that.update();
 
         });
@@ -151,6 +151,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
      */
     this.activate = function() {
         this.reset();
+        this.squeeze();
         this.update();
     };
 
@@ -297,7 +298,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
                 dominance();
                 break;
             case STATUS_FINISHED:
-                this.filter();
+//                 this.filter();
                 this.stopFastForward();
                 break;
             default:

@@ -1,14 +1,15 @@
-var LabelDrawer = function(svgOrigin,algo,additionalMarginTop){
+var LabelDrawer = function(svgOrigin,algo){
 
     /////////////////
     //PRIVATE
 
-    var additionalMarginTop = additionalMarginTop || 0;
+    var leftMargin = 10;
+
 
     var xRange = +svgOrigin.attr("width") || 400;
         yRange = +svgOrigin.attr("height") || 300;
     var wS = global_NodeLayout['borderWidth'];
-    var margin = {top: global_KnotenRadius+wS+additionalMarginTop, right: global_KnotenRadius+wS, bottom: global_KnotenRadius+wS, left: global_KnotenRadius+wS},
+    var margin = {top: global_KnotenRadius+wS, right: global_KnotenRadius+wS, bottom: global_KnotenRadius+wS, left: global_KnotenRadius+wS+leftMargin},
         width = xRange - margin.left - margin.right,
         height = yRange - margin.top - margin.bottom;
 
@@ -19,18 +20,6 @@ var LabelDrawer = function(svgOrigin,algo,additionalMarginTop){
     svgOrigin
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-
-//     //d3.select("body").selectAll("svg")
-//     svgOrigin
-//         .append("defs").append("marker")
-//         .attr("id", "arrowhead2")
-//         .attr("refX",12) /*must be smarter way to calculate shift*/
-//         .attr("refY",2)
-//         .attr("markerWidth", 12)
-//         .attr("markerHeight", 4)
-//         .attr("orient", "auto")
-//         .append("path")
-//         .attr("d", "M 0,0 V 4 L6,2 Z"); //this is actual shape for arrowhead
 
     var svg = svgOrigin.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -43,17 +32,14 @@ var LabelDrawer = function(svgOrigin,algo,additionalMarginTop){
     var y = d3.scale.linear()
         .range([height-margin.top, margin.bottom]);
 
-        x.domain([0,10]);//d3.extent(graph.getNodes(), function(d) { return d.x; }));  //[0,xRange]);
-     // x.domain([0,Math.max(width,d3.max(nodes, function(d){return d.x;}))]);
-     // y1.domain([0,Math.max(height,d3.max(nodes, function(d){return d.y;}))]);
-    //   y.domain([0,2*nodes.length]);
-        y.domain([0,10]);//d3.extent(graph.getNodes(), function(d) { return d.y; }));//.nice();
+        x.domain([0,10]);
+        y.domain([0,10]);
 
-//Axis
-  var xAxis = d3.svg.axis().scale(x).orient("bottom");
-  var yAxis = d3.svg.axis().scale(y).orient("left");
+    //Axis
+      var xAxis = d3.svg.axis().scale(x).orient("bottom");
+      var yAxis = d3.svg.axis().scale(y).orient("left");
 
-       svg.append("g")
+      svg.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis)
@@ -70,7 +56,7 @@ var LabelDrawer = function(svgOrigin,algo,additionalMarginTop){
           .call(yAxis)
         .append("text")
           .attr("class", "label")
-          .attr("transform", "rotate(-90)")
+//           .attr("transform", "rotate(-90)")
           //.attr("x",10)
           //.attr("y", -3)
           .attr("dy", ".71em")

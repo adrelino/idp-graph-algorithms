@@ -274,13 +274,15 @@ Graph.setInstance = function(error,text,filename,exceptionFp){
       exceptionFp(error,text,filename);
       return;
     };
+    var noErrors=false;
     try{
       Graph.instance = Graph.parse(text);
-      Graph.onLoadedCbFP.forEach(function(fp){fp()});
+      noErrors=true;
     }catch(ex){
       if(exceptionFp) exceptionFp(ex,text,filename);
       else console.log(ex,text,filename);
     }
+    if(noErrors) Graph.onLoadedCbFP.forEach(function(fp){fp()});
 }
 
 Graph.loadInstance = function(filename,exceptionFp){

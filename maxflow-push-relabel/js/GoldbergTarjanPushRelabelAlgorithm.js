@@ -4,8 +4,8 @@
  * @augments GraphDrawer
  * @class
  */
-function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
-    GraphDrawer.call(this, svgSelection,15);
+function GoldbergTarjanPushRelabelAlgorithm(svgSelection,extraMargin) {
+    GraphDrawer.call(this, svgSelection,extraMargin);
 
     /**
      * closure for this class
@@ -36,6 +36,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     var logger = new Logger(d3.select("#logger"));
 
     /**
+     * The canvas to draw the heigh function
+     */
+    var heightfunctionDrawer = new HeightfunctionDrawer(d3.select("#ta_canvas_graph2"),this);
+
+    /**
      * status variables
      * @type Object
      */
@@ -49,6 +54,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         });
         return 25 * (val / maxCap);
     }
+
+    this.flowWidth = flowWidth;
     
     this.nodeLabel = function(d) {
         if (d.id == s.sourceId)
@@ -169,6 +176,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         Graph.addChangeListener(function(){
             that.clear();
             that.reset();
+            that.squeeze();
             that.update();
         });
 
@@ -213,7 +221,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
         this.updateDescriptionAndPseudocode();
         logger.update();
 
+
         if(Graph.instance){
+             heightfunctionDrawer.update();
              GoldbergTarjanPushRelabelAlgorithm.prototype.update.call(this); //updates the graph
         }
     }

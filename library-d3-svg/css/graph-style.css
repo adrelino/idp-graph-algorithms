@@ -44,7 +44,7 @@ input.tooltip {
 /* .link {
   stroke: #000;
   stroke-width: 2px;
-}
+}*/
 
 .flow {
   stroke: lightblue;
@@ -57,11 +57,11 @@ input.tooltip {
   stroke-width: 1.5px;
 }
 
-.node {
+/*.node {
   fill: #99f;
   stroke: #000;
   stroke-width: 1.5px;
-}
+}*/
 
 circle.selected{
     stroke: rgba(174,219,33, 0.7);
@@ -74,7 +74,7 @@ circle.selected{
 
 .height{
   stroke: #0a0;
-} */
+} 
 
 
 /*  only in shortest paths */

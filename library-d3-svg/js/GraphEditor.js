@@ -11,7 +11,7 @@
 // - Use Object.create to construct the subclass prototype object to avoid calling the superclass constructor.
 
 var GraphEditor = function(svgOrigin){
-  GraphDrawer.call(this,svgOrigin);
+  GraphDrawer.call(this,svgOrigin,null,null,0);
 
   this.type="GraphEditor";
 

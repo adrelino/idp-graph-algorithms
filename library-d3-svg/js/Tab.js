@@ -33,7 +33,7 @@ function Tab(algo,p_tab) {
 
             var nodes = Graph.instance.getNodes();
 
-            var screenCoords = nodes.map(algo.nodePos);
+            var screenCoords = nodes.map(algo.nodePos.bind(algo));
 
             var xR = d3.extent(screenCoords,function(d){return d.x});
             var yR = d3.extent(screenCoords,function(d){return d.y});
