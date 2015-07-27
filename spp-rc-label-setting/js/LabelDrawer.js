@@ -247,6 +247,9 @@ var LabelDrawer = function(svgOrigin,algo){
             .attr("width",function(d){return d.id.length*7})
             .attr("x",function(d){return d.id.length*(-3.5)})
             .style("fill",function(d){
+                if(s.id == algo.STATUS_DOMINANCE){
+                    return algo.dominanceStepNodeColors(d.nodeId);
+                }
                 if(s.currentLabel && d.id==s.currentLabel.id) return "white";
                 if(s.l_dash && d.id==s.l_dash.id) return "red";
                 if(s.U.some(function(a){return a.id==d.id})) return "yellow";
@@ -263,7 +266,8 @@ var LabelDrawer = function(svgOrigin,algo){
 
         // EXIT
         // Remove old elements as needed.
-         selection.exit().remove();
+         selection.exit().transition()
+            .attr("opacity","1e-6").remove();
     
     } //end updateNodes()
 

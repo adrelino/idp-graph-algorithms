@@ -4,8 +4,8 @@
  * @augments GraphDrawer
  * @class
  */
-function GoldbergTarjanPushRelabelAlgorithm(svgSelection,extraMargin) {
-    GraphDrawer.call(this, svgSelection,extraMargin);
+function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
+    GraphDrawer.call(this,svgSelection);
 
     /**
      * closure for this class
@@ -234,6 +234,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,extraMargin) {
      */
     this.activate = function() {
         this.reset();
+        this.squeeze();
         this.update();
     };
 
@@ -690,9 +691,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,extraMargin) {
         
         return null;
     }
-
-
-
 }
 
 // Vererbung realisieren
