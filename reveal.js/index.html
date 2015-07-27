@@ -32,452 +32,789 @@
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
 		<![endif]-->
+
+		<link rel="stylesheet" href="style.css">
+		<script src="../library-d3-svg/js/d3/d3.min.js"></script>
+
+
 	</head>
 
 	<body>
-
 		<div class="reveal">
-
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
-				<section>
-					<h1>Visualization</h1>
-					<p>of advanced graph algorithms</p>
-					<br>
-					<h3>Push-Relabel</h3>and
-					<h3>Label-Setting</h3>algorithms
-					<p>
-						<small>IDP of <a href="http://www.adrian-haarbach.de">Adrian Haarbach</a></small>
-					</p>
-				</section>
 
-				<section>
-					<h2>graph problems</h2>
-					<small>in discrete math</small><br>
-					<br>
-					<p>max-flow problem</p><small> and</small>
-					<p>shortest path problem with resource constraints</p>
-					<p>(SPPRC)</p>
-				</section>
+<section id="title">
+	<h1>Visualization</h1>
+	<p>of advanced graph algorithms</p>
+	<br>
+	<h4>Push-Relabel algorithm</h4><small class="fragment">solves the maximum flow problem</small><br>
+	<h4>Label-Setting algorithm</h4><small class="fragment">solves the shortest path problem with resource constraints (SPPRC)</small>
+	<p>
+		<small>IDP of <a href="http://www.adrian-haarbach.de">Adrian Haarbach</a></small>
+	</p>
+</section>
 
-				<!-- Example of nested vertical slides -->
-				<section>
-					<section>
-						<h2>network flows</h2>
-						<img src="push-relabel/1.png">
-					</section>
+<section id="previous">
+	<section>
+		<h2>Previous work</h2>
+	</section>
+	<section>
+		<h3>multiple IDP's</h3>
+		<iframe class="full" src="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmenEn" allowfullscreen></iframe>
+	</section>
+<!-- 	<section>
+		<h3>multiple IDP's (german site)</h3>
+		<iframe src="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen" allowfullscreen></iframe>
+	</section> -->
+	<section>
+		<h3>e.g.</h3>
+		<iframe class="full" src="../hierholzer/index_de.html"></iframe>
+	</section>
+	<section>
+		<h3>Canvas</h3>
+		<!-- <blockquote cite="https://en.wikipedia.org/wiki/Canvas_element"> -->
+		The canvas element is part of HTML5 and allows for dynamic, scriptable rendering of 2D shapes and bitmap images. It is a <em class="fragment highlight-red">low level</em>, procedural model that updates a <em class="fragment highlight-red">bitmap</em> and does <em class="fragment highlight-red">not have a built-in scene graph</em>.
+		<!-- </blockquote> -->
+		<small> <a href="https://en.wikipedia.org/wiki/Canvas_element">from wikipedia</a></small>
+	</section>
+	<section>
+		<h3 style="color:#ff2c2d">low level</h3>
+		<small>drawing operations</small>
+<!-- 		<pre><code data-code="../hierholzer/js/canvasDrawing.js" data-trim></code></pre>
+ -->		<pre><code data-trim>
+/**
+ * @author Mark J. Becker
+ * Funktionen in dieser Datei werden dazu genutzt,
+ * Formen auf das Canvas zu zeichnen
+ */
 
-					<section>
-						<h2>network flows</h2>
-						digraph \(G = (V, E)\)<br><br>
-						A flow network \( N=(G,c,s,t) \)
-						<ul>
-						<li>capacity \(\forall e \in E: c(e) \geq 0 \)
-						<li>source and sink \( s,t \in V \)</li>
-						</ul>
-						<br><br>
-						<larger>A flow on N: \( f : E \rightarrow \mathbb{R}_o^+ \)</larger>
-						<ol>
-						<li>feasability / capacity constraints: \( \forall e \in E : f(e) \leq c(e) \) </li>
-						<li>flow conservation: \( \forall u \in V \setminus \{s,t\} : \sum_{v \in V} f((u,v)) = \sum_{v \in V} f((v,u))\)
-						</li>
-						</ol>
-					</section>
-					<section>
-						<h2>maximum flow</h2>
-						<img src="push-relabel/6.png">
-					</section>
-					<section>
-						<h2>maximum flow</h2>
-						\( \max{\sum_{v \in V} f((s,v)) }\)<br>
-						=<br>
-						\( \max{\sum_{v \in V} f((v,t)) }\)
-					</section>
-					
-					<section>
-						<h2>Push-Relabel algorithm</h2>
-						of Goldberg-Tarjan <br>
-						<ul>
-							<li> <span style="text-decoration: line-through">flow conservation</span>, instead preflow \( \forall u \in V \setminus \{s,t\} :  e(u) = \sum_{v \in V} f((u,v)) - \sum_{v \in V} f((v,u)) \geq 0\)</li>
-							<li>exess \( e(u), u \in V \)</li>
-							<li>height \( h(u), u \in V \)</li>
-						</ul>
-						Intuition:<br>
-						while \( \exists v \in V \setminus \{s,t\}\) with \(e(v) > 0 \)
-						<ol>
-							<li> \( \forall (v,w) \in E \): push \( min(e(v),c(v,w)) \) exess flow to neighbours when h(v)=h(w)+1</li>
-							<li> relabel v to \( 1+max(h(w)) \) if it has still exess </li>
-						</ol>
-					</section>
-					<section>
-						<h2>Push-Relabel algorithm</h2>
-						of Goldberg-Tarjan <br>
-						<img src="push-relabel/4.png">
-						<br>
-						<a href="../maxflow-push-relabel/index_en.html">DEMO</a>
-					</section>
+/**
+ * Klasse mit Funktionen, um den Graph auf das Canvas zu zeichnen.
+ * Die Funktionen in dieser Klasse sind allesamt statisch
+ * @class 
+ */
+function CanvasDrawMethods() {};
 
-
-				</section>
-
-				<section>
-					<section>
-						<h2>Shortest Paths</h2>
-						<p>with resource constraints (SPPRC)</p>
-						edges carry n-d resource vectors:
-						<ol>
-						<li>accumulated along paths</li>
-						<li>constrained at intermediate nodes</li>
-						</ol>
-						<br>
-						<img src="spprc/1.png" height="300px">
-					</section>
-					<section>
-						<h2>Shortest Paths</h2>
-						<p>with time windows (SPPTW)</p>
-						<ul>
-						 <li>2 resources on edges (time,cost)</li>
-						 <li>time constrained at nodes [arrival,departure]</li>
-						 <li>cost unconstrained but seeks to be minimized</li>
-						</ul>
-						<br>
-						<br>
-						Problem:
-						find paths \( P=(v_0,v_1,v_2,... ,v_n), s=v_0, t=v_n\)
-						<br>
-						s.t.:
-						<ol>
-						<li>\( \forall v_j \in P: arrival(v_j) \leq \sum_{i=1}^{j}{time(v_{i-1},v_{i})} \leq departure(v_j) \)</li>
-						<li>\( cost(P) = \min{\sum_{i=1}^{n}cost(v_{i-1},v_i)} \)</li>
-						</ol>
-					</section>
-					<section>
-						<h2>Label-Setting Algorithm</h2>
-						<p>To solve SPPTW on a digraph without negative cycles</p>
-						A tree of labels to store and manage paths:
-						<ul>
-						<li>rooted at s</li>
-						<li>ending in a resident node v</li>
-						<li>carry accumulated resources</li>
-						</ul>
-						<br><br>
-						Intuition:<br>
-						While \(\exists \) unprocessed labels of paths P = (s,...v) in G:
-						<ol>
-						<li>extend P from v using outgoing edges (v,w)</li>
-						<li>keep if they are resource-feasible in w</li>
-						<li>discard labels wich are dominated in both time and cost</li>
-						</ol>
-						<br>
-						out of all feasible s-t paths, pick the ones with lowest cost
-						<br>
-						<a href="#/2">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow" style="transform: rotate(180deg); -webkit-transform: rotate(180deg);">
-						</a>
-					</section>
-					<section>
-						<h2>Label-Setting Algorithm</h2>
-						<p>To solve SPPTW on a digraph without negative cycles</p>
-						<img src="spprc/2.png" height="300px">
-						<br>
-						<a href="../spp-rc-label-setting/index_en.html">DEMO</a>
-					</section>
-				</section>
-
-				<section>
-					<h2>Slides</h2>
-					<p>
-						Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
-					</p>
-				</section>
-
-				<section>
-					<h2>Point of View</h2>
-					<p>
-						Press <strong>ESC</strong> to enter the slide overview.
-					</p>
-					<p>
-						Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-					</p>
-				</section>
-
-				<section>
-					<h2>Touch Optimized</h2>
-					<p>
-						Presentations look great on touch devices, like mobile phones and tablets. Simply swipe through your slides.
-					</p>
-				</section>
-
-				<section data-markdown>
-					<script type="text/template">
-						## Markdown support
-
-						Write content using inline or external Markdown.
-						Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-
-						```
-						<section data-markdown>
-						  ## Markdown support
-
-						  Write content using inline or external Markdown.
-						  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-						</section>
-						```
-					</script>
-				</section>
-
-				<section>
-					<section id="fragments">
-						<h2>Fragments</h2>
-						<p>Hit the next arrow...</p>
-						<p class="fragment">... to step through ...</p>
-						<p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
-
-						<aside class="notes">
-							This slide has fragments which are also stepped through in the notes window.
-						</aside>
-					</section>
-					<section>
-						<h2>Fragment Styles</h2>
-						<p>There's different types of fragments, like:</p>
-						<p class="fragment grow">grow</p>
-						<p class="fragment shrink">shrink</p>
-						<p class="fragment fade-out">fade-out</p>
-						<p class="fragment current-visible">current-visible</p>
-						<p class="fragment highlight-red">highlight-red</p>
-						<p class="fragment highlight-blue">highlight-blue</p>
-					</section>
-				</section>
-
-				<section id="transitions">
-					<h2>Transition Styles</h2>
-					<p>
-						You can select from different transitions, like: <br>
-						<a href="?transition=none#/transitions">None</a> -
-						<a href="?transition=fade#/transitions">Fade</a> -
-						<a href="?transition=slide#/transitions">Slide</a> -
-						<a href="?transition=convex#/transitions">Convex</a> -
-						<a href="?transition=concave#/transitions">Concave</a> -
-						<a href="?transition=zoom#/transitions">Zoom</a>
-					</p>
-				</section>
-
-				<section id="themes">
-					<h2>Themes</h2>
-					<p>
-						reveal.js comes with a few themes built in: <br>
-						<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
-					</p>
-				</section>
-
-				<section>
-					<section data-background="#dddddd">
-						<h2>Slide Backgrounds</h2>
-						<p>
-							Set <code>data-background="#dddddd"</code> on a slide to change the background color. All CSS color formats are supported.
-						</p>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png">
-						<h2>Image Backgrounds</h2>
-						<pre><code>&lt;section data-background="image.png"&gt;</code></pre>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png" data-background-repeat="repeat" data-background-size="100px">
-						<h2>Tiled Backgrounds</h2>
-						<pre><code style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-					</section>
-					<section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-color="#000000">
-						<div style="background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px;">
-							<h2>Video Backgrounds</h2>
-							<pre><code style="word-wrap: break-word;">&lt;section data-background-video="video.mp4,video.webm"&gt;</code></pre>
-						</div>
-					</section>
-					<section data-background="http://i.giphy.com/90F8aUepslB84.gif">
-						<h2>... and GIFs!</h2>
-					</section>
-				</section>
-
-				<section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						Different background transitions are available via the backgroundTransition option. This one's called "zoom".
-					</p>
-					<pre><code>Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
-				</section>
-
-				<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						You can override background transitions per-slide.
-					</p>
-					<pre><code style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
-				</section>
-
-				<section>
-					<h2>Pretty Code</h2>
-					<pre><code data-trim contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
-
-    var nodes = document.querySelectorAll( selector );
-
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
-
-      if( !node.className ) {
-        node.className += ' roll';
-      }
+/**
+ * Zeichne Pfeil an Kante
+ * @param  {Object} ctx             2dContext des Canvas
+ * @param  {Object} layout          Layout der Kante
+ * @param  {Object} source          Koordinaten des Ausgangspunkts
+ * @param  {Object} target          Koordinaten des Zielpunkts
+ * @param  {String} label           Text
+ * @param  {String} additionalLabel Zusätzlicher Text
+ */
+CanvasDrawMethods.drawArrowAtPosition = function(ctx,layout,source,target,label,additionalLabel) {
+    if(!layout.progressArrow) {
+        return;
     }
-  }
+    var arrowHeadColor = const_Colors.EdgeHighlight2;
+    // Pfeilkopf zeichnen
+    ctx.beginPath();
+    ctx.strokeStyle = arrowHeadColor;
+    ctx.lineWidth = 4.0;
+    var position = layout.progressArrowPosition || 0.0;
+    var center = {x: (source.x + (target.x - source.x) * position), y: (source.y + (target.y - source.y) * position)};
+    var edgeAngle = Math.atan2(target.y-source.y,target.x-source.x);
+    var arrowStart = {x:center.x+ Math.cos(edgeAngle)* layout.arrowHeadLength/2,y:center.y+ Math.sin(edgeAngle) * layout.arrowHeadLength/2};
+    var lineAngle1 = Math.atan2(target.y-source.y,target.x-source.x)
+            + layout.arrowAngle + Math.PI;  // Winkel des rechten Pfeilkopfs relativ zum Nullpunkt
+    var lineAngle2 = Math.atan2(target.y-source.y,target.x-source.x)
+            - layout.arrowAngle + Math.PI;  // Winkel des linken Pfeilkopfs relativ zum Nullpunkt
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle1) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle1) * layout.arrowHeadLength);
+    ctx.stroke();
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle2) * layout.arrowHeadLength, arrowStart.y + Math.sin(lineAngle2) * layout.arrowHeadLength);
+    ctx.stroke();
 }
-					</code></pre>
-					<p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
-				</section>
 
-				<section>
-					<h2>Marvelous List</h2>
-					<ul>
-						<li>No order here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-					</ul>
-				</section>
+/**
+ * Zeichnet einen Pfeil, wobei die Pfeilspitze in der Mitte ist.<br>
+ * Falls der Pfeil als "Highlighted" gekennzeichnet ist wird, so wird ein kleinerer
+ * Pfeil auf den großen Pfeil in anderer Farbe gezeichnet.
+ * @param {Object} ctx              2dContext des Canvas
+ * @param {Object} layout           Layout des Pfeils
+ * @param {Object} source           Koordinaten des Ausgangspunkts
+ * @param {Object} target           Koordinaten des Zielpunkts
+ * @param {String} label            Text auf dem Pfeil
+ * @param {String} additionalLabel  Zusatztext zu dem Pfeil
+ */
+CanvasDrawMethods.drawArrow = function(ctx,layout,source,target,label,additionalLabel) {
+    // Linie zeichnen
+    CanvasDrawMethods.drawLine(ctx,layout,source,target);
+    var arrowHeadColor = layout.lineColor;
 
-				<section>
-					<h2>Fantastic Ordered List</h2>
-					<ol>
-						<li>One is smaller than...</li>
-						<li>Two is smaller than...</li>
-						<li>Three!</li>
-					</ol>
-				</section>
+    if(layout.isHighlighted) {
+        arrowHeadColor = const_Colors.EdgeHighlight3;
+    }
 
-				<section>
-					<h2>Tabular Tables</h2>
-					<table>
-						<thead>
-							<tr>
-								<th>Item</th>
-								<th>Value</th>
-								<th>Quantity</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Apples</td>
-								<td>$1</td>
-								<td>7</td>
-							</tr>
-							<tr>
-								<td>Lemonade</td>
-								<td>$2</td>
-								<td>18</td>
-							</tr>
-							<tr>
-								<td>Bread</td>
-								<td>$3</td>
-								<td>2</td>
-							</tr>
-						</tbody>
-					</table>
-				</section>
+    // Pfeilkopf zeichnen
+    ctx.beginPath();
+    ctx.strokeStyle = arrowHeadColor;
+    //var position = 0.0;
+    var center = {x: (target.x+source.x)/2, y:(target.y+source.y)/2};
+    //var center = {x: (source.x + (target.x - source.x) * position), y: (source.y + (target.y - source.y) * position)};
+    var edgeAngle = Math.atan2(target.y-source.y,target.x-source.x);
+    var arrowStart = {x:center.x+ Math.cos(edgeAngle)* layout.arrowHeadLength/2,y:center.y+ Math.sin(edgeAngle)* layout.arrowHeadLength/2};
+    var lineAngle1 = Math.atan2(target.y-source.y,target.x-source.x)
+            + layout.arrowAngle + Math.PI;	// Winkel des rechten Pfeilkopfs relativ zum Nullpunkt
+    var lineAngle2 = Math.atan2(target.y-source.y,target.x-source.x)
+            - layout.arrowAngle + Math.PI;	// Winkel des linken Pfeilkopfs relativ zum Nullpunkt
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle1) * layout.arrowHeadLength,arrowStart.y + Math.sin(lineAngle1) * layout.arrowHeadLength);
+    ctx.stroke();
+    ctx.moveTo(arrowStart.x, arrowStart.y);
+    ctx.lineTo(arrowStart.x + Math.cos(lineAngle2) * layout.arrowHeadLength,arrowStart.y + Math.sin(lineAngle2) * layout.arrowHeadLength);
+    ctx.stroke();
+    if(layout.isHighlighted) {
+        var thirtyPercent = {x: 0.3*target.x + 0.7*source.x,
+                             y: 0.3*target.y + 0.7*source.y};
+        CanvasDrawMethods.drawLine(ctx,{lineColor:arrowHeadColor, lineWidth:layout.lineWidth},thirtyPercent,arrowStart);
+    }
+    if(label) {
+        CanvasDrawMethods.drawTextOnLine(ctx,layout,source,target,label);
+    }
+    if(additionalLabel) {
+        CanvasDrawMethods.drawAdditionalTextOnLine(ctx,layout,source,target,additionalLabel);
+    }
+};
 
-				<section>
-					<h2>Clever Quotes</h2>
-					<p>
-						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
-					</p>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-					</blockquote>
-				</section>
+/**
+ * Zeichnet einen Linie in 2D
+ * @param {Object} ctx           2dContext des Canvas
+ * @param {Object} layout        Layout der Linie
+ * @param {Object} source        Koordinaten des Ausgangspunkts
+ * @param {Object} target        Koordinaten des Zielpunkts
+ */
+CanvasDrawMethods.drawLine = function(ctx,layout,source,target) {
+    // Linie zeichnen
+    ctx.beginPath();
+    ctx.moveTo(source.x, source.y);
+    ctx.lineTo(target.x,target.y);
+    ctx.strokeStyle = layout.lineColor;
+    ctx.lineWidth = layout.lineWidth;
+    ctx.stroke();
+};
 
-				<section>
-					<h2>Intergalactic Interconnections</h2>
-					<p>
-						You can link between slides internally,
-						<a href="#/2/3">like this</a>.
-					</p>
-				</section>
+/**
+ * Zeichnet einen Text auf eine Linie.
+ * Der Text wird ensprechend gedreht.
+ * @param {Object} ctx           2dContext des Canvas
+ * @param {Object} layout        Layout des Pfeils
+ * @param {Object} source        Koordinaten des Ausgangspunkts
+ * @param {Object} target        Koordinaten des Zielpunkts
+ * @param {String} label         Text
+ */
+CanvasDrawMethods.drawTextOnLine = function(ctx,layout,source,target,label) {
+    ctx.save();								// Aktuellen Zustand speichern (vor den Transformationen)
+    ctx.font = layout.fontSize.toString() +"px " +layout.font;
+    var arrowHeight = Math.sin(layout.arrowAngle)*layout.arrowHeadLength;
+    var arrowWidth = Math.cos(layout.arrowAngle)*layout.arrowHeadLength;
+    var labelMeasure = ctx.measureText(label);
+    var alpha = Math.atan2(target.y-source.y,target.x-source.x);
+    var center = {x: (target.x+source.x)/2, y:(target.y+source.y)/2};
+    ctx.translate(center.x, center.y);
+    ctx.rotate(alpha);
+    if(Math.abs(alpha)>Math.PI/2) {					// Verhindere, dass Text auf dem Kopf angezeigt wird.
+        ctx.translate(0, layout.fontSize/2);				// Gehe in die Mitte des Texts 
+        ctx.rotate(Math.PI);				// Rotiere um 180 Grad
+        ctx.fillText(label, -arrowWidth/2, layout.fontSize+3+layout.lineWidth +arrowHeight);		// Schreibe Text an Position 
+    }
+    else {
+        ctx.fillText(label, -labelMeasure.width/2, -3-arrowHeight);									// Verschriebung um 3, um nicht zu nah am Pfeil zu sein.
+    }
+    ctx.restore();							// Ursprünglichen Zustand wiederherstellen.
+};
 
-				<section>
-					<h2>Speaker View</h2>
-					<p>There's a <a href="https://github.com/hakimel/reveal.js#speaker-notes">speaker view</a>. It includes a timer, preview of the upcoming slide as well as your speaker notes.</p>
-					<p>Press the <em>S</em> key to try it out.</p>
+/**
+ * Zeichnet einen Zusatztext auf eine Linie.<br>
+ * Der Text wird ensprechend gedreht und umkreist.
+ * @param {Object} ctx           2dContext des Canvas
+ * @param {Object} layout        Layout des Pfeils
+ * @param {Object} source        Koordinaten des Ausgangspunkts
+ * @param {Object} target        Koordinaten des Zielpunkts
+ * @param {String} label         Text
+ */
+CanvasDrawMethods.drawAdditionalTextOnLine = function(ctx,layout,source,target,label) {
+    ctx.save();								// Aktuellen Zustand speichern (vor den Transformationen)
+    ctx.font = layout.fontSize.toString() +"px " +layout.font;
+    ctx.fillStyle = layout.lineColor;
+    ctx.strokeStyle = layout.lineColor;
+    var arrowHeight = Math.sin(layout.arrowAngle)*layout.arrowHeadLength;
+    var arrowWidth = Math.cos(layout.arrowAngle)*layout.arrowHeadLength;
+    var labelMeasure = ctx.measureText(label);
+    var alpha = Math.atan2(target.y-source.y,target.x-source.x);
+    var viertel = {x: 0.25*target.x+0.75*source.x, y:0.25*target.y+0.75*source.y};
+    ctx.translate(viertel.x, viertel.y);
+    ctx.rotate(alpha);
+    if(Math.abs(alpha)>Math.PI/2) {			// Verhindere, dass Text auf dem Kopf angezeigt wird.
+        ctx.translate(0, layout.fontSize/2);		// Gehe in die Mitte des Texts 
+        ctx.rotate(Math.PI);				// Rotiere um 180 Grad
+        ctx.fillText(label, -labelMeasure.width/2, layout.fontSize+3+layout.lineWidth +arrowHeight);		// Schreibe Text an Position 
+        ctx.beginPath();
+        ctx.arc(0,layout.fontSize/2+6+layout.lineWidth +arrowHeight, 0.8*layout.fontSize, 0, Math.PI*2, true); 
+    }
+    else {
+        ctx.fillText(label, -labelMeasure.width/2, -layout.fontSize+12-layout.lineWidth -arrowHeight);		// Schreibe Text an Position 
+        ctx.beginPath();
+        ctx.arc(0,-layout.fontSize/2-layout.lineWidth -arrowHeight, 0.8*layout.fontSize, 0, Math.PI*2, true); 
+    }
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();							// Ursprünglichen Zustand wiederherstellen.
+};
 
-					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-					</aside>
-				</section>
+/**
+ * Zeichnet eine gefüllten Kreis an gegebener Position.
+ * In den Kreis kann ein Text geschrieben werden.
+ * @param {Object} ctx           2dContext des Canvas.
+ * @param {Object} position      Ort, an dem der Knoten erstellt werden soll.
+ * @param {Object} layout        Aussehen des Knotens.
+ * @param {String} label         Beschriftung des Knotens.
+ */
 
-				<section>
-					<h2>Export to PDF</h2>
-					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
-					<iframe src="//www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
-				</section>
+CanvasDrawMethods.drawDisk = function(ctx,position,layout,label) {
+    ctx.beginPath();
+    // Zeichne Füllung
+    ctx.fillStyle =  layout.fillStyle;
+    ctx.arc(position.x, position.y, layout.nodeRadius, 0, Math.PI*2, true); 
+    ctx.fill();
+    // Zeichne Rand
+    ctx.lineWidth = layout.borderWidth;
+    ctx.strokeStyle = layout.borderColor; 
+    ctx.stroke();
+    // Zeichne NodeID in den Knoten
+    ctx.fillStyle = layout.fontColor; 
+    ctx.font = layout.font + " " +layout.fontSize.toString() + "px sans-serif"; 
+    // Text sollte maximal so breit sein, dass er in den Knoten passt.
+    var labelMeasure = Math.min(ctx.measureText(label).width,layout.nodeRadius*1.7);
+    ctx.fillText(label, position.x-labelMeasure/2, position.y+layout.nodeRadius-layout.borderWidth-layout.fontSize/2,layout.nodeRadius*1.7);
+};
+		</code></pre>
+	</section>
+	<section>
+		<h3 style="color:#ff2c2d">bitmap</h3>
+		<small>resolution bound, not scalable</small><br>
+		<img width="600px" src="img/canvas-resolution.png"></img>
+	</section>
+	<section>
+		<h3 style="color:#ff2c2d">no scene graph</h3>
+		<small>instead just 1 DOM element</small>
+		<img data-src="img/canvas2.png">
+		<img data-src="img/canvas1.png" width="50%">
+	</section>
+	<section>
+		<h3 style="color:#ff2c2d">no scene graph</h3>
+		<small>hard to interact with visual elements</small>
+		<pre><code data-trim>
+canvas.on("click", function(e) {
+    var mx = e.pageX - canvas.offset().left;
+    var my = e.pageY - canvas.offset().top;
+    for(var knotenID in graph.nodes) {
+        if (graph.nodes[knotenID].contains(mx, my)) {
+            alert("clicked on node " + knotenId);
+            return;
+        }
+    }
+    for(var kantenID in graph.edges) {
+        if (graph.edges[kantenID].contains(mx, my, canvas.getContext("2d"))) {
+        	alert("clicked on edge " + kantenID);
+            return;
+        }
+    }
+    alert("clicked on empty space in canvas");
+}
 
-				<section>
-					<h2>Global State</h2>
-					<p>
-						Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-						will be added as a class to the document element when the slide is open. This lets you
-						apply broader style changes, like switching the page background.
-					</p>
-				</section>
+/**
+ * Zeigt, ob sich die gegebenen Koordinaten auf der Kante befinden.
+ * @method
+ * @param {Number} mx				x-Koordinate
+ * @param {Number} my				y-Koordinate
+ * @this {GraphNode}
+ * @return {Boolean}
+ */
+GraphNode.prototype.contains = function(mx, my) {
+    var coord = this.getCoordinates();
+    var radius = this.getLayout().nodeRadius;
+    return (mx-coord.x)*(mx-coord.x) + (my-coord.y)*(my-coord.y) < radius*radius;
+};
 
-				<section data-state="customevent">
-					<h2>State Events</h2>
-					<p>
-						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-					</p>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-Reveal.addEventListener( 'customevent', function() {
-	console.log( '"customevent" has fired' );
-} );
-					</code></pre>
-				</section>
+/**
+ * Zeigt, ob sich die gegebenen Koordinaten auf der Kante befinden.
+ * Es wird geprüft ob der Mausklick nah genug (innerhalb einer Toleranz) an der Kante war.
+ * @param {Number} mx				x-Koordinate
+ * @param {Number} my				y-Koordinate
+ * @param {Object} ctx				Kontext des aktuellen Canvas
+ * @this {Edge}
+ * @returns {Boolean}
+ * @method
+ */
+Edge.prototype.contains = function(mx,my,ctx) {
+    var toleranz = 7;									// Wie viele Punkte entfernt von der Kante darf man klicken?
+    var sourceC = this.getSourceCoordinates();
+    var targetC = this.getTargetCoordinates();
+    var alpha = Math.atan2(targetC.y-sourceC.y,targetC.x-sourceC.x);
+    // Ist der Mauszeiger auf der Kante?
 
-				<section>
-					<h2>Take a Moment</h2>
-					<p>
-						Press B or . on your keyboard to pause the presentation. This is helpful when you're on stage and want to take distracting slides off the screen.
-					</p>
-				</section>
+    var MouseShift = {x:mx-sourceC.x,y:my-sourceC.y};
+    var MouseShiftRot = {x: MouseShift.x*Math.cos(-alpha) - MouseShift.y*Math.sin(-alpha),
+                y: MouseShift.x*Math.sin(-alpha) + MouseShift.y*Math.cos(-alpha)};
+    var targetShift = {x:targetC.x-sourceC.x,y:targetC.y-sourceC.y};
+    var targetShiftRot = {x:targetShift.x*Math.cos(-alpha) - targetShift.y*Math.sin(-alpha),
+                y:targetShift.x*Math.sin(-alpha) + targetShift.y*Math.cos(-alpha)};
+    if(MouseShiftRot.x>=0 && MouseShiftRot.x<=targetShiftRot.x && Math.abs(MouseShiftRot.y)<=toleranz) {
+        return true;
+    }
+    
+    // Ist der Mauszeiger auf dem Text?
+    var center = {x: (targetC.x+sourceC.x)/2, y:(targetC.y+sourceC.y)/2};
+    var labelWidth = ctx.measureText(this.weight.toString()).width;
+    var arrowHeight = Math.sin(this.getLayout().arrowAngle)*this.getLayout().arrowHeadLength;
+    var c0 = {x:center.x+Math.cos(alpha)*labelWidth/2,
+        y:center.y+Math.sin(alpha)*labelWidth/2};
+    var c1 = {x:center.x-Math.cos(alpha)*labelWidth/2,
+        y:center.y-Math.sin(alpha)*labelWidth/2};
+    var c11 = {x:c1.x + Math.cos(alpha + Math.PI/2)*(-3-arrowHeight-this.getLayout().fontSize),
+                y:c1.y + Math.sin(alpha + Math.PI/2)*(-3-arrowHeight-this.getLayout().fontSize)};
+    var upperCornerOld = {x:c11.x-c0.x,y:c11.y-c0.y};
+    var upperCorner = {x:upperCornerOld.x*Math.cos(-alpha) - upperCornerOld.y*Math.sin(-alpha),
+                y:upperCornerOld.x*Math.sin(-alpha) + upperCornerOld.y*Math.cos(-alpha)};
 
-				<section>
-					<h2>Much more</h2>
-					<ul>
-						<li>Right-to-left support</li>
-						<li><a href="https://github.com/hakimel/reveal.js#api">Extensive JavaScript API</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#auto-sliding">Auto-progression</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#parallax-background">Parallax backgrounds</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#keyboard-bindings">Custom keyboard bindings</a></li>
-					</ul>
-				</section>
+    var rotatedMouseOld = {x:mx-c0.x,y:my-c0.y};
+    var rotatedMouse = {x: rotatedMouseOld.x*Math.cos(-alpha) - rotatedMouseOld.y*Math.sin(-alpha),
+                y: rotatedMouseOld.x*Math.sin(-alpha) + rotatedMouseOld.y*Math.cos(-alpha)};
+    if(rotatedMouse.x <=0 && rotatedMouse.x>= upperCorner.x && rotatedMouse.y<=0 && rotatedMouse.y>= upperCorner.y) {
+        return true;
+    }
+    return false;
+};
+	</code></pre>
+	</section>
+</section> <!-- end previous work -->
 
-				<section style="text-align: left;">
-					<h1>THE END</h1>
-					<p>
-						- <a href="http://slides.com">Try the online editor</a> <br>
-						- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
-					</p>
-				</section>
+
+
+<section id="approach">
+	<section>
+		<h2>My work</h2>
+	</section>
+	<section>
+		<h3>1 IDP, 2 algorithms</h3>
+			<!-- <iframe src="../both.html"></iframe> -->
+			<iframe class="half" data-src="../maxflow-push-relabel/index_en.html"></iframe>
+			<iframe class="half" data-src="../spp-rc-label-setting/index_en.html"></iframe>
+	</section>
+	<section>
+		<h3>Common need:</h3>
+		2nd visualization layer
+		<br>
+		<br>
+<!-- 		<br>
+		<h4>Push-Relabel algorithm</h4>
+		<ul class="fragment">
+				<li>height function of each node</li>
+		</ul>
+		<h4>Label-Setting algorithm</h4>
+		<ul class="fragment">
+					<li>labels of paths</li>
+					<li>pareto frontiers of all labels resident in a node</li>
+		</ul> -->
+		<ul>
+			<li>Push-Relabel algorithm
+				<ul class="fragment">
+					<li>height function of each node</li>
+				</ul>
+			</li>
+			<li>Label-Setting algorithm
+				<ul class="fragment">
+					<li>labels of paths</li>
+					<li>pareto frontiers of all labels resident in a node</li>
+				</ul>
+			</li>
+		</ul>
+	</section>
+
+	<section>
+		<h3>technology #1: SVG</h3>
+		<img style="vertical-algin:middle" width="70px" src="img/145px-SVG_logo.svg.png"></img><br>
+		Unlike low-level canvas, which is raster-based, <em class="fragment highlight-green">high-level</em> SVG is <em class="fragment highlight-green">vector-based</em>, i.e., each drawn shape is remembered as an object in a <em class="fragment highlight-green">scene graph</em> in the DOM. This means that if attributes of an SVG object are changed, the browser can automatically re-render the scene.
+
+<!-- In the canvas example above, once the rectangle is drawn, the fact that it was drawn is forgotten by the system. If its position were to be changed, the entire scene would need to be redrawn, including any objects that might have been covered by the rectangle. But in the equivalent SVG case, one could simply change the position attributes of the rectangle and the browser would determine how to repaint it. There are additional JavaScript libraries that add scene-graph capabilities to the canvas element. It is also possible to paint a canvas in layers and then recreate specific layers. -->
+
+<!-- SVG images are represented in XML, and complex scenes can be created and maintained with XML editing tools. -->
+
+The SVG scene graph enables <em class="fragment highlight-green">event handlers to be associated with objects </em>, so a rectangle may respond to an onClick event.
+<!--  To get the same functionality with canvas, one must manually match the coordinates of the mouse click with the coordinates of the drawn rectangle to determine whether it was clicked. -->
+		<!-- </blockquote> -->
+		<br>
+		<small> <a href="https://en.wikipedia.org/wiki/Canvas_element#Canvas_versus_Scalable_Vector_Graphics_.28SVG.29">from wikipedia</a></small>
+		<!-- <iframe data-src="https://en.wikipedia.org/wiki/Canvas_element#Canvas_versus_Scalable_Vector_Graphics_.28SVG.29"></iframe> -->
+	</section>
+	<section>
+		<h3 style="color:#008800">high-level</h3>
+		<small>drawing operations</small><br>
+		<img src="img/440px-SVG-Grundelemente.svg.png">
+	</section>
+	<section>
+		<h3 style="color:#008800">vector-based</h3>
+		<img width="50%" src="img/600px-SVG-Koordinaten.svg.png">
+	</section>
+
+<!-- 	<section>
+		<h3 style="color:#008800">scene-graph</h3>
+		<table>
+			<tr>
+				<td width="60%"><img src="img/svg1.png" style="vertical-align:middle"></td>
+				<td width="30%"><img src="img/svg-circle.png"><br><img src="img/svg-line.png"></td>
+			</tr>
+			<tr><img src="img/svg2.png" width="70%"></tr>
+		</table>
+	</section> -->
+
+	<section>
+		<h3 style="color:#008800">scene-graph</h3>
+		<img width="80%" src="img/svg1.png"></img>
+	</section>
+
+	<section>
+		<h3 style="color:#008800">scene-graph</h3>
+			<img width="40%" src="img/svg-circle3.png"> <img width="40%" src="img/svg-line.png"><br>
+			<img src="img/svg2.png" width="70%"></img>
+	</section>
+
+	<section>
+		<h3 style="color:#008800">scene-graph</h3>
+		<small>event-handlers</small>
+		<br>
+		<small>#mySVG1:</small><svg id="mySVG1" width="800" height="40"></circle></svg>
+<pre class="runnable"><code data-trim>
+var svg = d3.select("#mySVG1");
+//2 nodes
+svg.append("circle").attr({r:15,cx:500,cy:20}).style("fill","blue")
+svg.append("circle").attr({r:15,cx:20,cy:20}).style("fill","orange")
+//1 edge
+var edge = svg.append("g").attr("class","edge")
+edge.append("line").attr({x1:35,x2:485,y1:20,y2:20}).style("stroke","black").style("stroke-width","3px")
+edge.append("text").attr({x:220,y:20}).text("edge")
+</code></pre>
+<pre class="runnable"><code data-trim>
+var svg = d3.select("#mySVG1");
+svg.style("cursor","progress").on("click", function (){alert("clicked on svg");})
+svg.selectAll("circle").style("cursor","pointer").on("click", function (){
+	alert("clicked on node");
+	d3.event.stopPropagation();
+})
+svg.selectAll("g.edge").style("cursor","cell").on("click", function (){
+	alert("clicked on edge")
+	d3.event.stopPropagation();
+})
+</code></pre>
+	</section>
+
+	<section>
+		<h3>technology #2: D3</h3>
+<!-- 		<small>complete rewrite of visualization with D3.js (or just D3 for Data-Driven Documents), a JavaScript library for producing dynamic, interactive data visualizations in web browsers. It makes use of the widely implemented SVG, HTML5, and CSS standards. </small> -->
+		<iframe class="full" style="background:white" data-src="http://d3js.org/"></iframe>
+	</section>
+
+	<section>
+		<h3 style="color:#008800">Selections</h3>
+		<pre class="runnable"><code data-trim contenteditable>
+var sel = d3.selectAll("h3").style("color", "orange");
+		</code></pre><!--//alert(sel[0].map(function(d){return d.innerHTML}));-->
+		<h3 style="color:#008800">Selections with dynamic properties</h3>
+		<pre class="runnable"><code data-trim contenteditable>
+var sel = d3.selectAll("h3").style("color",function(d,i){
+	return (i % 2 == 0) ? "magenta" : "blue"
+});
+		</code></pre>
+<!-- 	<small>#myList:</small><br>
+		<ol id="myList">
+			<li>First item</li>
+			<li>Second item</li>
+			<li>Third item</li>
+		</ol> -->
+	</section>
+
+	<section>
+		<h3 style="color:#008800">D3+SVG</h3>
+		<small>remove,append,transitions</small><br>
+		<small>#svg1:</small>
+		<svg id="svg1" width="800" height="40">
+			<circle r="15" cx="20" cy="20" style="fill: rgb(152, 198, 234);"></circle>
+		</svg>
+<!-- 		<pre class="runnable"><code data-trim contenteditable>
+d3.select("#svg1").selectAll("circle").style("fill","red")
+		</code></pre> -->
+		<pre class="runnable"><code data-trim contenteditable>
+d3.select("#svg1").select("circle").remove();
+		 </code></pre>
+		<pre class="runnable"><code data-trim contenteditable>
+d3.select("#svg1").append("circle")
+  .attr({"r":15,"cy":20,"cx":Math.random()*800})
+		</code></pre>
+		<pre class="runnable"><code data-trim contenteditable>
+var colors = d3.scale.category20();
+d3.select("#svg1").selectAll("circle")
+  .transition().duration(3000)
+  .style("fill",function(d,i){
+     return colors(i);
+  })
+  .attr("cx",function(d,i){
+    return i*30+15
+  })
+  .attr("r",function(d,i){
+    return Math.random()*10+5;
+  })
+		 </code></pre>
+
+
+	</section>
+
+
+
+	<section>
+		<h3 style="color:#008800">Selections bound to data</h3>
+		<pre class="runnable"><code data-trim contenteditable>
+var sel = d3.select("#myList").selectAll("li")
+.data(["red","green","blue"])
+.style("color",function(d,i){
+	return d;
+})
+		</code></pre>
+	<small>#myList:</small><br>
+		<ol id="myList">
+			<li>First item</li>
+			<li>Second item</li>
+			<li>Third item</li>
+		</ol>
+	</section>
+
+	<section>
+		<h3><span style="color:#008800">Enter</span> and <span style="color:red">Exit</span> Selections</h3>
+		<small><a href="http://bost.ocks.org/mike/join/">thinking with joins</a> and the <a href="http://bl.ocks.org/mbostock/3808234">general update pattern</a></small>
+		<svg id="mySVG3" width="800" height="100">
+		</svg>
+<script>
+var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+var svg=d3.select("#mySVG3").append("g").attr("transform", "translate(32," + (100 / 2) + ")");
+
+function update(){
+	// console.log("update");
+}
+
+// Grab a random sample of letters from the alphabet, in alphabetical order.
+setInterval(function() {
+  update(d3.shuffle(alphabet)
+      .slice(0, Math.floor(Math.random() * 26))
+      .sort());
+}, 1500);
+</script>
+		<pre class="runnable global"><code data-trim contenteditable>
+function update(data) {
+
+  // DATA JOIN
+  // Join new data with old elements, if any.
+  var text = svg.selectAll("text")
+      .data(data, function(d) { return d; });
+
+  // UPDATE
+  // Update old elements as needed.
+  text.attr("class", "update")
+    .transition()
+      .duration(750)
+      .attr("x", function(d, i) { return i * 32; });
+
+  // ENTER
+  // Create new elements as needed.
+  text.enter().append("text")
+      .attr("class", "enter")
+      .attr("dy", ".35em")
+      .attr("y", -60)
+      .attr("x", function(d, i) { return i * 32; })
+      .style("fill-opacity", 1e-6)
+      .text(function(d) { return d; })
+    .transition()
+      .duration(750)
+      .attr("y", 0)
+      .style("fill-opacity", 1);
+
+  // EXIT
+  // Remove old elements as needed.
+  text.exit()
+      .attr("class", "exit")
+    .transition()
+      .duration(750)
+      .attr("y", 60)
+      .style("fill-opacity", 1e-6)
+      .remove();
+}
+		</code></pre>
+	</section>
+</section>
+
+<section>
+	<h1>Enough technology <br> lets do math</h1>
+</section>
+
+<!-- Example of nested vertical slides -->
+<section>
+	<section data-transition="fade-out">
+		<h2>network flows</h2>
+		<p>digraph \(G = (V, E)\)</p>
+		<img src="img/push-relabel/1.png">
+	</section>
+	<section data-transition="fade-in">
+		<h2>network flows</h2>
+		<p>digraph \(G = (V, E)\)</p>
+		<div>A flow network \( N=(G,c,s,t) \)<br>
+			<ul>
+				<li>capacity \(\forall e \in E: c(e) \geq 0 \)</li>
+				<li>source and sink \( s,t \in V \)</li>
+			</ul>
+		</div>
+		<br>
+		<div class="fragment">A flow on N: \( f : E \rightarrow \mathbb{R}_o^+ \)
+			<ol>
+				<li>feasability / capacity constraints: \( \forall e \in E : f(e) \leq c(e) \) </li>
+				<li>flow conservation: \( \forall u \in V \setminus \{s,t\} : \sum_{v \in V} f(u,v) = \sum_{v \in V} f(v,u)\)</li>
+			</ol>
+		</div>
+	</section>
+	<section>
+		<h2>Maximum flow</h2>
+		<img src="img/push-relabel/6.png">
+		<br>
+		\( \max flow = \)
+		<span class="fragment">6</span>
+		<span class="fragment">\( = \min cut\)</span>
+		<span class="fragment">\( = {\sum_{v \in V} f(s,v) } = {\sum_{v \in V} f(v,t) }\)</span>
+
+	</section>
+	
+	<section data-transition="fade-out">
+		<h2>Push-Relabel algorithm</h2>
+		<small>of Goldberg-Tarjan</small><br>
+		<img src="img/push-relabel/4.png">
+		<ul>
+			<li class="fragment">exess  \( e(u) = \sum_{v \in V} f(u,v) - \sum_{v \in V} f(v,u), u \in V \)</li>
+			<li class="fragment current-visible">flow conservation:
+				\( \forall u \in V \setminus\{s,t\}: e(u) = 0\)</li>
+			<li class="fragment"><span style="text-decoration: line-through">flow conservation</span>, instead preflow:
+				\( \forall u \in V \setminus\{s,t\}: e(u) \geq 0\)</li>
+			<li class="fragment">height \( h(u), u \in V \)</li>
+		</ul>
+	</section>
+
+	<section data-transition="fade-in fade-out">
+		<h2>Push-Relabel algorithm</h2>
+		<small>of Goldberg-Tarjan</small><br>
+		<img src="img/push-relabel/4.png"><br>
+		<span class="fragment">while \( \exists v \in V \setminus \{s,t\}\) with \(e(v) > 0 \)</span>
+		<ol>
+			<li class="fragment"> \( \forall (v,w) \in E \): push \( min(e(v),c(v,w)) \) exess flow to neighbours when h(v)=h(w)+1</li>
+			<li class="fragment"> relabel v to \( 1+max(h(w)) \) if it has still exess </li>
+		</ol>
+	</section>
+
+	<section data-transition="fade-in">
+		<iframe class="full" src="../maxflow-push-relabel/index_en.html"></iframe>
+		<small><a href="../maxflow-push-relabel/index_en.html">LINK</a></small>
+	</section>
+</section>
+
+<section>
+	<section data-transition="fade-out">
+		<h2>Shortest Paths</h2>
+		<small>with resource constraints (SPPRC)</small><br>
+		<img src="img/spprc/2.png" height="250px"><br>
+		edges carry n-d resource vectors:<br/>
+		<ol>
+		<li>accumulated along paths</li>
+		<li>constrained at intermediate nodes</li>
+		</ol>
+	</section>
+	<section data-transition="fade-in  fade-out">
+		<h2>Shortest Paths</h2>
+		<small>with time windows (SPPTW)</small><br>
+		<img src="img/spprc/2.png" height="250px"><br/>
+		edges carry 2-d (time,cost) resource vectors:
+		<ul>
+		 <li>time constrained at nodes [arrival,departure]</li>
+		 <li>cost unconstrained but seeks to be minimized</li>
+		</ul>
+	</section>
+	<section data-transition="fade-in">
+		<h2>Shortest Paths</h2>
+		<small>with time windows (SPPTW)</small><br>
+		<img src="img/spprc/2.png" height="250px"><br>
+		find paths \( P=(v_0,v_1,v_2,... ,v_n), s=v_0, t=v_n \) s.t.:<br/>
+		<ol>
+		<li>\( \forall v_j \in P: arr(v_j) \leq \sum_{i=1}^{j}{time(v_{i-1},v_{i})} \leq dep(v_j) \)</li>
+		<li>\( cost(P) = \min{\sum_{i=1}^{n}cost(v_{i-1},v_i)} \)</li>
+		</ol>
+	</section>
+	<section data-transition="fade-out">
+		<h2>Label-Setting Algorithm</h2>
+		<img src="img/spprc/labels.png" height="250px"><br>
+		A tree of labels to store and manage paths:
+		<ul>
+		<li>rooted at s</li>
+		<li>ending in a resident node v</li>
+		<li>carry accumulated resources</li>
+		</ul>
+	</section>
+	<section data-transition="fade-in fade-out">
+		<h2>Label-Setting Algorithm</h2>
+		<img src="img/spprc/labels.png" height="250px"><br>
+		While \(\exists \) unprocessed labels of paths P = (s,...v) in G:
+		<ol>
+		<li>extend P from v using outgoing edges (v,w)</li>
+		<li>keep if they are resource-feasible in w</li>
+		<li>discard labels wich are dominated in both time and cost</li>
+		</ol>
+<!-- 		out of all feasible s-t paths, pick the ones with lowest cost -->
+	</section>
+	<section data-transition="fade-in">
+		<iframe class="full" src="../spp-rc-label-setting/index_en.html"></iframe>
+		<small><a href="../spp-rc-label-setting/index_en.html">LINK</a></small>
+	</section>
+</section>
+
+<!-- <section>
+	<h2>new graph editor</h2>
+	<iframe class="full" data-src="../library-d3-svg/test/graph-editor.html"> </iframe>
+</section> -->
+
+<section>
+
+<section data-transition="fade-out">
+	<h2>Outlook: 2.5D</h2>
+	<iframe height="400px" width="400px" data-src="http://web.crocodoc.com/blog-demos/demo4.html"> </iframe><iframe height="400px" width="400px" data-src="http://projects.delimited.io/experiments/d3-threejs/"> </iframe><br>
+	<small><a href="http://web.crocodoc.com/blog-demos/demo4.html">CSS 3D Transforms of SVG Layers</a></small>
+	  |
+	<small><a href="http://www.delimited.io/blog/2014/3/14/d3js-threejs-and-css-3d-transforms">D3.js, Three.js and CSS 3D Transforms</a></small>
+</section>
+
+<section data-transition="fade-in">
+	<h2>Outlook: 3D!</h2>
+	<table>
+		<tr>
+		<td height="600px"><img width="500px" data-src="img/SVG-canvas-WebGL-and-X3DOM-relation-400x253.png"</img></td>
+		<td><iframe height="500px" width="500px" data-src="http://bl.ocks.org/hlvoorhees/raw/5986172/"> </iframe><br><small><a href="http://bl.ocks.org/hlvoorhees/5986172">d3 + x3dom</a></small>
+		</tr>
+		</td>
+	</table>
+</section>
+
+</section>
+
+<section>
+	<h1>THANK YOU</h1>
+</section>
+
 
 			</div>
 
@@ -496,20 +833,34 @@ Reveal.addEventListener( 'customevent', function() {
 				history: true,
 				center: true,
 
-				transition: 'slide', // none/fade/slide/convex/concave/zoom
+				transition: 'convex', // none/fade/slide/convex/concave/zoom
 
 				// Optional reveal.js plugins
 				dependencies: [
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
 					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
 					{ src: 'plugin/zoom-js/zoom.js', async: true },
 					{ src: 'plugin/notes/notes.js', async: true },
-
 					{ src: 'plugin/math/math.js', async:true}
 				]
 			});
+
+			d3.selectAll(".runnable").append("button").attr("class","runCodeButton").text("Run").on("click",function(d,a,c){
+				var code = d3.select(this.parentElement).select("code").text();
+// 				code = "function(svg){\n"+code+";\n}";
+				console.log(code);
+				if(d3.select(this.parentElement).classed("global")){
+					//http://stackoverflow.com/questions/4670805/javascript-eval-on-global-scope
+					eval.call(window,code)
+				}else{
+					eval(code);
+				}
+				
+// 				var fun = eval(code);
+// 				var svg = d3.select(this.parentElement).select("svg");
+// 				fun(svg);
+			})
 
 		</script>
 
