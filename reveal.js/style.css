@@ -1,0 +1,58 @@
+/*.reveal iframe {
+  width: 1000px;
+  height: 500px;
+}*/
+
+.full {
+	width: 1000px;
+	height: 500px;
+}
+
+.half {
+	width: 1000px;
+	height: 250px;
+}
+
+em {
+	/*color:black;*/
+	font-weight: bold;
+}
+
+.fragment.current-visible {
+	display: none;
+}
+
+.fragment.current-visible.current-fragment {
+	display: block;
+}
+
+.red h3 {
+	color:red;
+}
+
+pre.runnable {
+  position : relative
+}
+
+button.runCodeButton {
+    position: absolute;
+    height: auto;
+    top: 0px;
+    right:  0px;
+}
+
+#mySVG3 text {
+  font: bold 48px monospace;
+}
+
+.enter {
+  fill: green;
+}
+
+.update {
+  fill: #333;
+}
+
+.exit {
+  fill: brown;
+}
