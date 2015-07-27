@@ -729,7 +729,7 @@ function update(data) {
 	<section data-transition="fade-out">
 		<h2>Shortest Paths</h2>
 		<small>with resource constraints (SPPRC)</small><br>
-		<img src="img/spprc/2.png" height="250px"><br>
+		<img  src="img/spprc/2.png" height="250px"><br>
 		edges carry n-d resource vectors:<br/>
 		<ol>
 		<li>accumulated along paths</li>
@@ -739,7 +739,7 @@ function update(data) {
 	<section data-transition="fade-in  fade-out">
 		<h2>Shortest Paths</h2>
 		<small>with time windows (SPPTW)</small><br>
-		<img src="img/spprc/2.png" height="250px"><br/>
+		<img  src="img/spprc/2.png" height="250px"><br/>
 		edges carry 2-d (time,cost) resource vectors:
 		<ul>
 		 <li>time constrained at nodes [arrival,departure]</li>
@@ -749,7 +749,7 @@ function update(data) {
 	<section data-transition="fade-in">
 		<h2>Shortest Paths</h2>
 		<small>with time windows (SPPTW)</small><br>
-		<img src="img/spprc/2.png" height="250px"><br>
+		<img  src="img/spprc/2.png" height="250px"><br>
 		find paths \( P=(v_0,v_1,v_2,... ,v_n), s=v_0, t=v_n \) s.t.:<br/>
 		<ol>
 		<li>\( \forall v_j \in P: arr(v_j) \leq \sum_{i=1}^{j}{time(v_{i-1},v_{i})} \leq dep(v_j) \)</li>
@@ -758,7 +758,7 @@ function update(data) {
 	</section>
 	<section data-transition="fade-out">
 		<h2>Label-Setting Algorithm</h2>
-		<img src="img/spprc/labels.png" height="250px"><br>
+		<img  src="img/spprc/labels.png" height="250px"><br>
 		A tree of labels to store and manage paths:
 		<ul>
 		<li>rooted at s</li>
@@ -768,7 +768,7 @@ function update(data) {
 	</section>
 	<section data-transition="fade-in fade-out">
 		<h2>Label-Setting Algorithm</h2>
-		<img src="img/spprc/labels.png" height="250px"><br>
+		<img  src="img/spprc/labels.png" height="250px"><br>
 		While \(\exists \) unprocessed labels of paths P = (s,...v) in G:
 		<ol>
 		<li>extend P from v using outgoing edges (v,w)</li>
