@@ -12,7 +12,7 @@
 var graph,graphDrawer;
 var graphNum = 5;
 // d3.text("../maxflow-push-relabel/graphs-new/graph"+graphNum+".txt", function(error,text){
-d3.text("../spp-rc-label-setting/graphs-new/graph"+1+".txt", function(error,text){
+d3.text("../../spp-rc-label-setting/graphs-new/graph1.txt", function(error,text){
   graph = Graph.parse(text);
   var svgOrigin = d3.select("body").append("svg");
   graphDrawer = new GraphDrawer(graph,svgOrigin);

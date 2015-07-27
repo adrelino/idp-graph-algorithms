@@ -56,14 +56,12 @@ function translate(x,y){
     return "translate("+x+","+y+")";
 }
 
-var GraphDrawer = function(svgOrigin,extraMargin,filename,transTime){
+var GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
     /////////////////
     //PRIVATE
 
     var transTime = (transTime!=null) ? transTime : 250;
-
-    this.filename = filename || "graph1.txt";
 
     var extraMargin = extraMargin || {};
 
@@ -313,7 +311,9 @@ var GraphDrawer = function(svgOrigin,extraMargin,filename,transTime){
     //initialize //TODO: is called twice when we init both tabs at the same time
     if(Graph.instance==null){
         //calls registered event listeners when loaded;
-       Graph.loadInstance("graphs-new/"+this.filename,function(error,text,filename){
+        var GRAPH_FILENAME = GRAPH_FILENAME || null;
+        var filename = GRAPH_FILENAME || "graphs-new/"+$("#tg_select_GraphSelector").val()+".txt"; //the selected option 
+       Graph.loadInstance(filename,function(error,text,filename){
            console.log("error loading graph instance "+error + " from " + filename +" text: "+text);
        }); 
     }

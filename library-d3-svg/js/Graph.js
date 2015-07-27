@@ -271,7 +271,7 @@ Graph.load = function(filename, callbackFp){
 
 Graph.setInstance = function(error,text,filename,exceptionFp){
     if(error != null){
-      exceptionFp(error,text,filename);
+      exceptionFp ? exceptionFp(error,text,filename) : console.log(error,text,filename);
       return;
     };
     var noErrors=false;

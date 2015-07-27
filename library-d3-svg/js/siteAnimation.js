@@ -1,4 +1,36 @@
-    var graphEditorTab = null, algorithmTab = null;
+var graphEditorTab = null, algorithmTab = null;
+
+function svgHack(){
+    //http://www.mediaevent.de/svg-in-html-seiten/
+   var imgs = d3.selectAll("img");
+
+//    var sources = imgs[0].map(function(d){return d.src});
+
+
+   imgs.attr("src",function(a,b,c){
+       var src = this.src;
+       var selection = d3.select(this);
+       if(src.indexOf(".svg")==src.length-4){
+           d3.text(src, function(error,text){
+//             console.log(selection.html());
+//             d3.select("#svgtest").html(text);
+            var parent = d3.select(selection.node().parentNode)
+                
+//                 parent.append("p").text("test");
+                parent.insert("span","img").html(text);
+                var newSVGElem = parent.select("span").select("svg");
+
+                newSVGElem.attr("class","svgText");
+
+                selection.remove();
+
+//             var foo = selection.node().parentNode.innerHtml; //).append("div").html(text);
+        });
+       }
+       return src;
+   })
+}
+
 
 /**
  * Initializes the page layout of all interactive tabs
@@ -42,33 +74,5 @@ function initializeSiteLayout(GraphAlgorithmConstructor) {
 
     $("#tabs").tabs("option", "active", 2);
 
-
-//http://www.mediaevent.de/svg-in-html-seiten/
-   var imgs = d3.selectAll("img");
-
-//    var sources = imgs[0].map(function(d){return d.src});
-
-
-   imgs.attr("src",function(a,b,c){
-       var src = this.src;
-       var selection = d3.select(this);
-       if(src.indexOf(".svg")==src.length-4){
-           d3.text(src, function(error,text){
-//             console.log(selection.html());
-//             d3.select("#svgtest").html(text);
-            var parent = d3.select(selection.node().parentNode)
-                
-//                 parent.append("p").text("test");
-                parent.insert("span","img").html(text);
-                var newSVGElem = parent.select("span").select("svg");
-
-                newSVGElem.attr("class","svgText");
-
-                selection.remove();
-
-//             var foo = selection.node().parentNode.innerHtml; //).append("div").html(text);
-        });
-       }
-       return src;
-   })
+   svgHack();
 }

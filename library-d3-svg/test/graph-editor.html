@@ -2,23 +2,38 @@
 <meta charset="utf-8">
 <head>
 <title>Graph Editor</title>
-<script src="d3/d3.js"></script>
-<script src="Graph.js"></script>
-<script src="GraphDrawer.js"></script>
-<script src="GraphEditor.js"></script>
-<link rel="stylesheet" type="text/css" href="graph-style.css" />
+<script src="../js/d3/d3.js"></script>
+<script src="../js/Graph.js"></script>
+<script src="../js/GraphDrawer.js"></script>
+<script src="../js/GraphEditor.js"></script>
+<script src="../../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="../css/graph-style.css" />
 </head>
 <body>
 <h2>Graph Editor</h2>
+
+<h3>Start with an example graphs:</h3>
+<label for="graphSelector">Select </label>
+<select name="graphSelector" id="tg_select_GraphSelector">
+    <option label="SPPRC">../../spp-rc-label-setting/graphs-new/graph1.txt</option>
+    <option label="max flow">../../maxflow-push-relabel/graphs-new/graph1.txt</option>
+</select>
+<br>
+<svg id="svg" width=700 height=500></svg>
 <script>
-var graph,graphDrawer;
-var graphNum = 5;
-// d3.text("../maxflow-push-relabel/graphs-new/graph"+graphNum+".txt", function(error,text){
-d3.text("../spp-rc-label-setting/graphs-new/graph"+1+".txt", function(error,text){
-  graph = Graph.parse(text);
-  var svgOrigin = d3.select("body").append("svg");
-  graphDrawer = new GraphEditor(graph,svgOrigin); //TODO replace by GraphEditor
+
+var GRAPH_FILENAME = "../../spp-rc-label-setting/graphs-new/graph1.txt"
+var svgOrigin = d3.select("#svg"); //d3.select("body").append("svg").attr("width",700).attr("height",500);
+graphDrawer = new GraphEditor(svgOrigin); //TODO replace by GraphEditor
+Graph.addChangeListener(function(){
   graphDrawer.update();
+})
+
+$("#tg_select_GraphSelector").on("change",function(d){
+  var filename = $("#tg_select_GraphSelector>option:selected").val();
+  console.log(filename);
+  Graph.loadInstance(filename); //calls registered event listeners when loaded;
 });
+
 </script>
 </body>
