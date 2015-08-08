@@ -34,7 +34,10 @@
 		<![endif]-->
 
 		<link rel="stylesheet" href="style.css">
-		<script src="../library-d3-svg/js/d3/d3.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+        <!-- <script src="../library/js/d3/d3.min.js"></script> -->
+		
 
 
 	</head>
@@ -69,7 +72,8 @@
 	</section> -->
 	<section>
 		<h3>e.g.</h3>
-		<iframe class="full" src="../hierholzer/index_de.html"></iframe>
+        <iframe class="full" src="https://www-m9.ma.tum.de/graph-algorithms/hierholzer/index_de.html"></iframe>
+		<!-- <iframe class="full" src="../hierholzer/index_de.html"></iframe> -->
 	</section>
 	<section>
 		<h3>Canvas</h3>
@@ -720,8 +724,8 @@ function update(data) {
 	</section>
 
 	<section data-transition="fade-in">
-		<iframe class="full" src="../maxflow-push-relabel/index_en.html"></iframe>
-		<small><a href="../maxflow-push-relabel/index_en.html">LINK</a></small>
+		<iframe class="full" src="../maxflow-push-relabel/index_en.html#tab_ta"></iframe>
+		<small><a href="../maxflow-push-relabel/index_en.html#tab_ta" target="_blank">LINK</a></small>
 	</section>
 </section>
 
@@ -778,15 +782,18 @@ function update(data) {
 <!-- 		out of all feasible s-t paths, pick the ones with lowest cost -->
 	</section>
 	<section data-transition="fade-in">
-		<iframe class="full" src="../spp-rc-label-setting/index_en.html"></iframe>
-		<small><a href="../spp-rc-label-setting/index_en.html">LINK</a></small>
+		<iframe class="full" src="../spp-rc-label-setting/index_en.html#tab_ta"></iframe>
+		<small><a href="../spp-rc-label-setting/index_en.html#tab_ta" target="_blank">LINK</a></small>
 	</section>
 </section>
 
-<!-- <section>
-	<h2>new graph editor</h2>
-	<iframe class="full" data-src="../library-d3-svg/test/graph-editor.html"> </iframe>
-</section> -->
+<section>
+	<h2>Graph Editor</h2>
+    <small>arbitrary #resources | upload/download | svg export </small></br>
+	<!-- <iframe class="full" data-src="../library-d3-svg/test/graph-editor.html"> </iframe> -->
+    <iframe class="full" data-src="../spp-rc-label-setting/index_en.html#tab_tg"> </iframe>
+    <small><a href="../spp-rc-label-setting/index_en.html#tab_tg" target="_blank">LINK</a></small>
+</section>
 
 <section>
 
@@ -838,10 +845,10 @@ function update(data) {
 				// Optional reveal.js plugins
 				dependencies: [
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					{ src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
+					// { src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
 					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'plugin/zoom-js/zoom.js', async: true },
-					{ src: 'plugin/notes/notes.js', async: true },
+					// { src: 'plugin/zoom-js/zoom.js', async: true },
+					// { src: 'plugin/notes/notes.js', async: true },
 					{ src: 'plugin/math/math.js', async:true}
 				]
 			});

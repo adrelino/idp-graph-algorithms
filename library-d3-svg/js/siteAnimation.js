@@ -72,7 +72,5 @@ function initializeSiteLayout(GraphAlgorithmConstructor) {
         }
     });
 
-    $("#tabs").tabs("option", "active", 2);
-
    svgHack();
 }

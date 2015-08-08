@@ -1,0 +1,459 @@
+.construction {
+    background-image: url('../../library/img/under_construction.svg');
+    background-size: contain;
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
+.germanLink {
+    background-image: url('../../library/img/german.svg');
+    background-size: contain;
+    background-position: right;
+    background-repeat: no-repeat;
+}
+
+#menu {
+    background-color: #EDF1F4;
+    font-family: Helvetica,Arial,sans-serif;
+    font-weight: bold;
+    z-index: 2;
+}
+
+#menu_link {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    background-image: url('../../library/img/hamburger.png');
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    width: 64px;
+    height: 64px;
+    z-index: 1;
+}
+
+#menu_link:hover {
+    opacity: 0.6;
+}
+
+footer {
+    font-family: "arial";
+    font-size: 12px;
+    line-height: 50%;
+    padding-top: 20px;
+    min-width: 1150px;
+}
+
+h1 {
+    font: arial bold;
+    font-size: 22px;
+    color: #0A5096;
+    line-height: 25px;
+}
+
+h2 {
+    font: arial bold;
+    font-size: 12px;
+    color: #0A5096;
+    line-height: 16px;
+}
+
+h3 {
+    font: arial bold;
+    font-size: 12px;
+    color: #333333;
+    line-height: 16px;
+}
+
+p {
+    font: arial;
+//    font-size: 13px;
+    color: #333333;
+//    line-height: 16px;
+}
+
+label {
+    font: arial;
+    font-size: 13px;
+    color: #333333;
+    line-height: 16px;
+    padding-left: 5px;
+}
+
+p.frage {
+    font:arial;
+    font-size: 15px;
+    color: #C4071B;
+    line-height: 16px;
+}
+
+div.statusWindow {
+    text-align: center;
+    margin-left: 715px;
+    width: 370px;
+    min-height: 500px;
+    max-height: 500px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 2px groove #78C8FF;
+    overflow: auto; 
+}
+
+div.canvasWrapper {
+    width: 700px;
+    height: 500px;
+    float: left;
+}
+
+div.Legende {
+    position: absolute;
+    border: 2px groove #78C8FF; 
+    width: 250px;
+    background-color: #DDDDDD;
+    opacity: .9;
+}
+
+div.LegendeMinimized {
+    position: absolute;
+    border: 2px groove #78C8FF; 
+    width: 100px;
+    background-color: #DDDDDD;
+    opacity: .9;
+}
+
+.ui-effects-transfer { 
+    border: 2px solid #78C8FF; 
+}
+
+canvas {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
+canvas.graphCanvas {
+    border: 1px dashed black;
+}
+
+img.LegendeIcon {
+    height: 22px;
+}
+
+tr.LegendeZeileClickable {
+    cursor: pointer;
+}
+
+div.LegendeText {
+    padding-left: 10px;
+    line-height: 16px;
+}
+
+div.BeispielbildContainer {
+    float: right;
+    text-align: center;
+    padding-left: 15px;
+    width: 330px;
+}
+div.BeispielbildContainer img {
+    background-color: #ffffff;
+}
+
+div.tabIntroDialog {}
+
+div.tabChangeWarningDialog {}
+
+div.Entscheidungsweg {
+    width: 400px;
+    padding: 15px;
+    border: 2px groove #78C8FF;
+    text-align: center;
+    vertical-align: middle;
+}
+div.Entscheidungsweg h3 {
+    margin: 0px 0px 5px 0px;
+}
+div.Entscheidungsweg button {
+    margin-bottom: 5px;
+}
+
+div.PseudocodeWrapper {
+    text-align: left;
+}
+
+p.Disclaimer {
+    text-align: right;
+}
+
+h2.LegendeHeader {
+    padding-left: 10px;
+    vertical-align: top;
+}
+
+td.LegendeTabelle {
+    text-align: center;
+}
+
+th.algoInfoTH {
+    font-family: "Courier New", Courier, monospace;
+    text-align: center;
+    padding: 8px;
+    border:1px solid black;
+}
+
+td.algoInfoTD {
+    text-align: center;
+    padding: 8px;
+    border:1px solid black;
+}
+
+button.LegendeMin {
+    height: 16px;
+    width: 16px;
+}
+
+p.pseudocode {
+    line-height: 110%;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 13px;
+    color: #000000;
+    margin: 1px;
+    white-space: pre;
+} 
+
+table.algoInformationen {
+    text-align: center;
+    border: 1px solid gray;
+    border-collapse:collapse;
+    width: 100%;
+}
+
+#tabs li .ui-icon-refresh { float: right; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+#tabs { 
+    min-width: 1150px;
+    max-width: 1150px;
+}
+
+.marked {
+    background-color: #E37222;
+}
+
+.greyedOut {
+    color: #666666;
+}
+
+.greyedOutBackground {
+    opacity: 0.6;
+}
+
+.shadow{
+    -moz-box-shadow: 4px 4px 5px #0A5096;
+    -webkit-box-shadow: 4px 4px 5px #0A5096;
+    box-shadow: 4px 4px 4px #0A5096;
+}
+
+#ta_div_statusErklaerung, #tf1_div_statusErklaerung, #tf2_div_statusErklaerung {
+    text-align: left;
+}
+#ta_div_statusErklaerung ul li, #tf1_div_statusErklaerung ul li, #tf2_div_statusErklaerung ul li {
+    padding: 5px;
+}
+
+#te_div_Einfuehrungstext {
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 1090px;
+}
+
+#te_div_beispiel1Container {
+    float: right;
+    text-align: center;
+    padding-left: 15px;
+}
+
+#te_div_beispiel1Container img {
+    background-color: #ffffff;
+}
+
+#tf1_div_Frage {
+    text-align: left;
+}
+
+#tf1_div_Antworten {
+    text-align: left;
+    padding-top: 5px;
+}
+
+#te_div_Entscheidung {
+    padding-top: 30px;
+    text-align: center;
+}
+
+#te_button_gotoDrawGraph {
+    width: 320px;
+}
+
+#te_button_gotoIdee {
+    width: 320px;
+}
+
+#ti_div_Einfuehrungstext {
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: justify;
+}
+
+#ta_div_statusTabs {
+    margin-bottom: 10px;
+}
+
+#ta_div_statusTabs .ui-widget-header {
+    background: transparent; 
+    border: none;
+} 
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-default { 
+    background: transparent; 
+    border: 1px solid #c0c0c0;
+} 
+
+#ta_div_statusTabs .ui-tabs-nav li.ui-state-active { 
+    background: transparent; 
+    border-bottom: none;
+}
+
+#tf1_div_statusTabs .ui-widget-header {
+    background: transparent; 
+    border: none;
+} 
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-default { 
+    background: transparent; 
+    border: 1px solid #c0c0c0;
+} 
+
+#tf1_div_statusTabs .ui-tabs-nav li.ui-state-active { 
+    background: transparent; 
+    border-bottom: none;
+}
+
+#tg_div_statusErklaerung {
+    text-align: left;
+}
+
+#ti_div_EntscheidungLeft {
+    float: left;
+}
+
+#ti_div_EntscheidungRight {
+    float: left;
+    margin-left: 15px;
+}
+
+#tw_Accordion {
+    width: 800px;
+    margin: auto;
+    text-align: justify;
+    font-size: 13px;
+    line-height: 16px;
+}
+
+.errorIcon {
+     float: left;
+     margin-right: .3em;
+}
+
+ul.subtourList {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+ul.subtourList li {
+    cursor: pointer;
+}
+
+body {
+    max-width: 1155px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media screen and (max-width: 1180px) {
+body {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+}
+
+header {
+    position: relative;
+    min-width: 1150px;
+}
+
+html {
+    overflow-y: scroll; 
+}
+.ui-state-error {
+    color: white !important;
+}
+.result_euleriantour, .result_subtour {
+    font-size: 15px;
+}
+.result_euleriantour span {
+    font-weight: 900;
+    font-size: 24px;
+    vertical-align: bottom;
+}
+.no-close .ui-dialog-titlebar-close {
+    display: none;
+}
+#tf1_div_questionModal, #tf2_div_questionModal {
+    text-align: left;
+    margin-top: 20px;
+    display: block;
+    padding-bottom: 10px;
+}
+#tf1_div_questionModal p, #tf2_div_questionModal p {
+    padding: 0 1em 0 1em;
+}
+
+#tf1_div_questionModal form, #tf2_div_questionModal form {
+    margin-left: 1em;
+}
+.quizTable {
+    width: 80%;
+    margin: 0px auto;
+    border-collapse: collapse;
+}
+.quizTable th {
+    width: 50%;
+    padding: 5px;
+    border-bottom: 2px solid #000000;
+}
+.quizTable td {
+    text-align: left;
+    padding: 3px;
+    border-bottom: 1px dotted #004682;
+}
+.quizTable td span {
+    float: left;
+}
+#tf1_questionSolution {
+    font-weight: normal;
+}
+#tf1_questionSolution .answer {
+    font-weight: bold;
+}
+.algoInformationen td {
+    border-radius: 50%;     stroke: black;     background-clip: content-box;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+.legendePath {
+    display: block;
+    float: left;
+    width: 62px;
+    height: 3px;
+    margin: 9px 0px 9px 0px;
+    background-color: #0000cc;
+}
