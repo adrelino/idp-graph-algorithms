@@ -1,0 +1,40 @@
+<html>
+  <header>
+     <script src="http://mbostock.github.com/d3/d3.js" type="text/javascript" ></script>
+  </header>
+<body>
+    <script type='text/javascript'>
+
+   var tea = [
+     {text:"Black tea",children:[]},
+     {text:"Green tea",children:[]}
+   ]
+
+   var drinks = [
+    {text: "Coffee", children : []},
+    {text: "Tea", children : tea},
+    {text: "Milk", children : []}
+   ]
+
+
+
+var log = d3.select("body").append("ul")
+  .selectAll("li")
+    .data(drinks)
+    .enter()
+    .append("li")
+    .html(function(d,i){return d.text})
+//     .style("background-color","lightgray")
+    .append("ol")
+  .selectAll("li")
+    .data(function(d1){return d1.children;})
+    .enter()
+    .append("li")
+    .html(function(d2){return d2.text})
+//     .style("background-color","white");
+
+
+</script>
+
+<body>
+</html>

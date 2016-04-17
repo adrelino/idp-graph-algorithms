@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link rel="stylesheet" type="text/css" href="../css/style.css">
+<link rel="stylesheet" type="text/css" href="mybutton.css">
+
+<head>
+<title>Shortest Paths with Resource Constraints</title>
+</head>
+<body>
+<h2>Shortest Paths with Resource Constraints</h2>
+<table>
+<tr>
+<td id="right" valign="top">
+Sample Graphs:
+<a href ="?graph=1">1[Irnich p. 20]</a>
+<br>
+Theory and Analysis: <a href ="http://www.researchgate.net/profile/Stefan_Irnich2/publication/227142556_Shortest_Path_Problems_with_Resource_Constraints/links/0deec523898ae43b84000000.pdf">PDF Irnich</a><br>
+</td>
+<td width="33%" valign="top">
+<a href="#" id="step" class="myButton">Step</a>
+<!-- Active Nodes: <span id="active"></span><br>
+ -->
+<br>
+
+<table>
+<tr>
+<td id="Ulist" valign="top" width="150px"></td>
+<td id="Plist" valign="top" width="150px"></td>
+</tr>
+</table>
+
+<br>
+  
+<div id="algo"></div><br>
+</td>
+</tr>
+</table>
+<script src="../js/d3/d3.min.js"></script>
+<script src="../js/Graph.js"></script>
+<script src="../js/GraphDrawer.js"></script>
+
+<script src="common.js"></script>
+<script src="shortest-path.js"></script>

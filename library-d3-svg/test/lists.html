@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <header>
+     <script src="http://mbostock.github.com/d3/d3.js" type="text/javascript" ></script>
+  </header>
+  <body>
+  <script type='text/javascript'>
+
+function draw(data) {
+  var lists = d3.select("body").selectAll("ul")
+      .data(data,function(d,i) { return d.key; });
+  
+  lists.enter().append("ul")
+      .attr("class",function(d) { return d.key });
+      
+  lists.exit().remove();
+
+  var lines = lists.selectAll("li")
+      .data(function(d) { return d.values}, function(d,i) { console.log(d); return d; });
+  
+  lines.enter().append("li")
+      .text(function(d, i) { return d; });
+  
+  lines.exit().remove();
+}
+
+draw( [ {key: "apples", values: ["First apple line"] },  {key: "pears", values: ["First pear line"] } ]);
+draw( [ {key: "apples", values: ["First apple line"] },  {key: "pears", values:  ["First pear line","New second pear line"] } ]);
+
+  </script>
+  </body>
+</html>

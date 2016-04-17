@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+text {
+  font: bold 48px monospace;
+}
+
+.enter {
+  fill: green;
+}
+
+.update {
+  fill: #333;
+}
+
+</style>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script>
+
+var alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+
+var width = 960,
+    height = 500;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(32," + (height / 2) + ")");
+
+function update(data) {
+
+  console.log("\n\n\n\n\n\n");
+  // DATA JOIN
+  // Join new data with old elements, if any.
+  var text = svg.selectAll("text")
+      .data(data);//, function(d) { return d; });
+  console.log("join",text);
+
+  // UPDATE
+  // Update old elements as needed.
+  console.log("update",text
+      .attr("class", "update")
+      .attr("foo",function(a,b,c){console.log("up",a,b,c)})
+      );
+
+  // ENTER
+  // Create new elements as needed.
+  console.log("enter",text.enter().append("text")
+      .attr("class", "enter")
+      .attr("dy", ".35em")
+      .attr("foo",function(a,b,c){console.log("en",a,b,c)})
+      .text(function(d) { return d; }));
+
+  // ENTER + UPDATE
+  // Appending to the enter selection expands the update selection to include
+  // entering elements; so, operations on the update selection after appending to
+  // the enter selection will apply to both entering and updating nodes.
+  console.log("enter + update",text
+      .attr("x", function(d, i) { return i * 32; })
+      .attr("foo",function(a,b,c){console.log("en+up",a,b,c)})
+      );
+
+  // EXIT
+  // Remove old elements as needed.
+  console.log("exit",text.exit()
+    .attr("foo",function(a,b,c){console.log("ex",a,b,c)})
+    .remove());
+}
+
+// The initial display.
+update(alphabet);
+
+// Grab a random sample of letters from the alphabet, in alphabetical order.
+setInterval(function() {
+  update(d3.shuffle(alphabet)
+      .slice(0, Math.floor(Math.random() * 26))
+      .sort());
+}, 1500);
+
+</script>

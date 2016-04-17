@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="mybutton.css">
+
+<head>
+<title>Push–relabel maximum flow algorithm of Goldberg and Tarjan</title>
+</head>
+<body>
+<h2> Push–relabel maximum flow algorithm of Goldberg and Tarjan </h2>
+<table>
+<tr>
+<td id="right" valign="top">
+Sample Graphs:
+<a href ="?graph=1">1[]</a>
+<a href ="?graph=2">2[]</a>
+<a href ="?graph=3">3[]</a>
+<a href ="?graph=4">4[corman page 726]</a>
+<a href ="?graph=5">5[ahuja page 227]</a>
+<a href ="?graph=6">6[from wikipedia]</a>
+<br>
+Theory and Analysis: <a href ="http://wwwmayr.in.tum.de/lehre/2013WS/algoprak/uebung/tutorial6.english.pdf">PDF [TUM]</a><br>
+</td>
+<td width="33%" valign="top">
+<a href="#" id="step" class="myButton">Step</a>
+<!-- Active Nodes: <span id="active"></span><br>
+ -->
+<br>
+ <div id="algo"></div><br>
+</td>
+</tr>
+</table>
+<script src="d3/d3.min.js"></script>
+<script src="common.js"></script>
+<script src="Graph.js"></script>
+<script src="GraphDrawer.js"></script>
+<script>
+
+// var GraphPushRelabel = function(graph, svgOrigin){
+//   GraphDrawer.call(this,graph,svgOrigin);
+
+//   this.type="PushRelabel";
+
+  d3.select("#step").on("click",function(){
+        step();
+  });
+
+//   this.onNodesEntered = function(selection) {
+
+//   }
+
+//   this.onNodesUpdated = function(selection){
+//       selection
+//       .selectAll("circle")
+//        .style("stroke", function(d){
+//         if(d==selectedNode){
+//           return const_Colors.NodeBorderHighlight;
+//         }else{
+//           return global_NodeLayout['borderColor'];
+//         }
+//       })
+//   }
+
+//   this.onEdgesEntered = function(selection) {
+    
+//   }
+
+//   this.onEdgesUpdated = function(selection) {
+
+//   }
+
+var svg2 = d3.select("#right").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var x = d3.scale.linear()
+    .range([margin.left, width-margin.right]);
+
+var y = d3.scale.linear()
+    .range([height-margin.top, margin.bottom]);
+
+var y1 = d3.scale.linear()
+    .range([height-margin.top, margin.bottom]);
+
+var color = d3.scale.category10();
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var active = [];
+var source, target;
+
+var nodes = [];
+var links = [];
+
+function flowWidth(val){
+     var maxCap = d3.max(links,function(d){return d.cap});
+     return 25*(val/maxCap);
+}
+
+function updateEdges() {
+  updateEdgesSingle(svg_links_left,function(d){return {x:x(d.x), y:y1(d.y)};});
+  updateEdgesSingle(svg_links_right,function(d){return {x:x(d.x), y:y(d.height)};});
+}
+
+function updateEdgesSingle(svg_links,nodePos){
+
+   var cap = svg_links.selectAll(".cap").data(links);//, function(d) { return d.source.id + "-" + d.target.id; });
+
+   function lineAttribs(d){
+     d3.select(this)
+      .attr({ x1:nodePos(d.start).x, y1:nodePos(d.start).y, x2:nodePos(d.end).x, y2:nodePos(d.end).y });
+   };
+
+   function textAttribs(d){
+     d3.select(this)
+      .attr({ x:(nodePos(d.start).x+nodePos(d.end).x)*0.5, y:(nodePos(d.start).y+nodePos(d.end).y)*.5});
+   };
+
+   cap.enter().append("line")
+    .attr("class", "cap")
+    .each(lineAttribs)
+    .style("stroke-width",function(d){return flowWidth(d.cap)})
+
+  cap.transition(1000).each(lineAttribs);
+
+
+
+  var link = svg_links.selectAll(".link").data(links);//, function(d) { return d.source.id + "-" + d.target.id; });
+  
+  link.enter().append("line")
+    .attr("class", "link")
+    .each(lineAttribs)
+    .attr("marker-end", "url(#arrowhead)")
+    //.style("stroke-width",function(d){return d.cap+"px"})
+
+  link.transition(1000).each(lineAttribs)
+
+
+  link.exit().remove();
+
+
+   var flow = svg_links.selectAll(".flow").data(links);//, function(d) { return d.source.id + "-" + d.target.id; });
+   
+   flow.enter().insert("line",".link")
+    .attr("class", "flow")
+    .style("stroke-width",function(d){return d.flow+"px"})
+    .each(lineAttribs)
+
+   flow
+    .transition(1000)
+    .each(lineAttribs)
+    .style("stroke-width",function(d){return flowWidth(d.flow)})
+    //.style("stroke",function(d){if(d.flow==d.cap) return "orange"})
+
+  var linkText = svg_links.selectAll(".linkText").data(links);//, function(d) { return d.source.id + "-" + d.target.id; });
+  
+  linkText.enter().append("text")
+    .attr("class", "linkText")
+    .each(textAttribs)
+    .text(function(d) { return d.flow + " / " +d.cap});
+
+  linkText
+    .each(textAttribs)
+    .text(function(d) { return d.flow + " / " +d.cap});
+
+  linkText.exit().remove();
+}
+
+// var color = d3.scale.linear()
+//     .domain([0,10])
+//     //.range(["green", "red"])
+//     .range();
+//     //.interpolate(d3.interpolateHcl);
+// var color = d3.scale.ordinal()
+//     .domain([0,1,2,3,4,5,6,7,8,9,10])
+//     .range(
+
+var colormap=["#a50026","#d73027","#f46d43","#fdae61","#fee08b","#ffffbf","#d9ef8b","#a6d96a","#66bd63","#1a9850","#006837"].reverse();
+
+function updateNodes() {
+  updateNodesSingle(svg_nodes_left,function(d){return "translate(" + x(d.x) + "," + y1(d.y) + ")";});
+  updateNodesSingle(svg_nodes_right,function(d){return "translate(" + x(d.x) + "," + y(d.height) + ")";});
+}
+
+function updateNodesSingle(svg_nodes,transform){
+
+  //var mytext = active.map(function(node){return node.id}).join(",");
+  //d3.select('#active').text(mytext);
+
+  var node = svg_nodes.selectAll(".node").data(nodes);//, function(d) { return d.id;});
+  
+  var points = node
+    .enter().append("g")
+    .attr("class","node")
+    .attr("transform",transform);
+
+  node
+    .transition()
+    .attr("transform",transform);
+
+  points.append("circle")
+    .attr("r", radius)
+
+  node.select("circle")
+    .transition()
+    .style("stroke-width",function(d){
+      if(active.indexOf(d)>=0){
+        return "5px";
+      }else if(d==currentNode){
+        return "7px";
+      }else{
+        return "2px";
+      } 
+    })
+    .style("stroke",function(d){
+      if(d==currentNode){
+        return "red";
+      }else{
+        return "black"
+      } 
+    })
+    .style("fill",function(d){
+      return colormap[Math.min(10,d.height)];
+      //if(d.source) return "green";
+      //if(d.sink) return "red";
+    })
+
+
+  points.append("text")
+    .text(function(d){return d.id})
+    .attr("dy", ".35em")           // set offset y position
+    .attr("text-anchor", "middle")
+
+  points.append("text")
+    .attr("class","height")
+    .attr("dy", "-1.2em")           // set offset y position
+    .attr("text-anchor", "left")
+
+  points.append("text")
+    .attr("class","exess")
+    .attr("dy", "2.0em")           // set offset y position
+    .attr("text-anchor", "right")
+
+  points.append("rect")
+    .attr("class","exessBar")
+    .attr("x","20")
+    .attr("width",10)
+
+  node.select(".exess")
+    .transition()
+    .text(function(d){return "e:"+d.exess})
+
+  var h = 20;
+
+  node.select(".exessBar")
+    .transition()
+    .attr("y",function(d){return h-flowWidth(Math.abs(d.exess))})
+    .attr("height",function(d){return flowWidth(Math.abs(d.exess))});
+
+  node.select(".height")
+    .text(function(d){return "h:"+d.height}) 
+
+  node.exit().remove();
+}
+
+function update(){
+  updateNodes();
+  updateEdges();
+}
+
+var graphNum = getUrlVars()["graph"] || 5;
+
+
+//////following is push relabel algo //corman page 741, ahuja page 227
+
+
+function push(v,ew,source,target,active){
+  var edge=ew.edge;
+  var w=ew.node;
+
+  var delta = Math.min(v.exess,residualCap(ew));
+
+  if(ew.isForwardEdge){
+    edge.flow += delta;
+  }else{
+    edge.flow -=delta;
+  }
+
+  v.exess -= delta;
+  w.exess += delta;
+
+  if(w !=source && w != target && active.indexOf(w)==-1){
+    active.push(w);
+  }
+
+  var sat = residualCap(ew) == 0 ? " [saturating] " : " [nonsaturating] ";
+
+  logger3("push "+delta+" from "+v.id+" to "+w.id + sat);
+
+  updateNodes();
+  updateEdges();
+
+  return residualCap(ew) != 0;
+}
+
+function relabel(node,active){
+  var dis = 2*nodes.length;
+  for(var i=0; i<node.neighbours.length; i++){
+    if(node.neighbours[i].node.height < node.height) continue;
+    dis = Math.min(node.neighbours[i].node.height+1,dis);
+  }
+
+  logger3("relabel "+node.id+" from "+node.height+" to "+dis);
+  node.height=dis;
+  active.push(node);
+}
+
+function initNeighboursResidualNetwork(){
+  for(var i=0; i<links.length; i++){
+    var edge = links[i];
+    edge.start.neighbours.push({node:edge.end, edge:edge, isForwardEdge: true});
+    edge.end.neighbours.push({node:edge.start, edge:edge, isForwardEdge: false});
+  }
+}
+
+function residualCap(neighbour){ //if residualCap == 0, there is actually no edge in residual network
+  if(neighbour.isForwardEdge){
+    return neighbour.edge.cap - neighbour.edge.flow;
+  }else{
+    return neighbour.edge.flow;
+  }
+}
+
+function getLegalEdgeInResidualNetwork(node){
+  for(var i=0; i<node.neighbours.length; i++){
+      var neighbour = node.neighbours[i];
+      if(node.height==neighbour.node.height+1 && residualCap(neighbour)>0){
+        return neighbour;
+      }
+   }
+   return null;
+}
+
+//1.
+function initPreflow(){
+  for(var i=0; i<source.neighbours.length; i++){
+    var neighbour = source.neighbours[i];
+    //init preflow from source node
+    neighbour.edge.flow=neighbour.edge.cap;
+    source.exess-=neighbour.edge.flow;
+    //add nodes to active queue
+    if(neighbour.node != target){
+      neighbour.node.exess=neighbour.edge.flow;
+      active.push(neighbour.node);
+    }
+  }
+}
+
+//2.
+function initDistanceFunction(){
+  source.visited = true;
+  target.visited = true;
+
+  source.height=nodes.length;
+  target.height=0;
+
+  var queue = [target];
+
+//BFS traversal
+  while(queue.length>0){
+    var node = queue.shift();
+      for(var i=0; i<node.neighbours.length; i++){
+        var neighbour = node.neighbours[i];
+        if(!neighbour.node.visited){
+          queue.push(neighbour.node);
+          neighbour.node.visited=true;
+          neighbour.node.height=node.height + 1;
+        }
+      }
+  }
+}
+
+var it=1;
+var stepNum=1;
+
+//3.
+function mainLoop(){
+  if(active.length>0){
+   var currentNode = active.shift();
+   logger2("selected node "+currentNode.id+":");
+   var legalNeighbour;
+   while((legalNeighbour=getLegalEdgeInResidualNetwork(currentNode)) && currentNode.exess >0){
+     push(currentNode,legalNeighbour,source,target,active);
+   }
+
+   if(node.exess > 0 && legalNeighbour==null){
+    relabel(currentNode,active);
+   }
+  }else{
+    stepNum++
+  }
+}
+
+var currentNode = null;
+function mainLoopStepped(){
+  if(currentNode){
+    var legalNeighbour=getLegalEdgeInResidualNetwork(currentNode);
+    if(legalNeighbour && currentNode.exess >0){
+      var nonsat = push(currentNode,legalNeighbour,source,target,active);
+      if(currentNode.exess==0 || nonsat) currentNode=null;
+    }else if(currentNode.exess >0){
+      relabel(currentNode,active);
+      currentNode=null;
+    }else{
+      currentNode=null;
+    }
+  }else if(active.length>0){
+   currentNode = active.shift();
+   logger2("selected node "+currentNode.id+":");
+  }else{
+    stepNum++;
+  }
+}
+
+
+function step(){
+  if(stepNum==1){
+    logger("Initialize the preflow");
+    initPreflow();
+    update();
+    stepNum++
+  }else if(stepNum==2){
+    logger("Initialize the distance function");
+    initDistanceFunction();
+    update();
+    stepNum++;
+  }else if (stepNum==3){
+    logger("Main Loop");
+    mainLoopStepped();
+    update();
+    stepNum++;
+  }else if(stepNum==4){
+    mainLoopStepped();
+    update();
+  }else if(stepNum==5){
+    logger("Finished with flow "+target.exess);
+    stepNum++;
+  }
+}
+
+function parseGraph(text){
+  var lines = text.split("\n");
+  // Nach Zeilen aufteilen
+  for (var line in lines) {
+      var s = lines[line].split(" ");
+      // Nach Parametern aufteilen
+      if (s[0] == "%") {
+          continue;
+      }
+      if (s[0] == "n") {
+        nodes.push({ x : +s[1], y: +s[2], id: (+line), height: 0, exess : 0, neighbours : []});
+      }
+      if (s[0] == "e") {
+        links.push({ start : nodes[+s[1]], end: nodes[+s[2]], cap: +s[3], flow:0});
+      };
+  };
+}
+
+d3.text("../maxflow-push-relabel/graphs-new/graph"+graphNum+".txt", function(error,text){
+  parseGraph(text);
+  initNeighboursResidualNetwork();
+  source=nodes[0]
+  target=nodes[nodes.length-1];
+
+
+  x.domain(d3.extent(nodes, function(d) { return d.x; }));  //[0,xRange]);
+  y1.domain(d3.extent(nodes, function(d) { return d.y; })); //[0,yRange]);
+
+ // x.domain([0,Math.max(width,d3.max(nodes, function(d){return d.x;}))]);
+ // y1.domain([0,Math.max(height,d3.max(nodes, function(d){return d.y;}))]);
+  y.domain([0,2*nodes.length]);//d3.extent(nodes, function(d) { return d.height; })).nice();
+
+// svg2.append("g")
+//       .attr("class", "x axis")
+//       .attr("transform", "translate(0," + height + ")")
+//       .call(xAxis)
+//     .append("text")
+//       .attr("class", "label")
+//       .attr("x", width)
+//       .attr("y", -6)
+//       .style("text-anchor", "end")
+//       .text("x");
+
+  svg2.append("g")
+      .attr("class", "y axis")
+      //.attr("transform", "translate(0,0)")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Height")
+
+  // var legend = svg2.selectAll(".legend")
+  // //     .data(color.domain())
+  // //   .enter().append("g")
+  // //     .attr("class", "legend")
+  // //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // legend.append("rect")
+  //     .attr("x", width - 18)
+  //     .attr("width", 18)
+  //     .attr("height", 18)
+  //     .style("fill", color);
+
+  // legend.append("text")
+  //     .attr("x", width - 24)
+  //     .attr("y", 9)
+  //     .attr("dy", ".35em")
+  //     .style("text-anchor", "end")
+  //     .text(function(d) { return d; });
+
+    update();
+});
+
+</script>
