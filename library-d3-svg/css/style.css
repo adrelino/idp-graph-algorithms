@@ -19,7 +19,7 @@ div.canvasWrapper {
 }
 
 a.svgDownloader {
-    position: absolute;
+    /* position: absolute; */
     bottom: 0px;
     left:  0px;
 }

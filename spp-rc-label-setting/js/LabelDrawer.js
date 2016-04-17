@@ -18,6 +18,7 @@ var LabelDrawer = function(svgOrigin,algo){
     var radius = global_KnotenRadius;//20;
 
     svgOrigin
+        .attr({version: '1.1' , xmlns:"http://www.w3.org/2000/svg"})
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
 

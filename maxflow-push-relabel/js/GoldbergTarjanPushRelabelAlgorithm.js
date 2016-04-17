@@ -4,7 +4,7 @@
  * @augments GraphDrawer
  * @class
  */
-function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
+function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     GraphDrawer.call(this,svgSelection);
 
     /**
@@ -38,7 +38,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
     /**
      * The canvas to draw the heigh function
      */
-    var heightfunctionDrawer = new HeightfunctionDrawer(d3.select("#ta_canvas_graph2"),this);
+    var heightfunctionDrawer = new HeightfunctionDrawer(svgSelection2,this);
 
     /**
      * status variables
@@ -111,21 +111,24 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
                 return global_NodeLayout['borderColor'];
             }
         })
-        .style("stroke-width", function(d) {
-            if (s.activeNodeIds.indexOf(d.id) >= 0) {
-                return "5px";
-            } else if (d.id == s.currentNodeId) {
-                return "7px";
-            } else {
-                return "2px";
-            }
-        })
+//         .style("stroke-width", function(d) {
+//             if (s.activeNodeIds.indexOf(d.id) >= 0) {
+//                 return "5px";
+//             } else if (d.id == s.currentNodeId) {
+//                 return "7px";
+//             } else {
+//                 return "2px";
+//             }
+//         })
         .style("fill", function(d) {
             if (d.id == s.sourceId)
-                return const_Colors.NodeFillingHighlight;
-            if (d.id == s.targetId)
-                return const_Colors.NodeFillingQuestion; // NodeFillingLight
-            return global_NodeLayout['fillStyle'];
+                return const_Colors.NodeFillingHighlight; //green
+            else if (d.id == s.targetId)
+                return const_Colors.NodeFillingHighlight;//NodeFillingQuestion; // NodeFillingLight
+            else if (s.activeNodeIds.indexOf(d.id) >= 0)
+                return "yellow";
+            else
+                return global_NodeLayout['fillStyle'];
         //        return colormap[Math.min(10,d.height)];
         })
 
@@ -182,6 +185,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection) {
 
         this.reset();
         this.update();
+
+        heightfunctionDrawer.init();
     };
 
     /**

@@ -56,10 +56,14 @@ function translate(x,y){
     return "translate("+x+","+y+")";
 }
 
-var GraphDrawer = function(svgOrigin,extraMargin,transTime){
+GraphAlgos = d3.map();
+
+GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
     /////////////////
     //PRIVATE
+    var id = svgOrigin.attr("id");
+    GraphAlgos.set(id,this);
 
     var transTime = (transTime!=null) ? transTime : 250;
 
@@ -86,6 +90,7 @@ var GraphDrawer = function(svgOrigin,extraMargin,transTime){
     var radius = global_KnotenRadius;//20;
 
     svgOrigin
+        .attr({version: '1.1' , xmlns:"http://www.w3.org/2000/svg"})
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
 

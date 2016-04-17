@@ -4,7 +4,7 @@
  * @augments GraphDrawer
  * @class
  */
-function SPPRCLabelSettingAlgorithm(svgSelection) {
+function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     GraphDrawer.call(this,svgSelection);
 
     /**
@@ -34,7 +34,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection) {
      */
     var logger = new Logger(d3.select("#logger"));
 
-    var labelDrawer = new LabelDrawer(d3.select("#ta_canvas_graph2"),this);
+    var labelDrawer = new LabelDrawer(svgSelection2,this);
 
     /**
      * status variables

@@ -23,23 +23,22 @@
     </script>
 
 <!-- LOCAL -->
-<!--
+
     <script src="../library/js/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="../library/js/jquery-ui-1.10.1.custom.min.js" type="text/javascript"></script>
     <link type="text/css" href="../library/css/mmenu/jquery.mmenu.all.css" rel="stylesheet" />
     <script type="text/javascript" src="../library/js/mmenu/jquery.mmenu.min.all.js"></script>
     <script type="text/javascript" src="../library/js/mathjax/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=en"></script>
     <script src="../library/js/d3/d3.js"></script>
--->
 
-<!-- CDN -->
+<!-- CDN 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/5.3.4/css/jquery.mmenu.all.min.css" rel="stylesheet" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jQuery.mmenu/5.3.4/js/jquery.mmenu.min.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=en"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-
+-->
 <!--     Adrians d3 related library code -->
     <script src="../library-d3-svg/js/Graph.js"></script>
     <script src="../library-d3-svg/js/GraphDrawer.js"></script>
@@ -190,8 +189,10 @@
         <div id="tab_tg">
             <div>
                 <div class="canvasWrapper">
-                    <div class="svgContainer"><svg class="graphCanvas" id="tg_canvas_graph" width="700" height="500"></svg></div>
-                    <a class="svgDownloader" download="graph-editor.svg" href="data:text/plain,test">SVG Download</a>
+                    <div class="svgContainer">
+                      <svg class="graphCanvas" id="tg_canvas_graph" width="700" height="500"></svg>
+                      <a class="svgDownloader" download="graph-editor.svg" href="data:text/plain,test">maxflow-graph-editor.svg</a>
+                    </div>
                     <div class="Legende" id="tg_div_Legende">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">
@@ -265,10 +266,22 @@
         <div id="tab_ta">
             <div>
                 <div class="canvasWrapper">
-                    <div class="svgContainer">
-                    <svg class="graphCanvas" id="ta_canvas_graph" width="350" height="450"></svg><svg class="graphCanvas2" id="ta_canvas_graph2" width="350" height="450"></svg>
-                    </div>
-                    <a class="svgDownloader" download="graph-algorithm.svg" href="data:text/plain,test">SVG Download</a>
+                   <table>
+                    <tr>
+                      <td class="svgContainer">
+                        <svg class="graphCanvas" id="ta_canvas_graph" width="350" height="450"></svg>
+                        <a class="svgDownloader" download="maxflow-graph-algorithm-graph.svg" href="data:text/plain,test">maxflow-graph-algorithm-graph.svg</a>
+                      </td>
+                      <td class="svgContainer">
+                        <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="450"></svg>
+                        <select id="heightFunctionXAxis">
+                            <option value="id">id</option>
+                            <option value="exess">exess</option>
+                        </select><br>
+                        <a class="svgDownloader" download="maxflow-graph-algorithm-height.svg" href="data:text/plain,test">maxflow-graph-algorithm-height.svg</a>
+                      </td>
+                    </tr>
+                    </table>
                     <div class="Legende">
                         <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                         <div class="LegendeText">

@@ -55,13 +55,33 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
 
     }
 
+    var that = this;
+
+    this.init = function(){
+      Graph.addChangeListener(function(){
+          that.clear();
+          that.update();
+      });
+    }
+
+    var xAxisOptions = {
+      "exess" : function(d){return +d.state.exess},
+      "id" : function(d){return +d.id}
+    }
+    var xFunName="id";
+
+    d3.select("#heightFunctionXAxis").on('change',function(e){
+      xFunName=this.value;
+      xAxisText.text(xFunName);
+      that.update();
+    });
 
 
     //Axis
     var xAxis = d3.svg.axis().scale(this.x).orient("bottom").tickFormat(d3.format("d")).tickSubdivide(0);
     var yAxis = d3.svg.axis().scale(this.y).orient("left");
 
-    this.svg.append("g")
+    var xAxisText = this.svg.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + this.height + ")")
           .call(xAxis)
@@ -70,7 +90,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
           .attr("x", this.width)
           .attr("y", 15)
           .style("text-anchor", "end")
-          .text("id");
+          .text(xFunName);//id
 
     this.svg.append("g")
           .attr("class", "y axis")
@@ -93,7 +113,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     var that = this;
 
     this.nodeX = function(d){
-        return +d.id;
+        return xAxisOptions[xFunName](d);
     };
 
     this.nodeY = function(d){
@@ -110,7 +130,8 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
 
         xAxis.ticks(nodes.length);
 
-        this.x.domain([0,d3.max(nodes, function(d) { return +d.id})]);
+//         this.x.domain([0,d3.max(nodes, function(d) { return xFun(d)})]);
+        this.x.domain(d3.extent(nodes, function(d) { return xAxisOptions[xFunName](d)})); 
         this.y.domain([0,d3.max(nodes, function(d) { return d.state.height})]);
 
         var t = this.svg.transition().duration(250);
