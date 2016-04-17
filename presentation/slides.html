@@ -21,13 +21,13 @@
 		<link rel="stylesheet" href="lib/css/zenburn.css">
 
 		<!-- Printing and PDF exports -->
-		<script>
+<!-- 		<script>
 			var link = document.createElement( 'link' );
 			link.rel = 'stylesheet';
 			link.type = 'text/css';
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
+		</script> -->
 
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
@@ -35,8 +35,8 @@
 
 		<link rel="stylesheet" href="style.css">
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-        <!-- <script src="../library/js/d3/d3.min.js"></script> -->
+<!--         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
+        <script src="../implementation/library/js/d3/d3.min.js"></script>
 		
 
 
@@ -72,8 +72,8 @@
 	</section> -->
 	<section>
 		<h3>e.g.</h3>
-        <iframe class="full" src="https://www-m9.ma.tum.de/graph-algorithms/hierholzer/index_de.html"></iframe>
-		<!-- <iframe class="full" src="../hierholzer/index_de.html"></iframe> -->
+<!--         <iframe class="full" src="https://www-m9.ma.tum.de/graph-algorithms/hierholzer/index_de.html"></iframe> -->
+		<iframe class="full" src="../implementation/hierholzer/index_de.html"></iframe>
 	</section>
 	<section>
 		<h3>Canvas</h3>
@@ -407,8 +407,8 @@ Edge.prototype.contains = function(mx,my,ctx) {
 	<section>
 		<h3>1 IDP, 2 algorithms</h3>
 			<!-- <iframe src="../both.html"></iframe> -->
-			<iframe class="half" data-src="../maxflow-push-relabel/index_en.html"></iframe>
-			<iframe class="half" data-src="../spp-rc-label-setting/index_en.html"></iframe>
+			<iframe class="half" data-src="../implementation/maxflow-push-relabel/index_en.html"></iframe>
+			<iframe class="half" data-src="../implementation/spp-rc-label-setting/index_en.html"></iframe>
 	</section>
 	<section>
 		<h3>Common need:</h3>
@@ -713,8 +713,8 @@ function update(data) {
 	</section>
 
 	<section data-transition="fade-in">
-		<iframe class="full" src="../maxflow-push-relabel/index_en.html#tab_ta"></iframe>
-		<small><a href="../maxflow-push-relabel/index_en.html#tab_ta" target="_blank">LINK</a></small>
+		<iframe class="full" src="../implementation/maxflow-push-relabel/index_en.html#tab_ta"></iframe>
+		<small><a href="../implementation/maxflow-push-relabel/index_en.html#tab_ta" target="_blank">LINK</a></small>
 	</section>
 </section>
 
@@ -771,7 +771,7 @@ function update(data) {
 <!-- 		out of all feasible s-t paths, pick the ones with lowest cost -->
 	</section>
 	<section data-transition="fade-in">
-		<iframe class="full" src="../spp-rc-label-setting/index_en.html#tab_ta"></iframe>
+		<iframe class="full" src="../implementation/spp-rc-label-setting/index_en.html#tab_ta"></iframe>
 		<small><a href="../spp-rc-label-setting/index_en.html#tab_ta" target="_blank">LINK</a></small>
 	</section>
 </section>
@@ -831,13 +831,15 @@ function update(data) {
 
 				transition: 'convex', // none/fade/slide/convex/concave/zoom
 
+// 				math: {
+//                     mathjax: '../implementation/library/js/mathjax/MathJax.js', //https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+//                     config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+//                 },
+
 				// Optional reveal.js plugins
 				dependencies: [
 					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-					// { src: 'plugin/externalcode/externalcode.js', condition: function() { return !!document.querySelector( '[data-code]' ); } },
 					{ src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
-					// { src: 'plugin/zoom-js/zoom.js', async: true },
-					// { src: 'plugin/notes/notes.js', async: true },
 					{ src: 'plugin/math/math.js', async:true}
 				]
 			});
