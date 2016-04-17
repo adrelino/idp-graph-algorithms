@@ -1,0 +1,17 @@
+headings_flag 1
+%orig
+%heading_prefix "\\par\\penalty-50\\textbf{"
+%heading_suffix "}\\\\\*\~\\\\\*"
+
+%michael
+%heading_prefix "{\\sf\\bfseries "
+%heading_suffix "\\;\\hrulefill}\\nopagebreak\n"
+
+heading_prefix "\\par\\penalty-50\\textbf{"
+heading_suffix "}\\;\\hrulefill\\\*\~\\\\\*"
+
+symhead_positive "Symbols"
+symhead_negative "symbols"
+numhead_positive "Numbers"
+numhead_negative "numbers"
+delim_0 ",\~"

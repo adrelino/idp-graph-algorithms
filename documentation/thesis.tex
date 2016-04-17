@@ -1,0 +1,165 @@
+% ==============================================================================
+% thesis.tex
+% Example file for tumthesis.csl
+% Michael Ritter, 2012
+% Licence:
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+% http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% ==============================================================================
+\documentclass[]{tumthesis}
+
+% ------------------------------------------------------------------------------
+%FixMe-Status: final (no FixMe comments) or draft (comments visible)
+\fxsetup{draft}
+%\fxsetup{final}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+%  Language selection for metadata and main text (can be changed at any point in
+%  the main text.
+%\selectlanguage{ngerman}
+\selectlanguage{english}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Data for the bibliography
+\addbibresource{thesis.bib}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Further packages and TikZ libraries can be incorporated here.
+\usetikzlibrary{arrows}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Using the include-command: The content of the work will be incorporated using
+% the include-command. So that you can test things out without always needing
+% the full thesis, you can define here which sections will be incorporated and
+% which will not. Of course, for the final version you should be sure to
+% incorporate everything.
+\includeonly{%
+%titlepage,%
+%declaration,%
+abstract,%
+introduction,%
+% include own sections here (rule of thumb: one file per chapter)
+conclusion,%
+appendix%
+}%
+% ------------------------------------------------------------------------------
+
+\def\defTitle{Visualization of advanced graph algorithms}
+\def\defSubject{
+\texttt{push-relabel} algorithm \\
+\textit{to solve the maximum flow problem} \\
+\texttt{label-setting algorithm} \\
+\textit{to solve the shortest path problem with resource constraints}}
+
+% ------------------------------------------------------------------------------
+% PDF-Metadaten
+\hypersetup{
+ pdfauthor={Adrian Haarbach},
+ pdftitle={\defTitle},
+ pdfsubject={\defSubject},
+ pdfkeywords={IDP},
+ colorlinks=true, %coloured links (for the PDF version)
+% colorlinks=false, % no coloured links (for the print version)
+}
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+% Data for the title page and declaration
+\author{Adrian Haarbach}
+\title{\defTitle}
+\subtitle{\defSubject}
+\faculty{Fakultät für Mathematik}
+\institute{Lehrstuhl für Angewandte Geometrie und Diskrete Mathematik}
+%\subject{master}
+%\subject{bachelor}
+%\subject{diploma}
+%\subject{project}
+%\subject{seminar}
+\subject{idp}
+\subject{Interdisciplinary Research Project (IDP)}
+\professor{Prof. Dr. Peter Gritzmann} %Themensteller
+\advisor{Wolfgang F. Riedl} %Betreuer
+\date{\today} %Submission Date
+\place{München} %Place where document is signed
+% ------------------------------------------------------------------------------
+
+% ==============================================================================
+% Main part of the document
+% ==============================================================================
+\makeindex[title=Index,options=-s myindex]
+\begin{document}
+\pagestyle{empty}
+\frontmatter%
+%\selectlanguage{ngerman}
+\selectlanguage{english}
+\maketitlepage%
+\makedeclaration%
+
+\include{abstract}
+\tableofcontents%
+
+\mainmatter%
+\pagestyle{headings}
+
+\include{introduction}
+\include{conclusion}
+
+% appendices (if appropriate)
+\appendix
+\include{appendix}
+% all appendices behind backmatter will go without numbers
+\backmatter
+
+%List of Figures
+\listoffigures
+
+\vspace*{1.5cm}
+
+All figures in this document were created by the author using TikZ, the excellent \TeX-package by Till Tantau, see \cite{Tantau2007}.
+
+
+
+%List of Tables
+\listoftables
+
+
+%List of algorithms
+% only in conjunction with algorithm2e
+%\phantomsection% for hyperref
+%\addcontentsline{toc}{chapter}{Algorithmenverzeichnis}%
+%\markboth{Algorithmenverzeichnis}{Algorithmenverzeichnis}
+%\listofalgorithms
+
+
+%Algorithmenverzeichnis
+% nur in Verbindung mit algorithm2e
+%\phantomsection% fuer hyperref
+%\addcontentsline{toc}{chapter}{Algorithmenverzeichnis}%
+%\markboth{Algorithmenverzeichnis}{Algorithmenverzeichnis}
+%\listofalgorithms
+
+% Index
+% Add index to table of contents
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+% Bibliography
+\printbibliography[heading=bibintoc]
+
+%In the final version, this should be empty and needn't be commented out. Someone who works sloppily should at least remember to comment out the fixme list, so that unfinished places are
+%not so obvious for the examiners.
+\listoffixmes
+%
+\end{document}
+% ==============================================================================
+% End of document
+% ==============================================================================

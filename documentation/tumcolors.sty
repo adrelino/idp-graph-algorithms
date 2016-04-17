@@ -1,0 +1,148 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{tumcolors}[2020/04/26, TUM-Farben zur Verwendung in anderen
+Paketen/Dateien, Zentrum Mathematik, TU Muenchen]
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{calc}% Used for tumlogo
+\RequirePackage{keyval}% Used for the tumlogo command
+
+%Stammfarben
+\definecolor{TUMblue}{RGB}{0,101,189}
+\definecolor{TUMblau}{RGB}{0,101,189}
+\definecolor{TUMgreen}{RGB}{162,173,0}
+\definecolor{TUMgruen}{RGB}{162,173,0}
+\definecolor{TUMelfenbein}{RGB}{218,215,203}
+\definecolor{TUMivory}{RGB}{218,215,203}
+\definecolor{TUMorange}{RGB}{227,114,34}
+
+% Erweiterte Palette
+\definecolor{TUMblue1}{RGB}{0,51,89}
+\definecolor{TUMblau1}{RGB}{0,51,89}
+\definecolor{TUMblue2}{RGB}{0,82,147}
+\definecolor{TUMblau2}{RGB}{0,82,147}
+\definecolor{TUMblue3}{RGB}{0,115,207}
+\definecolor{TUMblau3}{RGB}{0,115,207}
+\definecolor{TUMblue4}{RGB}{100,160,200}
+\definecolor{TUMblau4}{RGB}{100,160,200}
+\definecolor{TUMblue5}{RGB}{152,198,234}
+\definecolor{TUMblau5}{RGB}{152,198,234}
+
+\definecolor{TUMgray1}{gray}{0.8}
+\definecolor{TUMgrau1}{gray}{0.8}
+\definecolor{hellgrau}{gray}{0.8}
+\definecolor{light gray}{gray}{0.8}
+\definecolor{TUMgray2}{gray}{0.5}
+\definecolor{TUMgrau2}{gray}{0.5}
+\definecolor{grau}{gray}{0.5}
+\definecolor{gray}{gray}{0.5}
+\definecolor{TUMgray3}{gray}{0.2}
+\definecolor{TUMgrau3}{gray}{0.2}
+\definecolor{dunkelgrau}{gray}{0.2}
+\definecolor{dark gray}{gray}{0.2}
+
+%Folienfarben
+\definecolor{gelb}{RGB}{255,180,000}%
+\definecolor{yellow}{RGB}{255,180,000}%
+\definecolor{orange}{RGB}{255,128,000}%
+\definecolor{rot}{RGB}{229,052,024}%
+\definecolor{red}{RGB}{229,052,024}%
+\definecolor{dunkelrot}{RGB}{202,033,063}%
+\definecolor{dark red}{RGB}{202,033,063}%
+\definecolor{blau}{RGB}{000,153,255}%
+\definecolor{blue}{RGB}{000,153,255}%
+\definecolor{light blue}{RGB}{065,190,255}%
+\definecolor{hellblau}{RGB}{065,190,255}%
+\definecolor{green}{RGB}{145,172,107}%
+\definecolor{gruen}{RGB}{145,172,107}%
+\definecolor{light green}{RGB}{181,202,130}%
+\definecolor{hellgruen}{RGB}{181,202,130}%
+
+
+% TUM Logo
+
+% Draws the TUM logo. Ratio: 1 x 0.528
+% Takes a single parameter which contains one or more
+% of the following options:
+% - width: The desired width of the logo
+% - height: The desired height of the logo.
+%   You have to specify exactly one of the two options width and height.
+% - color: The desired fill color for the logo. Default: TUMblue
+% - outline: If set, only the outline is drawn
+% TODO: - style: Desired additional styles for the TikZ path. Default: none
+%
+% Example: \tumlogo{width=5cm, color=red}
+\newcommand{\tumlogo}[1]{{
+	% Extract parameters
+	\setkeys{tumlogo}{#1}%
+%
+	\@ifundefined{tumlogo@outline}{
+		\def\tumlogo@fill{\tumlogo@color}%
+		\def\tumlogo@draw{none}%
+	}{%
+		\def\tumlogo@fill{none}%
+		\def\tumlogo@draw{\tumlogo@color}%
+	}%
+%
+	% Set default values
+	\@ifundefined{tumlogo@size}{%
+		\PackageError{tumlogo: You have to specify either width OR height!}%
+	}{}%
+	\@ifundefined{tumlogo@color}{%
+		\def\tumlogo@color{TUMblue}%
+	}{}%
+	
+%
+	% Start a TikZ picture with apropriate scaling
+	\begin{tikzpicture}[x=\tumlogo@size, y=\tumlogo@size]
+		\path[fill=\tumlogo@fill, draw=\tumlogo@draw, line width=0.012598*\tumlogo@size]
+			(0.089616536954633,   0.434197883241443) --
+			(0.089616536954633,                   0) --
+			(0.183814065630152,                   0) --
+			(0.183814065630152,   0.433563210239864) --
+			(0.288418104136011,   0.433563210239864) --
+			(0.288418104136011,                   0) --
+			(0.587983760880742,                   0) --
+			(0.587983760880742,   0.428978672859752) --
+			(0.694562731575867,   0.428978672859752) --
+			(0.694562731575867,   0.000113461095255) --
+			(0.793330614994593,   0.000113461095255) --
+			(0.793330614994593,   0.428978672859752) --
+			(0.901249844877408,   0.428978672859752) --
+			(0.901249844877408,   0.000113461095255) --
+			(1.000000000000000,   0.000113461095255) --
+			(1.000000000000000,   0.528384774939281) --
+			(0.493148013544417,   0.528384774939281) --
+			(0.493148013544417,   0.096144095590973) --
+			(0.384576382363891,   0.096144095590973) --
+			(0.384576382363891,   0.527732373641569) --
+			(                0,   0.527732373641569) --
+			(                0,   0.434197883241443) --
+			cycle;
+	\end{tikzpicture}
+}}
+\define@key{tumlogo}{width}{%
+  \@ifundefined{tumlogo@size}{%
+    \def\tumlogo@size{#1}%
+  }{%
+    \PackageError{tumlogo: You can only specify either width OR height!}%
+  }%
+}
+\define@key{tumlogo}{height}{%
+  \@ifundefined{tumlogo@size}{%
+    \def\tumlogo@size{1.89256020882682390558992908288*#1}%
+  }{%
+    \PackageError{tumlogo: You can only specify either width OR height!}%
+  }%
+}
+\define@key{tumlogo}{color}{%
+  \def\tumlogo@color{#1}%
+}
+\define@key{tumlogo}{style}{%
+  \toksdef\tumlogo@style=20%
+  \tumlogo@style={#1}%
+}
+\define@key{tumlogo}{outline}[true]{%
+	\def\tumlogo@outline{true}%
+}
