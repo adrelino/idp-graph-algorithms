@@ -16,7 +16,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     }
 
     this.edgeText = function(d){
-        return algo.edgeText(Graph.instance.edges.get(d.id));
+//         return algo.edgeText(Graph.instance.edges.get(d.id));
     }
 
     this.onNodesEntered = function(d){
@@ -26,32 +26,25 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     this.onNodesUpdated = function(selection){
        algo.onNodesUpdated(selection);
 
-        var h = 20;
+//         var h = 20;
 
-        selection.selectAll(".excessBar")
-        .transition()
-        .attr("y", function(d) {
-            return h - algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.excess))
-        })
-        .attr("height", function(d) {
-            return algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.excess))
-        })
+//         selection.selectAll(".excessBar")
+//         .transition()
+//         .attr("y", function(d) {
+//             return h - algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.excess))
+//         })
+//         .attr("height", function(d) {
+//             return algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.excess))
+//         })
 //         .style("display",(s.id != STATUS_FINISHED) ? "block" : "none");
 
     }
 
     this.onEdgesEntered = function(selection) {
-         selection.append("line")
-            .attr("class", "cap")
-            .style("stroke-width",function(d){return algo.flowWidth(d.resources[0])})
 
-          selection.append("line")
-            .attr("class", "flow")
     }
     
     this.onEdgesUpdated = function(selection) {
-        selection.selectAll("line.flow")
-            .style("stroke-width",function(d){return algo.flowWidth(Graph.instance.edges.get(d.id).state.flow)})
 
     }
 
@@ -68,7 +61,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
       "excess" : function(d){return +d.state.excess},
       "id" : function(d){return +d.id}
     }
-    var xFunName="id";
+    var xFunName=d3.select("#heightFunctionXAxis").property("value");
 
     d3.select("#heightFunctionXAxis").on('change',function(e){
       xFunName=this.value;

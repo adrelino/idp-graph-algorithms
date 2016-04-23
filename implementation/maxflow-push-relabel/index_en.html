@@ -275,8 +275,8 @@
                       <td class="svgContainer">
                         <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="450"></svg>
                         <select id="heightFunctionXAxis">
-                            <option value="id">id</option>
                             <option value="excess">excess</option>
+                            <option value="id">id</option>
                         </select><br>
                         <a class="svgDownloader" download="maxflow-graph-algorithm-height.svg" href="data:text/plain,test">maxflow-graph-algorithm-height.svg</a>
                       </td>
@@ -462,7 +462,13 @@
                             <p class="pseudocode" id="ta_p_l13">    Integriere subtour in tour</p>
                             <p class="pseudocode" id="ta_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
                             <p class="pseudocode" id="ta_p_l15">END</p>  -->
-                            <h3>Variable status</h3>
+                        </div>
+                        <div id="ta_div_statusLogger">
+                            <h3>Log of algorithm execution</h3>
+                            <div id="logger"></div>
+                        </div>
+                    </div>
+                                                <h3>Variable status</h3>
                             <table class="algoInformationen">
                                 <tr>
                                     <th class="algoInfoTH"><span>v</span></th>
@@ -477,12 +483,6 @@
                                     <td id="ta_td_c_dash" class="algoInfoTD">-</td>
                                 </tr>
                             </table>
-                        </div>
-                        <div id="ta_div_statusLogger">
-                            <h3>Log of algorithm execution</h3>
-                            <div id="logger"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div id="ta_div_confirmTabChange" title="Algorithmus abbrechen?" class="tabChangeWarningDialog">

@@ -66,11 +66,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             return d.id;
     }
     
-    this.nodeText = function(d) {
-        if(s.id != STATUS_FINISHED) return d.state.excess + "," + d.state.height;
-//         return GoldbergTarjanPushRelabelAlgorithm.prototype.nodeText.call(this,d);
+//     this.nodeText = function(d) {
+//         if(s.id != STATUS_FINISHED) return d.state.excess + "," + d.state.height;
+// //         return GoldbergTarjanPushRelabelAlgorithm.prototype.nodeText.call(this,d);
 
-    }
+//     }
     
     this.edgeText = function(d) {
         return d.state.flow + "/" + d.resources[0];
@@ -104,13 +104,13 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     this.onNodesUpdated = function(selection) {
         selection
         .selectAll("circle")
-        .style("stroke", function(d) {
-            if (d.id == s.currentNodeId) {
-                return const_Colors.NodeBorderHighlight;
-            } else {
-                return global_NodeLayout['borderColor'];
-            }
-        })
+//         .style("stroke", function(d) {
+//             if (d.id == s.currentNodeId) {
+//                 return const_Colors.NodeBorderHighlight;
+//             } else {
+//                 return global_NodeLayout['borderColor'];
+//             }
+//         })
 //         .style("stroke-width", function(d) {
 //             if (s.activeNodeIds.indexOf(d.id) >= 0) {
 //                 return "5px";
@@ -121,12 +121,14 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 //             }
 //         })
         .style("fill", function(d) {
-            if (d.id == s.sourceId)
-                return const_Colors.NodeFillingHighlight; //green
+            if (d.id == s.currentNodeId){
+              return const_Colors.CurrentNodeColor
+            }else if (d.id == s.sourceId)
+                return const_Colors.StartNodeColor; //green
             else if (d.id == s.targetId)
-                return const_Colors.NodeFillingHighlight;//NodeFillingQuestion; // NodeFillingLight
+                return const_Colors.StartNodeColor;//NodeFillingQuestion; // NodeFillingLight
             else if (s.activeNodeIds.indexOf(d.id) >= 0)
-                return "yellow";
+                return const_Colors.PQColor;
             else
                 return global_NodeLayout['fillStyle'];
         //        return colormap[Math.min(10,d.height)];
@@ -142,23 +144,29 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         
         var h = 20;
         
-        selection.selectAll(".excessBar")
-        .transition()
-        .attr("y", function(d) {
-            return h - flowWidth(Math.abs(d.state.excess))
-        })
-        .attr("height", function(d) {
-            return flowWidth(Math.abs(d.state.excess))
-        })
-        .style("display",(s.id != STATUS_FINISHED) ? "block" : "none");
+//         selection.selectAll(".excessBar")
+//         .transition()
+//         .attr("y", function(d) {
+//             return h - flowWidth(Math.abs(d.state.excess))
+//         })
+//         .attr("height", function(d) {
+//             return flowWidth(Math.abs(d.state.excess))
+//         })
+//         .style("display",(s.id != STATUS_FINISHED) ? "block" : "none");
     }
     
     this.onEdgesEntered = function(selection) {
-    
+         selection.append("line")
+            .attr("class", "cap")
+            .style("stroke-width",function(d){return algo.flowWidth(d.resources[0])})
+
+          selection.append("line")
+            .attr("class", "flow")
     }
     
     this.onEdgesUpdated = function(selection) {
-    
+        selection.selectAll("line.flow")
+            .style("stroke-width",function(d){return algo.flowWidth(Graph.instance.edges.get(d.id).state.flow)})
     }
 
 
