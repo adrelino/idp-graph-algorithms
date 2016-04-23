@@ -67,7 +67,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
     
     this.nodeText = function(d) {
-        if(s.id != STATUS_FINISHED) return d.state.exess + "," + d.state.height;
+        if(s.id != STATUS_FINISHED) return d.state.excess + "," + d.state.height;
 //         return GoldbergTarjanPushRelabelAlgorithm.prototype.nodeText.call(this,d);
 
     }
@@ -91,12 +91,12 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         //         .attr("text-anchor", "left");
 
         //       selection.append("text")
-        //         .attr("class","exess unselectable")
+        //         .attr("class","excess unselectable")
         //         .attr("dy", "2.0em")           // set offset y position
         //         .attr("text-anchor", "right");
         
         selection.append("rect")
-        .attr("class", "exessBar unselectable")
+        .attr("class", "excessBar unselectable")
         .attr("x", "20")
         .attr("width", 10);
     }
@@ -132,9 +132,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         //        return colormap[Math.min(10,d.height)];
         })
 
-        //     selection.selectAll(".exess")
+        //     selection.selectAll(".excess")
         //         .transition()
-        //         .text(function(d){return "e:"+d.exess})
+        //         .text(function(d){return "e:"+d.excess})
 
         //     selection.selectAll(".height")
         //         .transition()
@@ -142,13 +142,13 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         
         var h = 20;
         
-        selection.selectAll(".exessBar")
+        selection.selectAll(".excessBar")
         .transition()
         .attr("y", function(d) {
-            return h - flowWidth(Math.abs(d.state.exess))
+            return h - flowWidth(Math.abs(d.state.excess))
         })
         .attr("height", function(d) {
-            return flowWidth(Math.abs(d.state.exess))
+            return flowWidth(Math.abs(d.state.excess))
         })
         .style("display",(s.id != STATUS_FINISHED) ? "block" : "none");
     }
@@ -208,7 +208,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             //prepare graph for this algorithm: add special properties to nodes and edges
             Graph.instance.nodes.forEach(function(key, node) {
                 node.state.height = 0;
-                node.state.exess = 0;
+                node.state.excess = 0;
             })
 
             Graph.instance.edges.forEach(function(key, edge) {
@@ -441,8 +441,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             var e = forwardStar[i];
             //init preflow from source node
             e.state.flow = e.resources[0];
-            source.state.exess -= e.state.flow;
-            e.end.state.exess = e.state.flow;
+            source.state.excess -= e.state.flow;
+            e.end.state.excess = e.state.flow;
 
             //add node to active queue
             if (e.end.id != s.targetId) {
@@ -452,7 +452,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         
         s.id = STATUS_INITDISTANCEFUNCTION;
         
-        logger.log("Init preflow. source exess: " + source.state.exess);
+        logger.log("Init preflow. source excess: " + source.state.excess);
     }
 
     /**
@@ -496,7 +496,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         if (s.activeNodeIds.length == 0) {
             s.id = STATUS_FINISHED;
             s.currentNodeId=-1;
-            var finalflow = Graph.instance.nodes.get(s.targetId).state.exess;
+            var finalflow = Graph.instance.nodes.get(s.targetId).state.excess;
             that.stopFastForward();
             d3.select("#finalflow").text(finalflow);
             logger.log("Finished with a max flow of "+finalflow);
@@ -511,11 +511,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     //    var currentNode = active.shift();
     //    logger2("selected node "+currentNode.id+":");
     //    var legalNeighbour;
-    //    while((legalNeighbour=getLegalEdgeInResidualNetwork(currentNode)) && currentNode.exess >0){
+    //    while((legalNeighbour=getLegalEdgeInResidualNetwork(currentNode)) && currentNode.excess >0){
     //      push(currentNode,legalNeighbour,source,target,active);
     //    }
 
-    //    if(node.exess > 0 && legalNeighbour==null){
+    //    if(node.excess > 0 && legalNeighbour==null){
     //     relabel(currentNode,active);
     //    }
     //   }else{
@@ -526,10 +526,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     // function mainLoopStepped(){
     //   if(currentNode){
     //     var legalNeighbour=getLegalEdgeInResidualNetwork(currentNode);
-    //     if(legalNeighbour && currentNode.exess >0){
+    //     if(legalNeighbour && currentNode.excess >0){
     //       var nonsat = push(currentNode,legalNeighbour,source,target,active);
-    //       if(currentNode.exess==0 || nonsat) currentNode=null;
-    //     }else if(currentNode.exess >0){
+    //       if(currentNode.excess==0 || nonsat) currentNode=null;
+    //     }else if(currentNode.excess >0){
     //       relabel(currentNode,active);
     //       currentNode=null;
     //     }else{
@@ -549,14 +549,14 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     function admissiblePush() {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         var e_dash;
-        if (v.state.exess > 0 && (e_dash = getLegalResidualEdge(v))) {
+        if (v.state.excess > 0 && (e_dash = getLegalResidualEdge(v))) {
             s.id = STATUS_PUSH;
             d3.select("#ta_td_e_dash").text(e_dash.toString());
             d3.select("#ta_td_c_dash").text(e_dash.c_dash);
             logger.log2("admissiblePush on residual edge " + e_dash.toString());
         } else {
             s.id = STATUS_ADMISSIBLERELABEL;
-            logger.log2("no admissiblePush, exess=" + v.state.exess);
+            logger.log2("no admissiblePush, excess=" + v.state.excess);
         
         }
     }
@@ -573,7 +573,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         d3.select("#ta_td_e_dash").text(e_dash.toString());
         d3.select("#ta_td_c_dash").text(e_dash.c_dash);
         
-        var delta = Math.min(v.state.exess, e_dash.c_dash);
+        var delta = Math.min(v.state.excess, e_dash.c_dash);
         
         if (e_dash.isForwardEdge) {
             edge.state.flow += delta;
@@ -581,8 +581,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             edge.state.flow -= delta;
         }
         
-        v.state.exess -= delta;
-        w.state.exess += delta;
+        v.state.excess -= delta;
+        w.state.excess += delta;
         
         if (w.id != s.sourceId && w.id != s.targetId && s.activeNodeIds.indexOf(w.id) == -1) {
             s.activeNodeIds.push(w.id);
@@ -599,11 +599,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     function admissibleRelabel() {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         var e_dash;
-        if (v.state.exess > 0 && (e_dash = getLegalResidualEdge(v)) == null) { //todo: check if e_dash can ever be not null here, since we pushed till we saturated all edges beforehand anyways
+        if (v.state.excess > 0 && (e_dash = getLegalResidualEdge(v)) == null) { //todo: check if e_dash can ever be not null here, since we pushed till we saturated all edges beforehand anyways
             d3.select("#ta_td_e_dash").text(e_dash);
             d3.select("#ta_td_c_dash").text("-");
             s.id = STATUS_RELABEL;
-            logger.log2("admissibleRelabel on edge " + e_dash + " exess" + v.state.exess);
+            logger.log2("admissibleRelabel on edge " + e_dash + " excess" + v.state.excess);
         } else {
             s.id = STATUS_MAINLOOP; //jump to loop head
             logger.log2("no admissibleRelabel");

@@ -28,13 +28,13 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
 
         var h = 20;
 
-        selection.selectAll(".exessBar")
+        selection.selectAll(".excessBar")
         .transition()
         .attr("y", function(d) {
-            return h - algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.exess))
+            return h - algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.excess))
         })
         .attr("height", function(d) {
-            return algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.exess))
+            return algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.excess))
         })
 //         .style("display",(s.id != STATUS_FINISHED) ? "block" : "none");
 
@@ -65,7 +65,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     }
 
     var xAxisOptions = {
-      "exess" : function(d){return +d.state.exess},
+      "excess" : function(d){return +d.state.excess},
       "id" : function(d){return +d.id}
     }
     var xFunName="id";

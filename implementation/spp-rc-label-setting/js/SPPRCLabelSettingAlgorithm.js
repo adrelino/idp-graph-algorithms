@@ -357,9 +357,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         if (s.U.length == 0) {
             s.id = STATUS_FINISHED;
             s.currentLabel = null;
-            // var finalflow = Graph.instance.nodes.get(s.targetId).state.exess;
             // that.stopFastForward();
-            // d3.select("#finalflow").text(finalflow);
             logger.log("Finished");
             return;
         }

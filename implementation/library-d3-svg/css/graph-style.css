@@ -36,7 +36,7 @@ input.tooltip {
   pointer-events: none; */
 }
 
-.exessBar {
+.excessBar {
   fill: #a00;
   stroke-width: 1.5px;
 }
@@ -68,7 +68,7 @@ circle.selected{
     stroke-width: 7px;
 }
 
-.exess{
+.excess{
   stroke: #a00;
 }
 
