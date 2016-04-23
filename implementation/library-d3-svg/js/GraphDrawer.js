@@ -14,7 +14,14 @@ var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
                     EdgeHighlight3:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
                     EdgeHighlight4:         "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
                     RedText:                "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    GreenText:              "#007C30"   // Dunkelgrün 100 % aus TUM Styleguide
+                    GreenText:              "#007C30",   // Dunkelgrün 100 % aus TUM Styleguide
+    PQColor : "#FFFF70", // Helles Gelb
+    StartNodeColor : "#33CC33", // Dunklgrün
+    CurrentNodeColor : "#C4071B", // Helles Rot
+    FinishedNodeColor : "#73B78D", // Wie EdgeHighlight2
+    ShortestPathColor : "#73B78D", // Wie EdgeHighlight2
+    UnusedEdgeColor : "#0065BD", // Wie NodeBorder
+    NormalEdgeColor : "#000000" // Schwarz
                     };
 
 /**
