@@ -66,20 +66,14 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     this.onNodesUpdated = function(selection) {
         selection
         .selectAll("circle")
-        .style("stroke", function(d) {
+        .style("fill", function(d) {
             if (s.currentLabel && (d.id == s.currentLabel.nodeId)) {
                 return const_Colors.NodeBorderHighlight;
-            } else {
-                return global_NodeLayout['borderColor'];
+            } else if (d.id == s.sourceId){
+                return const_Colors.StartNodeColor;
+            }else{
+              return global_NodeLayout['fillStyle'];
             }
-        })
-        .style("fill", function(d) {
-            if(s.id == STATUS_DOMINANCE){
-                return that.dominanceStepNodeColors(d.id);
-            }
-            if (d.id == s.sourceId)
-                return const_Colors.NodeFillingHighlight;
-            return global_NodeLayout['fillStyle'];
         })
     }
     
@@ -88,7 +82,15 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     }
     
     this.onEdgesUpdated = function(selection) {
-    
+        selection
+        .selectAll("line")
+        .style("stroke-width", function(d) {
+            if (s.currentLabel && (d.id == s.currentArcId )){//s.currentLabel.arcId)) {
+                return 4;
+            }else{
+              return 2;
+            }
+        })
     }
 
 
@@ -380,6 +382,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             logger.log2("iterated all neighbours of "+v.id);
         }else{
             var arc = outEdges[s.currentResidentNodeEdgeIndex++];
+            s.currentArcId=arc.id;
             var l_dash = new Label(s.currentLabel,arc); //TODO do we need the extended label already here?
             logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
             s.l_dash = l_dash;
