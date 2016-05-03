@@ -1,0 +1,45 @@
+Bisher hatte ich noch keine Zeit andere Visualisierungsoptionen zu implementieren. Vielleicht ist es auch besser, wenn du die Applikationen erstmal beta testest (ignoriere die Erklärungs Tabs, da ist noch dummy text drin), um mir ein erstes Benutzer feedback zu geben (würde gerne wissen ob du denn anhand der Visualisierungen und zusätzlichen Informationen wirklich verstehst was der Algorithmus gerade macht oder ob das nicht klar genug rüberkommt)
+
+Goldberg-Tarjan:
+- - Abh. von Browser werden Pfeilspitzen nicht angezeigt (nicht in FF, IE, Edge, aber unter Safari und Chrome)
+- - s und t in gleicher Farbe hervorheben, rot vermeiden
+- - Bei Darstellung der Höhefunktion die ID-Achse weglassen, stattdessen evtl. Knoten nach Höhe abfallend sortieren (macht die Idee des Algorithmus klarer?)
+- - Infos an Knoten zu Excess und Höhe weglassen, verwirrt in unseren Augen
+- - In rechtem Teil: Kanten ohne Infos zu Kap/Fluss, dadurch wird es unserer Meinung übersichtlicher
+- - Nur aktiven Knoten hervorheben (statt aller mit Excess), idealerweise durch Färbung des gesamten Knoten
+
+
+SPPRC:
+- - Wie unten erwähnt Interaktivität
+- - Einfärbung aller Label gemäß Knoten finden wir verwirrend, evtl. weglassen?
+- - Hervorheben der Kante, entlang derer extended wird?
+- - Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
+- - Aktives Label nicht rot hervorheben (rot = falsch?)
+
+
+beim SPPRC noch eine hover-funktionalität einbauen, welche die labels/pfade in der 2. darstellungsebene mit dem graphen in der 1. ebene verknüpft (also dass dann alle kanten die zum pfad gehören gehilighted werden)
+sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
+...
+
+
+
+3.5.16 SPPRC
+
+- label an v ueberschrift in label anzeige
+- label beschriftung kuerzer, ggf entfernen mit hovering
+- unprocessed in sortierter reihenfolge nach resident vertex abarbeiten bei extenden und dominance
+- in labelView filtern nach resident vertex, andere label ausblenden innerhalb von extension und dominance step
+- am anfang vom loop alle wieder anzeigen
+- unprocessed label gelb
+- processed gruen
+- im graph nur rot, gelb und gruen macht keine sinn auf nodes
+- hovering
+ -links click auf knoten: rechts alle label im knoten enden
+ -rechts click auf label: links den pfad hervoheben (rot oder fett)
+- beim extenden zwischenlabel ausblenden
+- zeitfenster und knoten zuordnen (umrahmung)
+
+
+Fluss
+- ab initialize preflow beschreibungen eins fuerhe anzeigen
+- beschreibung beschreibt was gerade links passiert ist.
