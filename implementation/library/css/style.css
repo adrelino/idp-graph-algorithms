@@ -90,17 +90,17 @@ div.statusWindow {
     text-align: center;
     margin-left: 715px;
     width: 370px;
-    min-height: 500px;
-    max-height: 500px;
+    min-height: 700px;
+    max-height: 1000px;
     padding-left: 15px;
     padding-right: 15px;
     border: 2px groove #78C8FF;
-    overflow: auto; 
+    overflow: auto;
 }
 
 div.canvasWrapper {
     width: 700px;
-    height: 500px;
+    height: 800px;
     float: left;
 }
 
@@ -250,6 +250,7 @@ table.algoInformationen {
 }
 
 #ta_div_statusErklaerung, #tf1_div_statusErklaerung, #tf2_div_statusErklaerung {
+    height:150px;
     text-align: left;
 }
 #ta_div_statusErklaerung ul li, #tf1_div_statusErklaerung ul li, #tf2_div_statusErklaerung ul li {
