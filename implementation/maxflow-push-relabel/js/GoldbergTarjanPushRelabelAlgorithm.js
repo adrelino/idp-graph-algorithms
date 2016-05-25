@@ -203,11 +203,14 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     this.reset = function(){
         s = {
             id: 0, //status id
+            idPrev:0,
             currentNodeId: -1,
             activeNodeIds: [],
             sourceId: -1,
             targetId: -1
         };
+
+        setStatus(STATUS_SELECTSOURCE)
 
         logger.data = [];
         this.replayHistory = [];
@@ -317,12 +320,12 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     this.updateDescriptionAndPseudocode = function() {
         var sel = d3.select("#ta_div_statusPseudocode").selectAll("div").selectAll("p")
         sel.classed("marked", function(a, pInDivCounter, divCounter) {
-            return divCounter == s.id;
+            return divCounter == s.idPrev;
         });
         
         var sel = d3.select("#ta_div_statusErklaerung").selectAll("div");
         sel.style("display", function(a, divCounter) {
-            return (divCounter == s.id) ? "block" : "none";
+            return (divCounter == s.idPrev) ? "block" : "none";
         });
 
         d3.select("#ta_td_v").text(s.currentNodeId);
@@ -353,6 +356,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 
     };
 
+    function setStatus(newStatus,oldStatus){
+      s.idPrev = (oldStatus != null) ? oldStatus : s.id;
+      s.id = newStatus;
+    }
+
 
     ///////////////////////
     ///Actual algorithm steps
@@ -376,9 +384,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             case STATUS_SELECTTARGET:
                 this.selectTarget(d);
                 break;
-            case STATUS_START:
+            case STATUS_START: //TODO: is never called
                 logger.log("Now the algorithm can start");
-                s.id++; //nothing really to do
+                setStatus(STATUS_INITPREFLOW); //nothing really to do
                 break;
             case STATUS_INITPREFLOW:
                 initPreflow();
@@ -420,7 +428,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     this.selectSource = function(d) {
         s.sourceId = d.id;
         this.setDisabledBackward(false);
-        s.id = STATUS_SELECTTARGET;
+        setStatus(STATUS_SELECTTARGET,STATUS_SELECTTARGET); //so that idPrev == id so that we see "select target" after we clicked on source node
         logger.log("selected node " + d.id + " as s");
     };
 
@@ -430,7 +438,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     this.selectTarget = function(d) {
         s.targetId = d.id;
         this.setDisabledForward(false);
-        s.id = STATUS_START;
+        setStatus(STATUS_INITPREFLOW,STATUS_START); //so that after selecting the target, we jump from display before click (on nodes) to display after click (on next button)
         logger.log("selected node " + d.id + " as t");
     };
 
@@ -458,7 +466,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             }
         }
         
-        s.id = STATUS_INITDISTANCEFUNCTION;
+        setStatus(STATUS_INITDISTANCEFUNCTION);
         
         logger.log("Init preflow. source excess: " + source.state.excess);
     }
@@ -492,7 +500,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             }
         }
         
-        s.id = STATUS_MAINLOOP;
+        setStatus(STATUS_MAINLOOP);
         logger.log("Init distfun. source height: " + source.state.height);
     }
     
@@ -502,7 +510,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
  */
     function mainLoop() {
         if (s.activeNodeIds.length == 0) {
-            s.id = STATUS_FINISHED;
+            setStatus(STATUS_FINISHED,STATUS_FINISHED); //so that we display finished, not mainloop when done
             s.currentNodeId=-1;
             var finalflow = Graph.instance.nodes.get(s.targetId).state.excess;
             that.stopFastForward();
@@ -514,7 +522,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         s.currentNodeId = s.activeNodeIds.shift();
         logger.log("Main Loop Iteration " + (mainLoopIt++) + " popped node " + s.currentNodeId);
         
-        s.id = STATUS_ADMISSIBLEPUSH;
+        setStatus(STATUS_ADMISSIBLEPUSH);
     //   if(active.length>0){
     //    var currentNode = active.shift();
     //    logger2("selected node "+currentNode.id+":");
@@ -558,12 +566,12 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         var e_dash;
         if (v.state.excess > 0 && (e_dash = getLegalResidualEdge(v))) {
-            s.id = STATUS_PUSH;
+            setStatus(STATUS_PUSH);
             d3.select("#ta_td_e_dash").text(e_dash.toString());
             d3.select("#ta_td_c_dash").text(e_dash.c_dash);
             logger.log2("admissiblePush on residual edge " + e_dash.toString());
         } else {
-            s.id = STATUS_ADMISSIBLERELABEL;
+            setStatus(STATUS_ADMISSIBLERELABEL);
             logger.log2("no admissiblePush, excess=" + v.state.excess);
         
         }
@@ -598,7 +606,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         
         var sat = e_dash.c_dash == 0 ? " [saturating] " : " [nonsaturating] ";
         logger.log3("push " + delta + " from " + v.id + " to " + w.id + sat);
-        s.id = STATUS_ADMISSIBLEPUSH;
+        setStatus(STATUS_ADMISSIBLEPUSH);
     }
 
     /**
@@ -610,10 +618,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         if (v.state.excess > 0 && (e_dash = getLegalResidualEdge(v)) == null) { //todo: check if e_dash can ever be not null here, since we pushed till we saturated all edges beforehand anyways
             d3.select("#ta_td_e_dash").text(e_dash);
             d3.select("#ta_td_c_dash").text("-");
-            s.id = STATUS_RELABEL;
+            setStatus(STATUS_RELABEL);
             logger.log2("admissibleRelabel on edge " + e_dash + " excess" + v.state.excess);
         } else {
-            s.id = STATUS_MAINLOOP; //jump to loop head
+            setStatus(STATUS_MAINLOOP); //jump to loop head
             logger.log2("no admissibleRelabel");
         }
     }
@@ -635,7 +643,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         node.state.height = newheight;
         s.activeNodeIds.push(node.id);
         
-        s.id = STATUS_MAINLOOP;
+        setStatus(STATUS_MAINLOOP);
     }
     
     function residualCap(edge, forward) { //if residualCap == 0, there is actually no edge in residual network

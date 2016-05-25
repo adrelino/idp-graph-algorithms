@@ -59,6 +59,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         .on("click", function(d) {
             if (s.id == STATUS_SELECTSOURCE) {
                 that.nextStepChoice(d);
+            }else{
+              console.log(d);
+              //highlight all labels which have this node as residentVertex
             }
         })
     }
@@ -124,6 +127,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     this.reset = function(){
         s = {
             id: 0, //status id
+            idPrev: 0,
             currentLabel: null, //current label
             l_dash: null, //current extended label
             U: [],
@@ -131,6 +135,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             sourceId: -1,
             currentResidentNodeEdgeIndex: -1 //for iteration outgoing edges in label extension step
         };
+
+        setStatus(STATUS_SELECTSOURCE);
 
         this.s=s;
 
@@ -230,12 +236,12 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     this.updateDescriptionAndPseudocode = function() {
         var sel = d3.select("#ta_div_statusPseudocode").selectAll("div").selectAll("p")
         sel.classed("marked", function(a, pInDivCounter, divCounter) {
-            return divCounter == s.id;
+            return divCounter == s.idPrev;
         });
         
         var sel = d3.select("#ta_div_statusErklaerung").selectAll("div");
         sel.style("display", function(a, divCounter) {
-            return (divCounter == s.id) ? "block" : "none";
+            return (divCounter == s.idPrev) ? "block" : "none";
         });
 
         d3.select("#ta_td_U").text("{"+s.U.map(function(d){return d.id}).join(",")+"}");
@@ -268,6 +274,12 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     ///////////////////////
     ///Actual algorithm steps
 
+
+    function setStatus(newStatus,oldStatus){
+      s.idPrev = (oldStatus != null) ? oldStatus : s.id;
+      s.id = newStatus;
+    }
+
     /**
      * Executes the next step in the algorithm
      * @method
@@ -284,9 +296,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             case STATUS_SELECTSOURCE:
                 this.selectSource(d);
                 break;
-            case STATUS_START:
+            case STATUS_START: //TODO: is never called
                 logger.log("Now the algorithm can start");
-                s.id++; //nothing really to do
+                setStatus(STATUS_INIT);
                 break;
             case STATUS_INIT:
                 initLabels();
@@ -326,7 +338,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     this.selectSource = function(d) {
         s.sourceId = d.id;
         this.setDisabledBackward(false);
-        s.id = STATUS_INIT;
+        setStatus(STATUS_INIT,STATUS_START);
         logger.log("selected node " + d.id + " as s");
     };
 
@@ -345,7 +357,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         var label = new Label(null,trivialPath);
         
         s.U.push(label);
-        s.id = STATUS_MAINLOOP;
+        setStatus(STATUS_MAINLOOP);
         
         logger.log("Init labels. start label: "+Label.toString(label)+" added to U");
     }
@@ -357,7 +369,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     */
     function mainLoop() {
         if (s.U.length == 0) {
-            s.id = STATUS_FINISHED;
+            setStatus(STATUS_FINISHED,STATUS_FINISHED);
             s.currentLabel = null;
             // that.stopFastForward();
             logger.log("Finished");
@@ -368,7 +380,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.currentResidentNodeEdgeIndex = 0;
         logger.log("Main loop #" + (mainLoopIt++) + " picked label " + Label.toString(s.currentLabel)+ " from U");
         
-        s.id = STATUS_PATH_EXTEND;
+        setStatus(STATUS_PATH_EXTEND);
     }
 
     /**
@@ -378,7 +390,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         var v = Graph.instance.nodes.get(s.currentLabel.nodeId);
         var outEdges = v.getOutEdges();
         if(s.currentResidentNodeEdgeIndex >= outEdges.length){
-            s.id = STATUS_LABEL_PROCESSED;
+            setStatus(STATUS_LABEL_PROCESSED);
             logger.log2("iterated all neighbours of "+v.id);
         }else{
             var arc = outEdges[s.currentResidentNodeEdgeIndex++];
@@ -386,7 +398,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             var l_dash = new Label(s.currentLabel,arc); //TODO do we need the extended label already here?
             logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
             s.l_dash = l_dash;
-            s.id = STATUS_PATH_EXTEND_FEASIBLE;
+            setStatus(STATUS_PATH_EXTEND_FEASIBLE);
         }
     }
 
@@ -405,7 +417,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             logger.log3(Label.toString(s.l_dash) + " infeasible in " + w.toString(true,nodeResourceStyle))
         }
         s.l_dash = null;
-        s.id = STATUS_PATH_EXTEND; // go back to inner FORALL loop head
+        setStatus(STATUS_PATH_EXTEND); // go back to inner FORALL loop head
     }
 
     /**
@@ -415,7 +427,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.P.push(s.currentLabel);
         logger.log2("processed label " + Label.toString(s.currentLabel) + ", added to P");
         s.currentLabel = null;
-        s.id = STATUS_DOMINANCE;
+        setStatus(STATUS_DOMINANCE);
     }
 
     /**
@@ -467,7 +479,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         if(nooneDominated)
             logger.log3("no label is dominated");
 
-        s.id = STATUS_MAINLOOP;
+        setStatus(STATUS_MAINLOOP);
     }
 
     /**
@@ -475,8 +487,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      */
     function filter() {
         //TODO
-        logger.log("filter solution step")
-        s.id = STATUS_FINISHED;
+        logger.log("filter solution step");
+        setStatus(STATUS_FINISHED);
     }
 
     var constrainedEdgeResourceIndex = 0; //the other one is unconstrained but should be minimized. E.g.: min cost, constrained time
