@@ -53,6 +53,7 @@
     <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/style.css" />
 
 <!--     Files used only for this applet -->
+    <script src="js/ResidualEdge.js" type="text/javascript"></script>
     <script src="js/GoldbergTarjanPushRelabelAlgorithm.js" type="text/javascript"></script>
     <script src="js/HeightfunctionDrawer.js" type="text/javascript"></script>
 
@@ -349,7 +350,7 @@
                             </div>
                             <div>
                                 <h3>Initializing the preflow</h3>
-                                <p>Set f(e) = c(e) for all edges emanating s and set f(e) = 0 for all other edges. Add all nodes v &ne; t having (s,v) &isin; E to the queue of active nodes.</p>
+                                <p>Set f(e) = c(e) for all edges emanating s and set f(e) = 0 for all other edges. Add all nodes v &ne; t having (s,v) &isin; E to the queue Q of active nodes.</p>
                             </div>
                             <div>
                                 <h3>Initializing the distance function</h3>
@@ -361,7 +362,7 @@
                             </div>
                             <div>
                                 <h3>Main loop</h3>
-                                <p>As long as the queue containing the active nodes isn’t empty pop the first node v from the front of the queue and apply a push/relabel-operation to v.</p>
+                                <p>As long as the queue Q containing the active nodes isn’t empty pop the first node v from the front of Q and apply a push/relabel-operation to v.</p>
                             </div>
                             <div>
                                 <h3>Check for admissible push operations</h3>
@@ -374,7 +375,7 @@
 
                                 <p>More precisely, if e' &in; E' is a forward edge with respect to an edge e of G, increase the preflow f(e) of e by &delta;, and if e' is a backward edge, then decrease the preflow f(e) of e by &delta;.</p>
 
-                                <p>By doing so, e(v) is decreased by &delta;, and e(w) is increased by &delta;. If w &ne; s,t, and if w wasn't active before, w becomes active, and is added at the end of the queue containing the active nodes.</p>
+                                <p>By doing so, e(v) is decreased by &delta;, and e(w) is increased by &delta;. If w &ne; s,t, and if w wasn't active before, w becomes active, and is added at the end of the queue Q containing the active nodes.</p>
                             </div>
                             <div>
                                 <h3>Check for an admissible relabel operation</h3>
@@ -384,7 +385,7 @@
                                 <h3>Relabel</h3>
                                 <p>Increase the distance d(v) of v to the value</p>
                                 <p>min{ d(w)+1 | (v,w) is edge of the residual network G'}</p>
-                                <p>add v at the end of the queue after that.</p>
+                                <p>add v at the end of the queue Q after that.</p>
                             </div>
                             <div>
                                 <h3>Finished</h3>
@@ -411,22 +412,23 @@
                                  <p> FOR ALL e  = (u,w) &isin;E DO</p>
                                  <p>    IF u == s THEN f(e) &larr; c(e)</p>
                                  <p>    ELSE f(e) &larr; 0</p>
-                                 <p>    IF u == s AND w &ne; t THEN queue.add(w)</p></div>
+                                 <p>    IF u == s AND w &ne; t THEN Q.add(w)</p></div>
                             <div><p>(* Initializing the distance function *)</p>
                                  <p> d(s) = |V|</p>
                                  <p> FOR ALL v != s &isin; V DO</p>
                                  <p>    d(v) &larr; number of segments on directed path to t</p></div>
                             <div><p>(* Main Loop *)</p>
-                                 <p> WHILE queue &ne; &empty; DO</p>
-                                 <p>    v &larr; queue.pop()</p></div>
-                            <div><p>    WHILE  e(v) > 0 AND &exist; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
+                                 <p> WHILE Q &ne; &empty; DO</p>
+                                 <p>    v &larr; Q.pop()</p></div>
+                            <div><p>    WHILE e(v) > 0 </p>
+                                 <p>    AND &exist; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
                             <div><p>       (* PUSH *)</p>
                                  <p>       push min{e(v),c'(e')} flow from v to w</p>
-                                 <p>       IF w != s,t AND w &notin; queue THEN queue.add(w)</p></div>
-                            <div><p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
+                                 <p>       IF w != s,t AND w &notin; Q THEN Q.add(w)</p></div>
+                            <div><p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E'; d(v) == d(w) + 1</p></div>
                             <div><p>       (* RELABEL *)</p>
-                                 <p>       d(v) &larr; min{d(w)+1 | (v,w) &isin E'</p>
-                                 <p>       queue.add(v)</p></div>
+                                 <p>       d(v) &larr; min{d(w)+1 | (v,w) &isin; E'</p>
+                                 <p>       Q.add(v)</p></div>
                             <div><p>END</p></div>
 
 <!--                             <p> d(t) = 0</p> -->
@@ -468,7 +470,7 @@
                             <table class="algoInformationen">
                                 <tr>
                                     <th class="algoInfoTH"><span>v</span></th>
-                                    <th class="algoInfoTH"><span>queue</span></th>
+                                    <th class="algoInfoTH"><span>Q</span></th>
                                     <th class="algoInfoTH"><span>e'</span></th>
                                     <th class="algoInfoTH"><span>c'</span></th>
                                 </tr>
