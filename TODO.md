@@ -11,6 +11,7 @@
   * in Rot gefärbt
 - [x] Bei Darstellung der Höhefunktion die ID-Achse weglassen, stattdessen evtl. Knoten nach Höhe abfallend sortieren (macht die Idee des Algorithmus klarer?) (2016-04-26)
   * man kann wählen zwischen Excess / id auf der x Achse. Höhe war sowieso schon auf der y Achse.
+- [x] Aktive Kante bei Push/Relabel hervorheben [(2016-05-31)](https://github.com/adrelino/idp-graph-algorithms/commit/fd8af934f74879a27260acb9b7986f568cc1f9c0)
 - [ ] Im rechten Teil: nicht alle Kanten e in g zeigen, sondern nur Kanten des Residual Netwerks g', welche den aktuellen (roten) Knoten verlassen. Diese gestrichelt rendern und mit ihren Residual Kapazitäten c'. Ausserdem bei einem push die residual Kante über die gepusht wurde fett rot hervorheben, und bei einem relabel die residual kante zum Knoten mit der niedrigsten Höhe grün hervorheben.
 
 
