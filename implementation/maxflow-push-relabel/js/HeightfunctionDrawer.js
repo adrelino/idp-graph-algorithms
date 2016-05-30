@@ -5,8 +5,6 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     this.x.domain([0,10]);
     this.y.domain([0,10]);
 
-    var s = algo.s;
-
     this.nodeLabel = function(d){
         return algo.nodeLabel(d);
     };
@@ -45,7 +43,10 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     }
     
     this.onEdgesUpdated = function(selection) {
-
+      //does not update flow with and cap because we didnt call algo.onEdgesEntered 
+      //in this.onEdgesEntered, so only the default onEdgesEntered with arrows from GraphDrawer is called on enter
+      //TODO:: draw residual edges on active node, not all edges in right side
+      algo.onEdgesUpdated(selection);
     }
 
     var that = this;

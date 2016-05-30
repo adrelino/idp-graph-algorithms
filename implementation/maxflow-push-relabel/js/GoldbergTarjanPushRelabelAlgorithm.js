@@ -166,7 +166,26 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     
     this.onEdgesUpdated = function(selection) {
         selection.selectAll("line.flow")
-            .style("stroke-width",function(d){return algo.flowWidth(Graph.instance.edges.get(d.id).state.flow)})
+            .style("stroke-width",function(d){
+              return algo.flowWidth(Graph.instance.edges.get(d.id).state.flow)
+              })
+        
+
+        selection.selectAll("line.arrow")
+            .each(function(d){
+              var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
+              if(s.e_dash && d.id == s.e_dash.id && (s.idPrev==STATUS_PUSH || s.idPrev==STATUS_RELABEL)){
+                attr["stroke-width"]=4;
+                if(s.idPrev==STATUS_PUSH){
+                  attr["stroke"]="red";
+                  attr["marker-end"]="url(#arrowhead2-red)";
+                }else{
+                  attr["stroke"]="green";
+                  attr["marker-end"]="url(#arrowhead2-green)";
+                }
+              }
+              d3.select(this).style(attr);
+            })
     }
 
 
@@ -221,11 +240,16 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             Graph.instance.nodes.forEach(function(key, node) {
                 node.state.height = 0;
                 node.state.excess = 0;
+                node.state.visited=false;
             })
 
             Graph.instance.edges.forEach(function(key, edge) {
                 edge.state.flow = 0;
             })
+
+          //debug: no need to click on source and target
+          this.nextStepChoice(Graph.instance.nodes.get(0),true);
+          this.nextStepChoice(Graph.instance.nodes.get(Graph.instance.nodeIds-1),true);
         }
     }
 
@@ -376,7 +400,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      * Executes the next step in the algorithm
      * @method
      */
-    this.nextStepChoice = function(d) {
+    this.nextStepChoice = function(d,noGuiUpdate) {
         
         if (debugConsole)
             console.log("Current State: " + s.id);
@@ -425,7 +449,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         }
 
         //update view with status values
-        this.update();
+        if(!noGuiUpdate) this.update();
     };
 
 
@@ -631,10 +655,18 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         var node = Graph.instance.nodes.get(s.currentNodeId);
         
         var residualEdges = node.getAllOutgoingResidualEdges();
+
+        //TODO:: is not always correct residual edge, need the one with min height
+        s.e_dash = residualEdges[0];
         
         var newheight = 1 + d3.min(residualEdges, function(e_dash) {
             return e_dash.end().state.height;
         });
+
+        //TODO:: is not the correct residual edge
+        if(s.e_dash.end().state.height != newheight-1){
+          console.log(s.e_dash,"is not the correct residual edge !!!")
+        }
         
         logger.log3("relabel " + node.id + " from " + node.state.height + " to " + newheight);
         node.state.height = newheight;
