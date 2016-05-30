@@ -1,7 +1,7 @@
 # TODOS
 
 ## Goldberg-Tarjan:
-- [x] Abh. von Browser werden Pfeilspitzen nicht angezeigt (nicht in FF, IE, Edge, aber unter Safari und Chrome) (2016-31-05) 6998c6ac171c33f3c535eea952d443ae641cad3d
+- [x] Abh. von Browser werden Pfeilspitzen nicht angezeigt (nicht in FF, IE, Edge, aber unter Safari und Chrome) [(2016-31-05)](https://github.com/adrelino/idp-graph-algorithms/commit/6998c6ac171c33f3c535eea952d443ae641cad3d)
 - [x] s und t in gleicher Farbe hervorheben, rot vermeiden (2016-04-26)
 - [x] Infos an Knoten zu Excess und Höhe weglassen, verwirrt in unseren Augen (2016-04-26)
   * stattdessen im rechten Teil koordinatensystem x:excess y:hoehe
