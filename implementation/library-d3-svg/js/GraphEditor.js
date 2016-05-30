@@ -21,6 +21,18 @@ var GraphEditor = function(svgOrigin){
     .on("mousedown",mousedown)
     .on("contextmenu", function(d){d3.event.stopPropagation();d3.event.preventDefault()});
 
+//TODO::maybe we can add defs here so that they are only defined once per page so that they show in firefox. So far, we have to copy defs to each index_html
+//   this.svgOrigin
+//         .append("defs").append("marker")
+//         .attr("id", "arrowhead2")
+//         .attr("refX",12) /*must be smarter way to calculate shift*/
+//         .attr("refY",2)
+//         .attr("markerWidth", 12)
+//         .attr("markerHeight", 4)
+//         .attr("orient", "auto")
+//         .append("path")
+//         .attr("d", "M 0,0 V 4 L6,2 Z"); //this is actual shape for arrowhead
+
   this.onNodesEntered = function(selection) {
 //     console.log("onNodesEntered in GraphEditor");
     

@@ -101,18 +101,6 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
 
-//     //d3.select("body").selectAll("svg")
-    svgOrigin
-        .append("defs").append("marker")
-        .attr("id", "arrowhead2")
-        .attr("refX",12) /*must be smarter way to calculate shift*/
-        .attr("refY",2)
-        .attr("markerWidth", 12)
-        .attr("markerHeight", 4)
-        .attr("orient", "auto")
-        .append("path")
-        .attr("d", "M 0,0 V 4 L6,2 Z"); //this is actual shape for arrowhead
-
     var svg = svgOrigin.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
