@@ -1,7 +1,7 @@
 # TODOS
 
 ## Goldberg-Tarjan:
-- [ ] Abh. von Browser werden Pfeilspitzen nicht angezeigt (nicht in FF, IE, Edge, aber unter Safari und Chrome)
+- [x] Abh. von Browser werden Pfeilspitzen nicht angezeigt (nicht in FF, IE, Edge, aber unter Safari und Chrome) (2016-31-05) 6998c6ac171c33f3c535eea952d443ae641cad3d
 - [x] s und t in gleicher Farbe hervorheben, rot vermeiden (2016-04-26)
 - [x] Infos an Knoten zu Excess und Höhe weglassen, verwirrt in unseren Augen (2016-04-26)
   * stattdessen im rechten Teil koordinatensystem x:excess y:hoehe
@@ -11,6 +11,7 @@
   * in Rot gefärbt
 - [x] Bei Darstellung der Höhefunktion die ID-Achse weglassen, stattdessen evtl. Knoten nach Höhe abfallend sortieren (macht die Idee des Algorithmus klarer?) (2016-04-26)
   * man kann wählen zwischen Excess / id auf der x Achse. Höhe war sowieso schon auf der y Achse.
+- [ ] Im rechten Teil: nicht alle Kanten e in g zeigen, sondern nur Kanten des Residual Netwerks g', welche den aktuellen (roten) Knoten verlassen. Diese gestrichelt rendern und mit ihren Residual Kapazitäten c'. Ausserdem bei einem push die residual Kante über die gepusht wurde fett rot hervorheben, und bei einem relabel die residual kante zum Knoten mit der niedrigsten Höhe grün hervorheben.
 
 
 ## SPPRC:
