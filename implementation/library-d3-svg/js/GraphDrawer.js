@@ -346,14 +346,23 @@ GraphDrawer.prototype.onEdgesUpdated = function(selection) {
 //     console.log(selection[0].length + " edges entered")
 }
 
+/**
+ * Displays in the middle of the edge (typically cost/resource vectors or capacity/flow)
+ */
 GraphDrawer.prototype.edgeText = function(d){
     return d.toString();
 }
 
+/**
+ * Displays on top of a node (typically constraints or state variables)
+ */
 GraphDrawer.prototype.nodeText = function(d){
     return d.toString();   
 }
 
+/**
+ * Displays inside of a node (typically its id)
+ */
 GraphDrawer.prototype.nodeLabel = function(d){
     return d.id;
 }
