@@ -62,7 +62,7 @@ Graph.ResidualEdge.prototype.toString = function() {
 }
 
 //not necessarily legal, forward star of node in G'
-Graph.Node.prototype.getAllOutgoingResidualEdges = function() {
+Graph.Node.prototype.getAllOutgoingResidualEdges = function(unfiltered) {
   var e_dashes = [];
 
   /*forward edges*/
@@ -74,6 +74,8 @@ Graph.Node.prototype.getAllOutgoingResidualEdges = function() {
   this.inEdges.forEach(function(key, edge) {
       e_dashes.push(new Graph.ResidualEdge(key, false));
   });
+
+  if(unfiltered) return e_dashes;
 
   //If capacity == 0, we don't speak of an residual edge anymore
   var filteredEdges = e_dashes.filter(function(e_dash) {

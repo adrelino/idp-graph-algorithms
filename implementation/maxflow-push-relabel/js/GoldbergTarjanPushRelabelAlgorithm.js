@@ -1,3 +1,16 @@
+
+var STATUS_SELECTSOURCE = 0;
+var STATUS_SELECTTARGET = 1;
+var STATUS_START = 2;
+var STATUS_INITPREFLOW = 3;
+var STATUS_INITDISTANCEFUNCTION = 4;
+var STATUS_MAINLOOP = 5;
+var STATUS_ADMISSIBLEPUSH = 6;
+var STATUS_PUSH = 7;
+var STATUS_ADMISSIBLERELABEL = 8;
+var STATUS_RELABEL = 9;
+var STATUS_FINISHED = 10;
+
 /**
  * Goldberg Tarjan's Push-Relabel Algorithmus
  * @author Adrian Haarbach
@@ -16,18 +29,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     
     var debugConsole = false;
     
-    var id = 0;
-    var STATUS_SELECTSOURCE = id++;
-    var STATUS_SELECTTARGET = id++;
-    var STATUS_START = id++;
-    var STATUS_INITPREFLOW = id++;
-    var STATUS_INITDISTANCEFUNCTION = id++;
-    var STATUS_MAINLOOP = id++;
-    var STATUS_ADMISSIBLEPUSH = id++;
-    var STATUS_PUSH = id++;
-    var STATUS_ADMISSIBLERELABEL = id++;
-    var STATUS_RELABEL = id++;
-    var STATUS_FINISHED = id;
     
     /**
      * the logger instance
@@ -45,14 +46,19 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      * @type Object
      */
     var s = null;
+
+    this.getState = function(){
+      return s;
+    }
     
     var colormap = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"].reverse();
     
-    function flowWidth(val) {
+    function flowWidth(val,s) {
+        var s=s || 25;
         var maxCap = d3.max(Graph.instance.getEdges(), function(d) {
             return d.resources[0]
         });
-        return 25 * (val / maxCap);
+        return s * (val / maxCap);
     }
 
     this.flowWidth = flowWidth;
@@ -66,60 +72,32 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             return d.id;
     }
     
-//     this.nodeText = function(d) {
-//         if(s.id != STATUS_FINISHED) return d.state.excess + "," + d.state.height;
-// //         return GoldbergTarjanPushRelabelAlgorithm.prototype.nodeText.call(this,d);
-
-//     }
-    
+    /**
+     * display current flow along edge together with the maximum capacity of the edge
+     */
     this.edgeText = function(d) {
         return d.state.flow + "/" + d.resources[0];
     }
     
+    /**
+     * attach onClick listeners so we can select start/target node
+     */
     this.onNodesEntered = function(selection) {
         //select source and target nodes
         selection
-        .on("click", function(d) {
-            if (s.id == STATUS_SELECTSOURCE || s.id == STATUS_SELECTTARGET && d.id != s.sourceId) {
-                that.nextStepChoice(d);
-            }
-        })
-
-        //       selection.append("text")
-        //         .attr("class","height")
-        //         .attr("dy", "-1.2em")           // set offset y position
-        //         .attr("text-anchor", "left");
-
-        //       selection.append("text")
-        //         .attr("class","excess unselectable")
-        //         .attr("dy", "2.0em")           // set offset y position
-        //         .attr("text-anchor", "right");
-        
-        selection.append("rect")
-        .attr("class", "excessBar unselectable")
-        .attr("x", "20")
-        .attr("width", 10);
+          .on("click", function(d) {
+              if (s.id == STATUS_SELECTSOURCE || s.id == STATUS_SELECTTARGET && d.id != s.sourceId) {
+                  that.nextStepChoice(d);
+              }
+          })
     }
     
+    /**
+     * fill start/target, current and active nodes in green, red and yellow
+     */
     this.onNodesUpdated = function(selection) {
-        selection
+      selection
         .selectAll("circle")
-//         .style("stroke", function(d) {
-//             if (d.id == s.currentNodeId) {
-//                 return const_Colors.NodeBorderHighlight;
-//             } else {
-//                 return global_NodeLayout['borderColor'];
-//             }
-//         })
-//         .style("stroke-width", function(d) {
-//             if (s.activeNodeIds.indexOf(d.id) >= 0) {
-//                 return "5px";
-//             } else if (d.id == s.currentNodeId) {
-//                 return "7px";
-//             } else {
-//                 return "2px";
-//             }
-//         })
         .style("fill", function(d) {
             if (d.id == s.currentNodeId){
               return const_Colors.CurrentNodeColor
@@ -133,28 +111,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
                 return global_NodeLayout['fillStyle'];
         //        return colormap[Math.min(10,d.height)];
         })
-
-        //     selection.selectAll(".excess")
-        //         .transition()
-        //         .text(function(d){return "e:"+d.excess})
-
-        //     selection.selectAll(".height")
-        //         .transition()
-        //         .text(function(d){return "h:"+d.height});
-        
-        var h = 20;
-        
-//         selection.selectAll(".excessBar")
-//         .transition()
-//         .attr("y", function(d) {
-//             return h - flowWidth(Math.abs(d.state.excess))
-//         })
-//         .attr("height", function(d) {
-//             return flowWidth(Math.abs(d.state.excess))
-//         })
-//         .style("display",(s.id != STATUS_FINISHED) ? "block" : "none");
     }
     
+    /**
+     * Add gray capacity and blue flow lines behind the line with arrow from GraphDrawer
+     */
     this.onEdgesEntered = function(selection) {
          selection.append("line")
             .attr("class", "cap")
@@ -164,6 +125,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             .attr("class", "flow")
     }
     
+    /**
+     * Update the current flow width of an edge;
+     * Highlight edges e in G along which we push / use for relabeling a node
+     */
     this.onEdgesUpdated = function(selection) {
         selection.selectAll("line.flow")
             .style("stroke-width",function(d){
@@ -174,9 +139,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         selection.selectAll("line.arrow")
             .each(function(d){
               var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
-              if(s.e_dash && d.id == s.e_dash.id && (s.idPrev==STATUS_PUSH || s.idPrev==STATUS_RELABEL)){
+              if(s.e_dash && d.id == s.e_dash.id && (s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH || s.idPrev==STATUS_RELABEL)){
                 attr["stroke-width"]=4;
-                if(s.idPrev==STATUS_PUSH){
+                if(s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH){
                   attr["stroke"]="red";
                   attr["marker-end"]="url(#arrowhead2-red)";
                 }else{
@@ -227,7 +192,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             activeNodeIds: [],
             sourceId: -1,
             targetId: -1,
-            e_dash:null
+            e_dash:null,
+            e_dashes_forward_star_map:null //maps each edge id to outgoing residual edge from currentNodeId used in HeightfunctionDrawer.js
         };
 
         setStatus(STATUS_SELECTSOURCE)
@@ -264,7 +230,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 
 
         if(Graph.instance){
-             heightfunctionDrawer.update();
+             heightfunctionDrawer.update(s);
              GoldbergTarjanPushRelabelAlgorithm.prototype.update.call(this); //updates the graph
         }
     }
@@ -353,7 +319,15 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             return (divCounter == s.idPrev) ? "block" : "none";
         });
 
-        d3.select("#ta_td_v").text(s.currentNodeId >= 0 ? s.currentNodeId : "-");
+        var vText = "";
+        if(Graph.instance){
+          var v = Graph.instance.nodes.get(s.currentNodeId);
+          if(v){
+            vText = v.id +", e(v)="+ v.state.excess;
+          }
+        }
+
+        d3.select("#ta_td_v").text(vText);
         d3.select("#ta_td_queue").text("{"+s.activeNodeIds.join(",")+"}");
         if(s.e_dash){
         var e_dash = new Graph.ResidualEdge(s.e_dash);
@@ -372,7 +346,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             this.setDisabledForward(true);
         } else if (s.id == STATUS_SELECTTARGET) {
             this.setDisabledForward(true);
-        } else if (s.id == id) {
+        } else if (s.id == STATUS_FINISHED) {
             this.setDisabledForward(true);
             this.setDisabledBackward(false);
         }else{
@@ -536,14 +510,25 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
     
     var mainLoopIt = 0;
+
+    function updateResidualEdgesForwardStar(id){
+      var v = Graph.instance.nodes.get(id);
+      e_dashes = v.getAllOutgoingResidualEdges(true);
+      s.e_dashes_forward_star_map={};
+      for(var i=0; i<e_dashes.length; i++){
+        s.e_dashes_forward_star_map[e_dashes[i].id]=e_dashes[i];
+      }
+    }
+
     /**
- * main loop: pops the current node from the queue until empty
- */
+     * main loop: pops the current node from the queue until empty
+     */
     function mainLoop() {
         if (s.activeNodeIds.length == 0) {
             setStatus(STATUS_FINISHED,STATUS_FINISHED); //so that we display finished, not mainloop when done
             s.currentNodeId=-1;
             var finalflow = Graph.instance.nodes.get(s.targetId).state.excess;
+            //updateResidualEdgesForwardStar(s.sourceId);
             that.stopFastForward();
             d3.select("#finalflow").text(finalflow);
             logger.log("Finished with a max flow of "+finalflow);
@@ -551,6 +536,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         }
         
         s.currentNodeId = s.activeNodeIds.shift();
+        updateResidualEdgesForwardStar(s.currentNodeId);
+
+
         logger.log("Main Loop Iteration " + (mainLoopIt++) + " popped node " + s.currentNodeId);
         
         setStatus(STATUS_ADMISSIBLEPUSH);
@@ -656,18 +644,17 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         
         var residualEdges = node.getAllOutgoingResidualEdges();
 
-        //TODO:: is not always correct residual edge, need the one with min height
+        //find neighbouring node in G' with lowest height
         s.e_dash = residualEdges[0];
-        
-        var newheight = 1 + d3.min(residualEdges, function(e_dash) {
-            return e_dash.end().state.height;
-        });
-
-        //TODO:: is not the correct residual edge
-        if(s.e_dash.end().state.height != newheight-1){
-          console.log(s.e_dash,"is not the correct residual edge !!!")
+        for(var i=0; i<residualEdges.length; i++){
+          if(residualEdges[i].end().state.height < s.e_dash.end().state.height){
+            s.e_dash=residualEdges[i];
+          }
         }
         
+        //make ourself 1 higher than him
+        var newheight = 1 + s.e_dash.end().state.height;
+
         logger.log3("relabel " + node.id + " from " + node.state.height + " to " + newheight);
         node.state.height = newheight;
         s.activeNodeIds.push(node.id);
