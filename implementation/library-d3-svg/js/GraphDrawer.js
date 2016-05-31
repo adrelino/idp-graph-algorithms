@@ -145,7 +145,7 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
     yfun = yfun.bind(this);
 
-    function lineAttribs(d,a,b){
+    function lineAttribs(d){
         var attr = { x1:xfun(d.start), y1:yfun(d.start), x2:xfun(d.end), y2:yfun(d.end)};
         if(transTime) d3.select(this).transition().duration(transTime).attr(attr)
         else d3.select(this).attr(attr);
@@ -263,7 +263,7 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
         enterSelection.append("line")
             .attr("class","arrow")
-            .attr("marker-end", "url(#arrowhead2)")
+            .style("marker-end", "url(#arrowhead2)")
             .style("stroke","black")
             .style("stroke-width",global_Edgelayout['lineWidth'])
 
@@ -289,11 +289,11 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         selt.selectAll("text.resource")
             .text(this.edgeText)
             .style("text-anchor", function(d){
-                var arrowXProj = d.start.x-d.end.x;
+                var arrowXProj = that.nodeX(d.start)-that.nodeX(d.end);
                 return (arrowXProj>0) ? "start" : "end";
             })
             .attr("dominant-baseline",function(d){
-                var arrowYProj = d.start.y-d.end.y;
+                var arrowYProj = that.nodeY(d.start)-that.nodeY(d.end);
                 return (arrowYProj>0) ? "text-before-edge" : "text-after-edge";
             })
             .each(textAttribs)

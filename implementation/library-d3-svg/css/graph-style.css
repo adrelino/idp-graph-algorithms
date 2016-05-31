@@ -37,8 +37,9 @@ input.tooltip {
 }
 
 .excessBar {
-  fill: #a00;
-  stroke-width: 1.5px;
+  fill: lightblue;
+  stroke: black;
+  stroke-width: 1px;
 }
 
 /* .link {
