@@ -70,18 +70,31 @@
   </marker> -->
   
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xlink="http://www.w3.org/1999/xlink">
-<defs>
-  <marker id="arrowhead2" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse">
-    <path d="M 0,0 V 8 L12,4 Z"></path>
-  </marker>
+  <defs>
+    <marker id="arrowhead2" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0,0 V 8 L12,4 Z"></path>
+    </marker>
 
-   <marker id="arrowhead2-red" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse" fill="red">
-    <path d="M 0,0 V 8 L12,4 Z"></path>
-  </marker>
+     <marker id="arrowhead2-red" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse" fill="red">
+      <path d="M 0,0 V 8 L12,4 Z"></path>
+    </marker>
 
-   <marker id="arrowhead2-green" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse" fill="green">
-    <path d="M 0,0 V 8 L12,4 Z"></path>
-  </marker>
+     <marker id="arrowhead2-green" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse" fill="green">
+      <path d="M 0,0 V 8 L12,4 Z"></path>
+    </marker>
+
+     <marker id="arrowhead3" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M 0,0 V 8 L12,4 Z"></path>
+    </marker>
+
+     <marker id="arrowhead3-red" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto-start-reverse" markerUnits="userSpaceOnUse" fill="red">
+      <path d="M 0,0 V 8 L12,4 Z"></path>
+    </marker>
+
+     <marker id="arrowhead3-green" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto-start-reverse" markerUnits="userSpaceOnUse" fill="green">
+      <path d="M 0,0 V 8 L12,4 Z"></path>
+    </marker>
+  </defs>
 </svg>
 
     <noscript>
@@ -300,8 +313,9 @@
                       <td class="svgContainer">
                         <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="450"></svg>
                         <select id="heightFunctionXAxis">
-                            <option value="excess">excess</option>
-                            <option value="id">id</option>
+                            <option value="graph">y/x (graph)</option>
+                            <option value="excess">height/excess</option>
+                            <option value="id">height/id</option>
                         </select><br>
                         <a class="svgDownloader" download="maxflow-graph-algorithm-height.svg" href="data:text/plain,test">maxflow-graph-algorithm-height.svg</a>
                       </td>
