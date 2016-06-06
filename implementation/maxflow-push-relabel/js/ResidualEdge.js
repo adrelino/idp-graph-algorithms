@@ -1,3 +1,4 @@
+//http://stackoverflow.com/questions/7481988/multiple-constructor-in-javascript
 Graph.ResidualEdge = function(idOrObj, forward) {
   if(idOrObj && forward==null){ //from json.stringify
     this.id = idOrObj.id;
