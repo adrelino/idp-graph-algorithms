@@ -136,14 +136,14 @@ var LabelDrawer = function(svgOrigin,algo){
 
          var enterSelectionLabelPath = enterSelection.append("path")
             .attr("class","labelpath") //is not transformed
-            .attr("stroke", "lightgray")
-            .attr("stroke-width", 1)
+            .attr("stroke", "gray")
+            .attr("stroke-width", 2)
             .attr("fill", "none");
           
           var enterSelectionLabelEnd = enterSelection.append("g")
             .attr("class","labelend")
             .attr("transform",function(d){return labelEndTransform(d.parent)})// start at parent position and transition to new position
-            .style("opacity",1e-6)
+            //.style("opacity",1e-6)
 
           var enterSelectionTimeWindow = enterSelection.append("rect")
             .attr("class","timewindow")
@@ -162,7 +162,7 @@ var LabelDrawer = function(svgOrigin,algo){
            enterSelectionLabelEnd
                 .append("rect")
                 .attr({"rx":50, "ry":5, "height":20, "y":-10})
-                .style({fill:"red", "stroke-width":2 , "fill-opacity":0.5});
+                .style({fill:"red", "stroke-width":2});// , "fill-opacity":1});
 
            enterSelectionLabelEnd
                 .append("text")
@@ -198,7 +198,7 @@ var LabelDrawer = function(svgOrigin,algo){
         // the enter selection will apply to both entering and updating nodes.
         selection.selectAll(".labelend")
             .transition().duration(500)
-            .style("opacity",1)
+            //.style("opacity",1)
             .attr("transform",labelEndTransform)
 
         selection.selectAll("path")
@@ -206,6 +206,9 @@ var LabelDrawer = function(svgOrigin,algo){
             .attr("d",function(d){
                 var coords = generatePathCoordinatesFromLabel(d);
                 return lineFunction(coords);
+            })
+            .style("stroke-dasharray",function(d){
+              return (algo.getState().l_dash && d.id == algo.getState().l_dash.id) ? "5,5" : "0";
             })
 
         selection.selectAll("rect.timewindow")
@@ -252,7 +255,7 @@ var LabelDrawer = function(svgOrigin,algo){
                     return algo.dominanceStepNodeColors(d.nodeId);
                 }
                 if(s.currentLabel && d.id==s.currentLabel.id) return const_Colors.CurrentNodeColor;
-                if(s.l_dash && d.id==s.l_dash.id) return "orange";
+                if(s.l_dash && d.id==s.l_dash.id) return "lightgray";
                 if(s.U.some(function(a){return a.id==d.id})) return const_Colors.PQColor;
                 if(s.P.some(function(a){return a.id==d.id})) return const_Colors.FinishedNodeColor;
             })
@@ -269,8 +272,9 @@ var LabelDrawer = function(svgOrigin,algo){
 
         // EXIT
         // Remove old elements as needed.
-         selection.exit().transition()
-            .attr("opacity","1e-6").remove();
+         selection.exit()//.transition()
+            //.attr("opacity","1e-6")
+            .remove();
     
     } //end updateNodes()
 
