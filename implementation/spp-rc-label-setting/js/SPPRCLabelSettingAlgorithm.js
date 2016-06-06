@@ -1,3 +1,13 @@
+var STATUS_SELECTSOURCE = 0;
+var STATUS_START = 1;
+var STATUS_INIT = 2;
+var STATUS_MAINLOOP = 3;
+var STATUS_PATH_EXTEND = 4;
+var STATUS_PATH_EXTEND_FEASIBLE = 5;
+var STATUS_LABEL_PROCESSED = 6;
+var STATUS_DOMINANCE = 7;
+var STATUS_FINISHED = 8;
+
 /**
  * SPPRC Label Setting Algorithm
  * @author Adrian Haarbach
@@ -14,19 +24,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     var that = this;
     
     var debugConsole = false;
-    
-    var id = 0;
-    var STATUS_SELECTSOURCE = id++;
-    var STATUS_START = id++;
-    var STATUS_INIT= id++;
-    var STATUS_MAINLOOP = id++;
-    var STATUS_PATH_EXTEND = id++;
-    var STATUS_PATH_EXTEND_FEASIBLE = id++;
-    var STATUS_LABEL_PROCESSED = id++;
-    var STATUS_DOMINANCE = id++;
-    var STATUS_FINISHED = id;
-
-    this.STATUS_DOMINANCE = STATUS_DOMINANCE; //needed in LabelDrawer.js
     
     /**
      * the logger instance
@@ -74,7 +71,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         selection
         .selectAll("circle")
         .style("fill", function(d) {
-            if (s.currentLabel && (d.id == s.currentLabel.nodeId)) {
+            if (s.lId && (d.id == Graph.Label.get(s.lId).nodeId)) {
                 return const_Colors.NodeBorderHighlight;
             } else if (d.id == s.sourceId){
                 return const_Colors.StartNodeColor;
@@ -92,7 +89,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 //         selection
 //         .selectAll("line")
 //         .style("stroke-width", function(d) {
-//             if (s.currentLabel && (d.id == s.currentArcId )){//s.currentLabel.arcId)) {
+//             if (s.lId && (d.id == s.currentArcId )){//s.lId.arcId)) {
 //                 return 4;
 //             }else{
 //               return 2;
@@ -102,7 +99,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
        selection.selectAll("line")
             .each(function(d){
               var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
-              if(s.currentLabel && (d.id == s.currentArcId)){
+              if(s.lId && (d.id == s.currentArcId)){
                 attr["stroke-width"]=4;
 //                 if(s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH){
                   attr["stroke"]=const_Colors.CurrentNodeColor;
@@ -148,8 +145,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s = {
             id: 0, //status id
             idPrev: 0,
-            currentLabel: null, //current label
-            l_dash: null, //current extended label
+            lId: null, //current label
+            l_dashId: null, //current extended label
             U: [],
             P: [],
             sourceId: -1,
@@ -161,6 +158,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         if(Graph.instance){
           this.nextStepChoice(Graph.instance.nodes.get(0),true);
         }
+
+        Graph.Label.reset();
 
 
         this.s=s;
@@ -224,6 +223,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         
         replayHistory.push({
             "graphState": Graph.instance.getState(),
+            "labelState": Graph.Label.getState(),
             "s": JSON.stringify(s),
             //             "htmlSidebar": $("#ta_div_statusErklaerung").html(),
             // "legende": $("#tab_ta").find(".LegendeText").html(),
@@ -246,6 +246,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             console.log("Replay Step", oldState);
         
         Graph.instance.setState(oldState.graphState);
+        Graph.Label.setState(oldState.labelState);
+
         s = JSON.parse(oldState.s);
         logger.data = JSON.parse(oldState.loggerData);
         //         $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
@@ -270,9 +272,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         });
 
         d3.select("#ta_td_U").text("{"+s.U.map(function(d){return d.id}).join(",")+"}");
-        d3.select("#ta_td_l").text(s.currentLabel ? s.currentLabel.id : "-");
+        d3.select("#ta_td_l").text(s.lId ? s.lId : "-");
         d3.select("#ta_td_P").text("{"+s.P.map(function(d){return d.id}).join(",")+"}");
-        d3.select("#ta_td_l_dash").text(s.l_dash ? s.l_dash.id : "-");
+        d3.select("#ta_td_l_dash").text(s.l_dashId ? s.l_dashId : "-");
 
         if(this.fastForwardIntervalID != null){
             this.setDisabledForward(true,false);
@@ -280,7 +282,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         }else if (s.id == STATUS_SELECTSOURCE) {
             this.setDisabledBackward(true);
             this.setDisabledForward(true);
-        } else if (s.id == id) {
+        } else if (s.id == STATUS_FINISHED) {
             this.setDisabledForward(true);
             this.setDisabledBackward(false);
         }else{
@@ -374,17 +376,13 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * init the label queue / sets with the 
      */
     function initLabels() {
-        var source = Graph.instance.nodes.get(s.sourceId);
 
-        //fake edge/arc
-        var trivialPath = {id:-1,end:source};
-
-        var label = new Graph.Label(null,trivialPath);
+        var label = Graph.Label.trivial(s.sourceId);
         
-        s.U.push(label);
+        s.U.push(label.id);
         setStatus(STATUS_MAINLOOP);
         
-        logger.log("Init labels. start label: "+label.toString()+" added to U");
+        logger.log("Init labels. start label: "+Graph.Label.toString(label)+" added to U");
     }
     
     var mainLoopIt = 0;
@@ -395,15 +393,15 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     function mainLoop() {
         if (s.U.length == 0) {
             setStatus(STATUS_FINISHED,STATUS_FINISHED);
-            s.currentLabel = null;
+            s.lId = null;
             // that.stopFastForward();
             logger.log("Finished");
             return;
         }
         
-        s.currentLabel = s.U.shift();
+        s.lId = s.U.shift();
         s.currentResidentNodeEdgeIndex = 0;
-        logger.log("Main loop #" + (mainLoopIt++) + " picked label " + s.currentLabel.toString()+ " from U");
+        logger.log("Main loop #" + (mainLoopIt++) + " picked label " + Graph.Label.toString(Graph.Label.get(s.lId))+ " from U");
         
         setStatus(STATUS_PATH_EXTEND);
     }
@@ -412,7 +410,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * try to extend currentLabel along currentArc
      */
     function pathExtend() {
-        var v = Graph.instance.nodes.get(s.currentLabel.nodeId);
+        var l = Graph.Label.get(s.lId);
+        var v = Graph.instance.nodes.get(l.nodeId);
+        
         var outEdges = v.getOutEdges();
         if(s.currentResidentNodeEdgeIndex >= outEdges.length){
             setStatus(STATUS_LABEL_PROCESSED);
@@ -420,9 +420,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         }else{
             var arc = outEdges[s.currentResidentNodeEdgeIndex++];
             s.currentArcId=arc.id;
-            var l_dash = new Graph.Label(s.currentLabel,arc); //TODO do we need the extended label already here?
+            var l_dash = Graph.Label.extend(l,arc); //TODO do we need the extended label already here?
             logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
-            s.l_dash = l_dash;
+            s.l_dashId = l_dash.id;
             setStatus(STATUS_PATH_EXTEND_FEASIBLE);
         }
     }
@@ -432,16 +432,18 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * if yes, put it in U, else discard it
      */
     function pathExtendFeasible() {
-        var w = Graph.instance.nodes.get(s.l_dash.nodeId);
-        if(s.l_dash.feasible()){
-            s.U.push(s.l_dash);
+        var l_dash = Graph.Label.get(s.l_dashId);
+        var w = Graph.instance.nodes.get(l_dash.nodeId);
+
+        if(Graph.Label.feasible(l_dash)){
+            s.U.push(s.l_dashId);
             if(!w.state.endingPaths) w.state.endingPaths = [];
-            w.state.endingPaths.push(s.l_dash);
-            logger.log3(s.l_dash.toString() + " feasible in " + w.toString(true,nodeResourceStyle) + ", add to U");
+            w.state.endingPaths.push(s.l_dashId);
+            logger.log3(Graph.Label.toString(l_dash) + " feasible in " + w.toString(true,nodeResourceStyle) + ", add to U");
         }else{
-            logger.log3(s.l_dash.toString() + " infeasible in " + w.toString(true,nodeResourceStyle))
+            logger.log3(Graph.Label.toString(l_dash) + " infeasible in " + w.toString(true,nodeResourceStyle))
         }
-        s.l_dash = null;
+        s.l_dashId = null;
         setStatus(STATUS_PATH_EXTEND); // go back to inner FORALL loop head
     }
 
@@ -449,9 +451,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * put processed label in P
      */
     function labelProcessed() {
-        s.P.push(s.currentLabel);
-        logger.log2("processed label " + s.currentLabel.toString() + ", added to P");
-        s.currentLabel = null;
+        s.P.push(s.lId);
+        logger.log2("processed label " + Graph.Label.toString(Graph.Label.get(s.lId)) + ", added to P");
+        s.lId = null;
         setStatus(STATUS_DOMINANCE);
     }
 
@@ -460,7 +462,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      */
     function dominance() {
         //TODO
-        logger.log2("dominance step")
+        logger.log2("dominance step");
 
         var nodes = Graph.instance.getNodes();
 
@@ -471,11 +473,13 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             if(!node.state.endingPaths) continue;
             for(var j = 0; j < node.state.endingPaths.length; j++){
                 //remove all other paths in upper right cone of this
-                var path = node.state.endingPaths[j];
+                var path = Graph.Label.get(node.state.endingPaths[j]);
                 
                 for(var k = 0; k < node.state.endingPaths.length; k++){
                     if(j==k) continue;
-                    var otherpath = node.state.endingPaths[k];
+                    
+                    var otherpath = Graph.Label.get(node.state.endingPaths[k]);
+
                     if(path == otherpath) continue;
                     if( path.resources.every(function(r,l){
                         return r <= otherpath.resources[l]
@@ -487,7 +491,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 
                         nooneDominated=false;
 
-                        logger.log3(otherpath.toString() +" dominated by " + path.toString());
+                        logger.log3(Graph.Label.toString(otherpath) +" dominated by " + Graph.Label.toString(path));
                         k--;
 
                         var indexInU = s.U.indexOf(removed);

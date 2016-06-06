@@ -106,9 +106,11 @@ var LabelDrawer = function(svgOrigin,algo){
 
     this.updateLabels = function(s){
 
-        var labels = s.U.concat(s.P)
-        if(s.currentLabel) labels.push(s.currentLabel);
-        if(s.l_dash) labels.push(s.l_dash);
+        //var labels = s.U.concat(s.P)
+        //if(s.currentLabel) labels.push(s.currentLabel);
+        //if(s.l_dash) labels.push(s.l_dash);
+
+        var labels = Graph.Label.labels.values();
 
          x.domain([0,Math.max(d3.max(labels, function(d) { return d.resources[0];})||0,10)]);
          y.domain([0,Math.max(d3.max(labels, function(d) { return d.resources[1];})||0,10)]);
@@ -197,18 +199,21 @@ var LabelDrawer = function(svgOrigin,algo){
         // entering elements; so, operations on the update selection after appending to
         // the enter selection will apply to both entering and updating nodes.
         selection.selectAll(".labelend")
-            .transition().duration(500)
+            //.transition().duration(500)
             //.style("opacity",1)
             .attr("transform",labelEndTransform)
 
         selection.selectAll("path")
-            .transition().duration(500)
+            //.transition().duration(500)
             .attr("d",function(d){
                 var coords = generatePathCoordinatesFromLabel(d);
                 return lineFunction(coords);
             })
             .style("stroke-dasharray",function(d){
-              return (algo.getState().l_dash && d.id == algo.getState().l_dash.id) ? "5,5" : "0";
+              return (d.id == algo.getState().l_dashId) ? "5,5" : "0";
+            })
+            .style("stroke",function(d){
+              return (d.id == algo.getState().l_dashId) ? "red" : "gray";
             })
 
         selection.selectAll("rect.timewindow")
@@ -231,7 +236,11 @@ var LabelDrawer = function(svgOrigin,algo){
                     height : yVals[0]+margin.top
                 })
             })
-            .style("display",function(d){return ((s.l_dash && (d.id == s.l_dash.id)) ? "block" : "none")});
+            .style("display",function(d){
+              if(algo.getState().idPrev != STATUS_PATH_EXTEND_FEASIBLE) return "none";
+              var l_dash_last = s.U[s.U.length-1]; 
+              return ((l_dash_last && (d.id == l_dash_last.id)) ? "block" : "none")
+            });
 
 
 //             .transition()
@@ -251,13 +260,13 @@ var LabelDrawer = function(svgOrigin,algo){
             .attr("width",function(d){return d.id.length*7})
             .attr("x",function(d){return d.id.length*(-3.5)})
             .style("fill",function(d){
-                if(s.id == algo.STATUS_DOMINANCE){
-                    return algo.dominanceStepNodeColors(d.nodeId);
-                }
-                if(s.currentLabel && d.id==s.currentLabel.id) return const_Colors.CurrentNodeColor;
-                if(s.l_dash && d.id==s.l_dash.id) return "lightgray";
-                if(s.U.some(function(a){return a.id==d.id})) return const_Colors.PQColor;
-                if(s.P.some(function(a){return a.id==d.id})) return const_Colors.FinishedNodeColor;
+              //  if(s.id == algo.STATUS_DOMINANCE){
+              //     return algo.dominanceStepNodeColors(d.nodeId);
+              // }
+                if(d.id == s.lId) return const_Colors.CurrentNodeColor;
+                if(d.id == s.l_dashId) return "lightgray";
+                if(s.U.some(function(a){return a==d.id})) return const_Colors.PQColor;
+                if(s.P.some(function(a){return a==d.id})) return const_Colors.FinishedNodeColor;
             })
             .style("stroke",function(d){
               return "black";
