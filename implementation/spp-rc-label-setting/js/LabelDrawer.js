@@ -251,14 +251,16 @@ var LabelDrawer = function(svgOrigin,algo){
                 if(s.id == algo.STATUS_DOMINANCE){
                     return algo.dominanceStepNodeColors(d.nodeId);
                 }
-                if(s.currentLabel && d.id==s.currentLabel.id) return "white";
-                if(s.l_dash && d.id==s.l_dash.id) return "red";
-                if(s.U.some(function(a){return a.id==d.id})) return "yellow";
-                if(s.P.some(function(a){return a.id==d.id})) return "green";
+                if(s.currentLabel && d.id==s.currentLabel.id) return const_Colors.CurrentNodeColor;
+                if(s.l_dash && d.id==s.l_dash.id) return "orange";
+                if(s.U.some(function(a){return a.id==d.id})) return const_Colors.PQColor;
+                if(s.P.some(function(a){return a.id==d.id})) return const_Colors.FinishedNodeColor;
             })
             .style("stroke",function(d){
-                if(s.currentLabel && d.id==s.currentLabel.id) return const_Colors.NodeBorderHighlight;
+              return "black";
+               // if(s.currentLabel && d.id==s.currentLabel.id) return const_Colors.NodeBorderHighlight;
             })
+            .style("stroke-width",0.5)
 
         selection.selectAll(".labelend text").text(function(d){return d.id});
 

@@ -85,15 +85,31 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     }
     
     this.onEdgesUpdated = function(selection) {
-        selection
-        .selectAll("line")
-        .style("stroke-width", function(d) {
-            if (s.currentLabel && (d.id == s.currentArcId )){//s.currentLabel.arcId)) {
-                return 4;
-            }else{
-              return 2;
-            }
-        })
+//         selection
+//         .selectAll("line")
+//         .style("stroke-width", function(d) {
+//             if (s.currentLabel && (d.id == s.currentArcId )){//s.currentLabel.arcId)) {
+//                 return 4;
+//             }else{
+//               return 2;
+//             }
+//         })
+
+       selection.selectAll("line")
+            .each(function(d){
+              var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
+              if(s.currentLabel && (d.id == s.currentArcId)){
+                attr["stroke-width"]=4;
+//                 if(s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH){
+                  attr["stroke"]=const_Colors.CurrentNodeColor;
+                  attr["marker-end"]="url(#arrowhead2-red)";
+//                 }else{
+//                   attr["stroke"]="green";
+//                   attr["marker-end"]="url(#arrowhead2-green)";
+//                 }
+              }
+              d3.select(this).style(attr);
+            })
     }
 
 
@@ -137,6 +153,11 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         };
 
         setStatus(STATUS_SELECTSOURCE);
+
+        if(Graph.instance){
+          this.nextStepChoice(Graph.instance.nodes.get(0),true);
+        }
+
 
         this.s=s;
 
@@ -354,12 +375,12 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         //fake edge/arc
         var trivialPath = {id:-1,end:source};
 
-        var label = new Label(null,trivialPath);
+        var label = new Graph.Label(null,trivialPath);
         
         s.U.push(label);
         setStatus(STATUS_MAINLOOP);
         
-        logger.log("Init labels. start label: "+Label.toString(label)+" added to U");
+        logger.log("Init labels. start label: "+label.toString()+" added to U");
     }
     
     var mainLoopIt = 0;
@@ -378,7 +399,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         
         s.currentLabel = s.U.shift();
         s.currentResidentNodeEdgeIndex = 0;
-        logger.log("Main loop #" + (mainLoopIt++) + " picked label " + Label.toString(s.currentLabel)+ " from U");
+        logger.log("Main loop #" + (mainLoopIt++) + " picked label " + s.currentLabel.toString()+ " from U");
         
         setStatus(STATUS_PATH_EXTEND);
     }
@@ -395,7 +416,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         }else{
             var arc = outEdges[s.currentResidentNodeEdgeIndex++];
             s.currentArcId=arc.id;
-            var l_dash = new Label(s.currentLabel,arc); //TODO do we need the extended label already here?
+            var l_dash = new Graph.Label(s.currentLabel,arc); //TODO do we need the extended label already here?
             logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
             s.l_dash = l_dash;
             setStatus(STATUS_PATH_EXTEND_FEASIBLE);
@@ -408,13 +429,13 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      */
     function pathExtendFeasible() {
         var w = Graph.instance.nodes.get(s.l_dash.nodeId);
-        if(Graph.instance.feasible(s.l_dash)){
+        if(s.l_dash.feasible()){
             s.U.push(s.l_dash);
             if(!w.state.endingPaths) w.state.endingPaths = [];
             w.state.endingPaths.push(s.l_dash);
-            logger.log3(Label.toString(s.l_dash) + " feasible in " + w.toString(true,nodeResourceStyle) + ", add to U");
+            logger.log3(s.l_dash.toString() + " feasible in " + w.toString(true,nodeResourceStyle) + ", add to U");
         }else{
-            logger.log3(Label.toString(s.l_dash) + " infeasible in " + w.toString(true,nodeResourceStyle))
+            logger.log3(s.l_dash.toString() + " infeasible in " + w.toString(true,nodeResourceStyle))
         }
         s.l_dash = null;
         setStatus(STATUS_PATH_EXTEND); // go back to inner FORALL loop head
@@ -425,7 +446,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      */
     function labelProcessed() {
         s.P.push(s.currentLabel);
-        logger.log2("processed label " + Label.toString(s.currentLabel) + ", added to P");
+        logger.log2("processed label " + s.currentLabel.toString() + ", added to P");
         s.currentLabel = null;
         setStatus(STATUS_DOMINANCE);
     }
@@ -462,7 +483,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 
                         nooneDominated=false;
 
-                        logger.log3(Label.toString(otherpath) +" dominated by " + Label.toString(path));
+                        logger.log3(otherpath.toString() +" dominated by " + path.toString());
                         k--;
 
                         var indexInU = s.U.indexOf(removed);
@@ -491,67 +512,13 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         setStatus(STATUS_FINISHED);
     }
 
-    var constrainedEdgeResourceIndex = 0; //the other one is unconstrained but should be minimized. E.g.: min cost, constrained time
-    
-    /**
-     * A Label, built as a tree starting from the primitive label
-     * @class
-     */
-    function Label(parent, arc) { //arc is an actual Graph.Edge or a fake trivial path {id:-1, end:source}
-        this.parent = parent;
-        //just save both ids (a little reduntant) for easy access and serialization 
-        this.arcId = arc.id; //incoming arc
-        this.nodeId = arc.end.id; //this label is resident (==ending) at node node
-        this.id = (parent ? (parent.id + "->") : "" ) + that.nodeLabel(Graph.instance.nodes.get(this.nodeId));
-
-        this.resources = [];
-        if(parent==null){
-            this.resources = [0,0]; //TODO allow adaptivity for > 2 resources;
-            this.resources[constrainedEdgeResourceIndex] = arc.end.resources[0]; //[0] is lower, [1] is upper limit on constrained resource
-        }else{
-            for (var i = 0; i < parent.resources.length; i++) {
-                var accumulated = arc.resources[i]+parent.resources[i]; //TODO changes to min(r(w),e+l_parent) later
-                this.resources.push(accumulated);
-            };
-        }
-    }
-    
-    //static method, not instance, so that we can serialize more easily
-    Label.toString = function(label) {
-        return label.id + "("+ label.resources.map(function(d,i){
-            return "<span style=color:" + ((i==constrainedEdgeResourceIndex) ? "red" : "green") + ">"+d+"</span>";
-        }).join(",")+")";
-    }
-
     function nodeResourceStyle(d,i){
         return "<span style=color:red>"+d+"</span>";
     }
 
     function edgeResourceStyle(d,i){
-        return "<span style=color:" + ((i==constrainedEdgeResourceIndex) ? "red" : "green") + ">"+d+"</span>";
+        return "<span style=color:" + ((i==CONSTRAINED_RESOURCE_INDEX) ? "red" : "green") + ">"+d+"</span>";
     }
-
-    /**
-     * Checks weather a label fulfills all its resource constraints in its resident node
-     * @param{Label} lstar
-     */
-    Graph.prototype.feasible = function(lstar) {
-        // var residentVertex = this.edges.get(lstar.arcId).end;
-        var residentVertex = this.nodes.get(lstar.nodeId);
-        if(lstar.resources[constrainedEdgeResourceIndex]<=residentVertex.resources[1]){ // timewindow [resources[0],resources[1]]; cost is unconstrained
-            if(lstar.resources[constrainedEdgeResourceIndex]>=residentVertex.resources[0]){ //nothing to do
-//                console.log2("waiting time of "+diff+" at "+lstar.nodeId);
-            }else{
-               lstar.wait = residentVertex.resources[0] - lstar.resources[constrainedEdgeResourceIndex]; //saved so we can draw a nice path
-               logger.log3("waiting time of "+residentVertex.resources[0]+"-"+lstar.resources[constrainedEdgeResourceIndex]+"="+lstar.wait+" at "+lstar.nodeId);
-               lstar.resources[constrainedEdgeResourceIndex]=residentVertex.resources[0];
-            }
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 }
 
 // Vererbung realisieren

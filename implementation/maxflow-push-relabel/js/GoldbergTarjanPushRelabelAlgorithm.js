@@ -100,7 +100,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         .selectAll("circle")
         .style("fill", function(d) {
             if (d.id == s.currentNodeId){
-              return const_Colors.CurrentNodeColor
+              return const_Colors.CurrentNodeColor;
             }else if (d.id == s.sourceId)
                 return const_Colors.StartNodeColor; //green
             else if (d.id == s.targetId)
