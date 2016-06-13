@@ -89,14 +89,15 @@ var LabelDrawer = function(svgOrigin,algo){
     var generatePathCoordinatesFromLabel = function(d){
         var pathinfo = [];
         var current=d;
+        var i=1;
         do{
             pathinfo.push(current.resources);
             if(current.wait){
                 pathinfo.push([current.resources[0]-current.wait,current.resources[1]]);
             }
         }
-        while(current=current.parent);
-        return pathinfo.reverse();
+        while((current=Graph.Label.get(current.parentId)) && i--);
+        return pathinfo;//.reverse();
     }
 
     var lineFunction = d3.svg.line()
@@ -117,7 +118,7 @@ var LabelDrawer = function(svgOrigin,algo){
 
 //         var xAxis = d3.svg.axis().scale(x).orient("bottom");
 //         var yAxis = d3.svg.axis().scale(y).orient("left");
-        var t = svg.transition().duration(750);
+        var t = svg.transition();//.duration(750);
         t.select("g.y.axis").call(yAxis);
         t.select("g.x.axis").call(xAxis);
 
@@ -127,14 +128,14 @@ var LabelDrawer = function(svgOrigin,algo){
           var selection = svg_labels.selectAll(".label")
             .data(labels,function(d){return d.id});
 
-        // UPDATE
-        // Update old elements as needed.
+
+
 
         // ENTER
         // Create new elements as needed.
           var enterSelection = selection
             .enter().append("g")
-            .attr("class","label")
+            .attr("class","label unselectable")
 
          var enterSelectionLabelPath = enterSelection.append("path")
             .attr("class","labelpath") //is not transformed
@@ -144,8 +145,8 @@ var LabelDrawer = function(svgOrigin,algo){
           
           var enterSelectionLabelEnd = enterSelection.append("g")
             .attr("class","labelend")
-            .attr("transform",function(d){return labelEndTransform(d.parent)})// start at parent position and transition to new position
-            //.style("opacity",1e-6)
+            .attr("transform",function(d){return labelEndTransform(Graph.Label.get(d.parentId))})// start at parent position and transition to new position
+            .style("opacity",1e-6)
 
           var enterSelectionTimeWindow = enterSelection.append("rect")
             .attr("class","timewindow")
@@ -194,13 +195,20 @@ var LabelDrawer = function(svgOrigin,algo){
         //       console.log(d);
         //     })
 
-                // ENTER + UPDATE
+
+
+
+
+
+        // ENTER + UPDATE
+
+
         // Appending to the enter selection expands the update selection to include
         // entering elements; so, operations on the update selection after appending to
         // the enter selection will apply to both entering and updating nodes.
         selection.selectAll(".labelend")
-            //.transition().duration(500)
-            //.style("opacity",1)
+            .transition().duration(500)
+            .style("opacity",1)
             .attr("transform",labelEndTransform)
 
         selection.selectAll("path")
@@ -237,9 +245,9 @@ var LabelDrawer = function(svgOrigin,algo){
                 })
             })
             .style("display",function(d){
-              if(algo.getState().idPrev != STATUS_PATH_EXTEND_FEASIBLE) return "none";
+              if(algo.getState().id != STATUS_PATH_EXTEND_FEASIBLE) return "none";
               var l_dash_last = s.U[s.U.length-1]; 
-              return ((l_dash_last && (d.id == l_dash_last.id)) ? "block" : "none")
+              return ((l_dash_last && (d.id == l_dash_last)) ? "block" : "none")
             });
 
 

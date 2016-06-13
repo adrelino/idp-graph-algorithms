@@ -9,10 +9,15 @@ function idOf(i) {
 
 /**
  * A Label, built as a tree starting from the primitive label
+ *
+ * A label for an SPPRC labelling algorithm stores its resident vertex, its predecessor arc over
+ * which it has been extended, its predecessor label, and its current vector of resource values. The 
  * @class
  */
 Graph.Label = function() {
   this.arcIds = [];
+
+  this.parentId = null;
 
   //just save both ids (a little reduntant) for easy access and serialization 
 //  this.arcId = arc.id; //incoming arc
@@ -105,7 +110,7 @@ Graph.Label.extend = function(parent, arc) { //arc is an actual Graph.Edge or a 
   var label = new Graph.Label();
 
   label.arcIds = parent.arcIds.concat([arc.id]);
-
+  label.parentId = parent.id;
   label.nodeId = arc.end.id;
   
   //accumulate resources

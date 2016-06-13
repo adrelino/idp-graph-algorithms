@@ -271,9 +271,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             return (divCounter == s.idPrev) ? "block" : "none";
         });
 
-        d3.select("#ta_td_U").text("{"+s.U.map(function(d){return d.id}).join(",")+"}");
+        d3.select("#ta_td_U").text("{"+s.U.join(",")+"}");
         d3.select("#ta_td_l").text(s.lId ? s.lId : "-");
-        d3.select("#ta_td_P").text("{"+s.P.map(function(d){return d.id}).join(",")+"}");
+        d3.select("#ta_td_P").text("{"+s.P.join(",")+"}");
         d3.select("#ta_td_l_dash").text(s.l_dashId ? s.l_dashId : "-");
 
         if(this.fastForwardIntervalID != null){
@@ -434,6 +434,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     function pathExtendFeasible() {
         var l_dash = Graph.Label.get(s.l_dashId);
         var w = Graph.instance.nodes.get(l_dash.nodeId);
+        s.currentArcId = null;
 
         if(Graph.Label.feasible(l_dash)){
             s.U.push(s.l_dashId);
