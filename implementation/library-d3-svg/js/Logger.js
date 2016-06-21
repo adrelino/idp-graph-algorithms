@@ -5,85 +5,79 @@
  * @param {Object} parentDiv - a d3 selector
  */
 Logger = function(parentDiv){
-    parentDiv.style("text-align","left");
-    var outerList = parentDiv.append("ol").attr("class","level1");
-    this.data = [];
-    this.currentNodeLevel2 = null;
-    this.currentNodeLevel3 = null;
+  parentDiv.style("text-align","left");
+  var outerList = parentDiv.append("ol").attr("class","level1");
+  this.parentDiv = parentDiv;
 
-    this.listTypes=["ol","ol","ul","ul","ul"];
+  this.reset();
+}//end Logger
 
-    var that = this;
+//static
+Logger.listTypes=["ol","ol","ul","ul","ul"];
 
 
-this.log = function(val){
-//   console.log(val);
-  var logEntry = {text:val};
-  this.data.push(logEntry);
-  this.currentNodeLevel2=logEntry;
-  update();
+Logger.prototype.addLogEntry = function(text,parentId){
+  var newId = this.state.idCounter++;
+  var logEntry = {text:text, id:newId, children:[]};
+  //this.map.set(logEntry.id,logEntry);
+  this.state.map[logEntry.id]=logEntry;
+  if(parentId !== null){
+    var innerNode = this.state.map[parentId];//this.map.get(parentId);
+    innerNode.children.push(logEntry.id);
+  }
+  return logEntry;
 }
 
-this.log2 = function(val){
-//   console.log(val);
-  var logEntry = {text:val};
-  this.currentNodeLevel2.children ? this.currentNodeLevel2.children.push(logEntry) : this.currentNodeLevel2.children = [logEntry];
-  this.currentNodeLevel3=logEntry;
-  update();
+Logger.prototype.log = function(val){
+  var logEntry = this.addLogEntry(val,"root");
+  this.state.id2=logEntry.id;
+  this.update();
 }
 
-this.log3 = function(val){
-//   console.log(val);
-  var logEntry = {text:val};
-  this.currentNodeLevel3.children ? this.currentNodeLevel3.children.push(logEntry) : this.currentNodeLevel3.children = [logEntry];
-  update();
+Logger.prototype.log2 = function(val){
+  var logEntry = this.addLogEntry(val,this.state.id2);
+  this.state.id3=logEntry.id;
+  this.update();
 }
 
-function update(){
-//   updateSingle([]);
-  parentDiv.selectAll("ol").remove();
-  updateRecursive(that.data,parentDiv,0);
+Logger.prototype.log3 = function(val){
+  var logEntry = this.addLogEntry(val,this.state.id3);
+  this.update();
 }
 
-this.update = update;
+Logger.prototype.reset = function(){
+  this.state = {
+    idCounter : 0,
+    id2 : -1,
+    id3 : -1,
+    map : {"root" : {children:[]}}
+  }
+//   this.map = d3.map();
+//   this.map.set("root",{children:[]});
+}
 
-function updateRecursive(arr,selection,depth){
-  if(arr){
-    var childContainer = selection.append(that.listTypes[depth]);
-    arr.forEach(function(childItem){
-            var listItem = childContainer.append("li");
-            listItem.html(childItem.text);
-            updateRecursive(childItem.children,listItem,depth+1);
-    });
+
+Logger.prototype.updateRecursive = function(arr,selection,depth){
+  if(arr && arr.length > 0){
+    var childContainer = selection.append(Logger.listTypes[depth]);
+    arr.forEach(function(childItemId){
+      var childItem = this.state.map[childItemId];//this.map.get(childItemId);
+      var listItem = childContainer.append("li");
+      listItem.html(childItem.text);
+      this.updateRecursive(childItem.children,listItem,depth+1);
+    },this);
   }
 }
 
-// function updateSingle(arr){
-// var selection = outerList.selectAll("li.level1").data(arr);
-   
-//    //enter
-//    var enterSelection = selection
-//     .enter()
-//     .append("li")
-//     .attr("class","level1");
+Logger.prototype.update = function(){
+  this.parentDiv.selectAll("ol").remove();
+  this.updateRecursive(this.state.map["root"].children,this.parentDiv,0);
+}
 
-//     enterSelection.append("p").attr("class","level1");
-//     enterSelection.append("ol").attr("class","level2");
+Logger.prototype.setState = function(state){
+  this.state = JSON.parse(state);
+}
 
-
-//    //update
-//    selection.selectAll("p.level1").text(function(d,i){return d.text})
-// //     .style("background-color","lightgray")
-//   selection.selectAll("ol.level2").selectAll("li.level2")
-//     .data(function(d1){return d1.children;})
-//     .enter()
-//     .append("li")
-//     .attr("class","level2")
-//     .text(function(d2){return d2.text})
-// //     .style("background-color","white");
-
-// // elem.exit().remove();
-
-// }
-
+Logger.prototype.getState = function(){
+  return JSON.stringify(this.state);
 }

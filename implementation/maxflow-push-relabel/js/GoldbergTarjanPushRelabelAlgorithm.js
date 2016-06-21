@@ -198,10 +198,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 
         setStatus(STATUS_SELECTSOURCE)
 
-        logger.data = [];
         this.replayHistory = [];
 
         if(Graph.instance){
+            logger.reset();
             //prepare graph for this algorithm: add special properties to nodes and edges
             Graph.instance.nodes.forEach(function(key, node) {
                 node.state.height = 0;
@@ -275,9 +275,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         replayHistory.push({
             "graphState": Graph.instance.getState(),
             "s": JSON.stringify(s),
-            //             "htmlSidebar": $("#ta_div_statusErklaerung").html(),
             "legende": $("#tab_ta").find(".LegendeText").html(),
-            "loggerData": JSON.stringify(logger.data)
+            "loggerState": logger.getState()
         });
         
         if (debugConsole)
@@ -295,11 +294,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         if (debugConsole)
             console.log("Replay Step", oldState);
         
-        Graph.instance.setState(oldState.graphState);
-        s = JSON.parse(oldState.s);
-        logger.data = JSON.parse(oldState.loggerData);
-        //         $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
-        $("#tab_ta").find(".LegendeText").html(oldState.legende);
+        Graph.instance.setState(oldState["graphState"]);
+        s = JSON.parse(oldState["s"]);
+        logger.setState(oldState["loggerState"]);
+        $("#tab_ta").find(".LegendeText").html(oldState["legende"]);
         
         this.update();
     };

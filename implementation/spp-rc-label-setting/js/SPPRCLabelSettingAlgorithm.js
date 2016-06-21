@@ -155,6 +155,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 
         setStatus(STATUS_SELECTSOURCE);
 
+        logger.reset();
+
         if(Graph.instance){
           this.nextStepChoice(Graph.instance.nodes.get(0),true);
         }
@@ -164,7 +166,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 
         this.s=s;
 
-        logger.data = [];
         this.replayHistory = [];
     }
 
@@ -225,9 +226,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             "graphState": Graph.instance.getState(),
             "labelState": Graph.Label.getState(),
             "s": JSON.stringify(s),
-            //             "htmlSidebar": $("#ta_div_statusErklaerung").html(),
-            // "legende": $("#tab_ta").find(".LegendeText").html(),
-            "loggerData": JSON.stringify(logger.data)
+            "loggerState": logger.getState()
         });
         
         if (debugConsole)
@@ -245,13 +244,10 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         if (debugConsole)
             console.log("Replay Step", oldState);
         
-        Graph.instance.setState(oldState.graphState);
-        Graph.Label.setState(oldState.labelState);
-
-        s = JSON.parse(oldState.s);
-        logger.data = JSON.parse(oldState.loggerData);
-        //         $("#ta_div_statusErklaerung").html(oldState.htmlSidebar);
-        // $("#tab_ta").find(".LegendeText").html(oldState.legende);
+        Graph.instance.setState(oldState["graphState"]);
+        Graph.Label.setState(oldState["labelState"]);
+        s = JSON.parse(oldState["s"]);
+        logger.setState(oldState["loggerState"]);
         
         this.update();
     };
