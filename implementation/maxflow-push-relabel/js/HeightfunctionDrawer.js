@@ -183,10 +183,19 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
       if(!noUpdate) that.update();
     }
 
+    function tickForm(e,b){
+        if(Math.floor(e) != e)
+        {
+            return;
+        }
+
+        return e;
+    };
+
 
     //Axis
-    var xAxis = d3.svg.axis().scale(this.x).orient("bottom").tickFormat(d3.format("d")).tickSubdivide(0);
-    var yAxis = d3.svg.axis().scale(this.y).orient("left");
+    var xAxis = d3.svg.axis().scale(this.x).orient("bottom").tickFormat(tickForm);
+    var yAxis = d3.svg.axis().scale(this.y).orient("left").tickFormat(tickForm);
 
     var xAxisText = this.svg.append("g")
           .attr("class", "x axis")
@@ -242,6 +251,8 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
         if(Graph.instance){
             this.squeeze();
         }
+
+        yAxis.ticks(d3.max(nodes, function(d){return d.state.height}));
 
         xAxis.ticks(nodes.length);
 

@@ -219,6 +219,7 @@ p.pseudocode {
 } 
 
 table.algoInformationen {
+   table-layout: fixed;
     text-align: center;
     border: 1px solid gray;
     border-collapse:collapse;
