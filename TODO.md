@@ -29,20 +29,21 @@ neueste erledigte oben
 - [x] Hervorheben der Kante, entlang derer extended wird?
   (2016-05-03)
   * Kante e wird links fett dargestellt
-- [ ] Interaktivität: beim SPPRC noch eine hover-funktionalität einbauen, welche die labels/pfade in der 2. darstellungsebene mit dem graphen in der 1. ebene verknüpft (also dass dann alle kanten die zum pfad gehören gehilighted werden)
-sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
-- [ ] Einfärbung aller Label gemäß Knoten finden wir verwirrend, evtl. weglassen?
+- [ ] Interaktivität: beim SPPRC noch eine hover-funktionalität einbauen, welche die labels/pfade in der 2. darstellungsebene mit dem graphen in der 1. ebene verknüpft (also dass dann alle kanten die zum pfad gehören gehilighted werden) / hovering (links click auf knoten: rechts alle label im knoten enden / rechts click auf label: links den pfad hervoheben (rot oder fett))
+- [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
+- [x] Einfärbung aller Label gemäß Knoten finden wir verwirrend, evtl. weglassen? (2016-06-26)
+  * weglassen (in dominance)
 - [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
-- [ ] Aktives Label nicht rot hervorheben (rot = falsch?)
+- [x] Aktives Label nicht rot hervorheben (rot = falsch?) (2016-06-26) 
+  * wird doch rot hervorgehoben
 - [ ] label an v ueberschrift in label anzeigen
-- [ ] label beschriftung kuerzer, ggf entfernen mit hovering
+- [x] label beschriftung kuerzer, ggf entfernen mit hovering (2016-06-26)
+  * alpahbet a-z als id
 - [ ] unprocessed in sortierter reihenfolge nach resident vertex abarbeiten bei extenden und dominance
 - [ ] in labelView filtern nach resident vertex, andere label ausblenden innerhalb von extension und dominance step
 - [ ] am anfang vom loop alle wieder anzeigen
-- [ ] unprocessed label gelb
-- [ ] processed gruen
-- [ ] im graph nur rot, gelb und gruen macht keine sinn auf nodes
-- [ ] hovering (links click auf knoten: rechts alle label im knoten enden / rechts click auf label: links den pfad hervoheben (rot oder fett))
+- [x] unprocessed label gelb, processed gruen (2016-06-28)
+- [x] im graph nur rot. Gelb und gruen macht keine sinn auf nodes
 - [ ] beim extenden zwischenlabel ausblenden
 - [ ] zeitfenster und knoten zuordnen (umrahmung)
 
