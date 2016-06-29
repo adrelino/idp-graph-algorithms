@@ -477,14 +477,16 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
                     
                     var otherpath = Graph.Label.get(node.state.endingPaths[k]);
 
-                    if(path == otherpath) continue;
+                    if(!path || !otherpath || path == otherpath) continue;
                     if( path.resources.every(function(r,l){
                         return r <= otherpath.resources[l]
                         })){
                         var removed = node.state.endingPaths.splice(k,1)[0];
-                        if(removed != otherpath){
+                        if(removed != otherpath.id){
                             console.log("error");
                         }
+
+                        Graph.Label.remove(removed);
 
                         nooneDominated=false;
 

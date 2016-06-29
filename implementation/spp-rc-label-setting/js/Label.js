@@ -57,6 +57,11 @@ Graph.Label.setState = function(state){
   }
 }
 
+Graph.Label.remove = function(labelId){
+  return Graph.Label.labels.remove(labelId);
+}
+
+
 Graph.Label.get = function(labelId){
   return Graph.Label.labels.get(labelId);
 }
