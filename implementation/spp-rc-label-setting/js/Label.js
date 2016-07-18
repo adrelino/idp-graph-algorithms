@@ -57,9 +57,12 @@ Graph.Label.setState = function(state){
   }
 }
 
-Graph.Label.remove = function(labelId){
-  return Graph.Label.labels.remove(labelId);
-}
+// Graph.Label.remove = function(labelId){
+//   if(s.U.indexOf(labelId)){
+//     s.U.splice(labelId);
+//   }
+//   //return Graph.Label.labels.remove(labelId);
+// }
 
 
 Graph.Label.get = function(labelId){
@@ -78,7 +81,7 @@ Graph.Label.prototype.nodeIdChain = function(){
 
 //static method, not instance, so that we can serialize more easily
 Graph.Label.toString = function(label) {
-    return label.id +" edges:" +label.edgeIdChain() + " nodes:" +label.nodeIdChain() + " resources:("+ label.resources.map(function(d,i){
+    return label.id /*+" edges:" +label.edgeIdChain() + */+":" +label.nodeIdChain() + " ("+ label.resources.map(function(d,i){
         return "<span style=color:" + ((i==CONSTRAINED_RESOURCE_INDEX) ? "red" : "green") + ">"+d+"</span>";
     }).join(",")+")";
 }

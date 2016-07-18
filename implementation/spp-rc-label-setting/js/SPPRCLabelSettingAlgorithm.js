@@ -150,6 +150,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             U: [],
             P: [],
             sourceId: -1,
+            mainLoopIt : 1,
             currentResidentNodeEdgeIndex: -1 //for iteration outgoing edges in label extension step
         };
 
@@ -362,7 +363,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.sourceId = d.id;
         this.setDisabledBackward(false);
         setStatus(STATUS_INIT,STATUS_START);
-        logger.log("selected node " + d.id + " as s");
+        logger.log("Picked node '" + d.id + "' as start node 's'");
     };
 
 
@@ -378,11 +379,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.U.push(label.id);
         setStatus(STATUS_MAINLOOP);
         
-        logger.log("Init labels. start label: "+Graph.Label.toString(label)+" added to U");
+        logger.log("Init labels. Add trivial label "+Graph.Label.toString(label)+" to U");
     }
-    
-    var mainLoopIt = 0;
-    
+        
     /**
     * main loop: pops the current node from the queue until empty
     */
@@ -397,7 +396,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         
         s.lId = s.U.shift();
         s.currentResidentNodeEdgeIndex = 0;
-        logger.log("Main loop #" + (mainLoopIt++) + " picked label " + Graph.Label.toString(Graph.Label.get(s.lId))+ " from U");
+        logger.log("Main loop iteration " + (s.mainLoopIt++) + ": picked label " + Graph.Label.toString(Graph.Label.get(s.lId))+ " from U");
         
         setStatus(STATUS_PATH_EXTEND);
     }
@@ -486,7 +485,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
                             console.log("error");
                         }
 
-                        Graph.Label.remove(removed);
+                        //Graph.Label.remove(removed);
 
                         nooneDominated=false;
 

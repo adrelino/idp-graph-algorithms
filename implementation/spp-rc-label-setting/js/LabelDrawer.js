@@ -111,7 +111,18 @@ var LabelDrawer = function(svgOrigin,algo){
         //if(s.currentLabel) labels.push(s.currentLabel);
         //if(s.l_dash) labels.push(s.l_dash);
 
-        var labels = Graph.Label.labels.values();
+        var labels = [];// = Graph.Label.labels.values();
+        if(s.lId){
+          labels.push(Graph.Label.get(s.lId));
+        }
+        for(var i=0; i<s.U.length; i++){
+          labels.push(Graph.Label.get(s.U[i]));
+        }
+        for(var i=0; i<s.P.length; i++){
+          labels.push(Graph.Label.get(s.P[i]));
+        }
+//         console.log(labels);
+//         console.log(s.U,s.lId,s.P);
 
          x.domain([0,Math.max(d3.max(labels, function(d) { return d.resources[0];})||0,10)]);
          y.domain([0,Math.max(d3.max(labels, function(d) { return d.resources[1];})||0,10)]);
