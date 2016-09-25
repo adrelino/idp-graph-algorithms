@@ -29,23 +29,27 @@ neueste erledigte oben
 - [x] Hervorheben der Kante, entlang derer extended wird?
   (2016-05-03)
   * Kante e wird links fett dargestellt
-- [ ] Interaktivität: beim SPPRC noch eine hover-funktionalität einbauen, welche die labels/pfade in der 2. darstellungsebene mit dem graphen in der 1. ebene verknüpft (also dass dann alle kanten die zum pfad gehören gehilighted werden) / hovering (links click auf knoten: rechts alle label im knoten enden / rechts click auf label: links den pfad hervoheben (rot oder fett))
-- [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
-- [x] Einfärbung aller Label gemäß Knoten finden wir verwirrend, evtl. weglassen? (2016-06-26)
+- [x] Einfärbung aller Label gemäß Knoten finden wir verwirrend, evtl. weglassen?
+  (2016-06-26)
   * weglassen (in dominance)
-- [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
-- [x] Aktives Label nicht rot hervorheben (rot = falsch?) (2016-06-26) 
+- [x] Aktives Label nicht rot hervorheben (rot = falsch?)
+  (2016-06-26) 
   * wird doch rot hervorgehoben
+- [x] label beschriftung kuerzer, ggf entfernen mit hovering
+  (2016-06-26)
+  * alphabet a-z als id
+- [x] unprocessed label gelb, processed gruen
+  (2016-06-28)
+- [x] Im graph nur rot fuer vertex von dem aus extended wird. Gelb und gruen macht keine sinn auf nodes
+  (2016-06-28)
 - [ ] label an v ueberschrift in label anzeigen
-- [x] label beschriftung kuerzer, ggf entfernen mit hovering (2016-06-26)
-  * alpahbet a-z als id
-- [ ] unprocessed in sortierter reihenfolge nach resident vertex abarbeiten bei extenden und dominance
-- [ ] in labelView filtern nach resident vertex, andere label ausblenden innerhalb von extension und dominance step
-- [ ] am anfang vom loop alle wieder anzeigen
-- [x] unprocessed label gelb, processed gruen (2016-06-28)
-- [x] im graph nur rot. Gelb und gruen macht keine sinn auf nodes
-- [ ] beim extenden zwischenlabel ausblenden
 - [ ] zeitfenster und knoten zuordnen (umrahmung)
+- [ ] unprocessed in sortierter reihenfolge nach resident vertex abarbeiten bei extenden und dominance
+- [ ] am anfang vom loop alle wieder anzeigen
+- [ ] beim extenden zwischenlabel ausblenden
+- [ ] Interaktivität: beim SPPRC noch eine hover-funktionalität einbauen, welche die labels/pfade in der 2. darstellungsebene mit dem graphen in der 1. ebene verknüpft (also dass dann alle kanten die zum pfad gehören gehilighted werden) / hovering (links click auf knoten: rechts alle label im knoten enden / rechts click auf label: links den pfad hervoheben (rot oder fett))
+- [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
+- [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
 
 ## Beide:
 - [x] Beschreibung beschreibt was gerade links passiert ist / ab initialize beschreibungen eins früher anzeigen
