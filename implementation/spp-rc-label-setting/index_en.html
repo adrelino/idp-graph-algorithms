@@ -332,6 +332,9 @@ The implementation is a label-setting algorithm. This means that there must be o
                         <a class="svgDownloader" download="spp-rc-graph-algorithm-graph.svg" href="data:text/plain,test">spp-rc-graph-algorithm-graph.svg</a>
                       </td>
                       <td class="svgContainer">
+                          Labels ending in resident node: <select id="filterLabelsByResidentNode" style="margin-left:0%">
+                            <option value="all">all</option>
+                        </select>
                         <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="450"></svg>
                         <a class="svgDownloader" download="spp-rc-graph-algorithm-labels.svg" href="data:text/plain,test">spp-rc-graph-algorithm-graph.labels</a>
                       </td>
@@ -404,7 +407,8 @@ The implementation is a label-setting algorithm. This means that there must be o
                             </div>
                             <div>
                                 <h3>Main loop</h3>
-                                <p>As long as the queue containing the unprocessed labels isn’t empty pop the first label l from the front of the queue.</p>
+                                <p>As long as the queue containing the unprocessed labels isn’t empty pop a label l from the front of the queue.</p>
+                                <p>The label l ends in its resident node/vertex v, which is highlighted in red in the graph.</p>
                             </div>
                             <div>
                                 <h3>Path extension step 1/2: extend the label</h3>
@@ -415,11 +419,19 @@ The implementation is a label-setting algorithm. This means that there must be o
                             </div>
                             <div>
                                 <h3>Path extension step 2/2: check feasability</h3>
-                                <p>Check if the extended path with label l'=(l,w) is feasible in w, meaning that the accumulated resource consumption r(l') along the path is not larger than the upper resource constraint at its end node w.</p>
+                                <p>The extended path with label l'=(l,w) is feasible in w, meaning that the accumulated resource consumption r(l') along the path is not larger than the upper resource constraint at its end node w.</p>
 
                                 <p>l' &isin; FEASIBLE(w) &hArr; r(l') &le; r_upper(w)</p>
 
-                                <p>If it is feasible, add l' to the set Q of unprocessed labels/paths</p>
+                                <p>l' is feasible, thus add it to the set Q of unprocessed labels/paths</p>
+                            </div>
+                            <div>
+                                <h3>Path extension step 2/2: check feasability</h3>
+                                <p>The extended path with label l'=(l,w) is NOT feasible in w, meaning that the accumulated resource consumption r(l') along the path is larger than the upper resource constraint at its end node w.</p>
+
+                                <p>l' &isin; FEASIBLE(w) &hArr; r(l') &le; r_upper(w)</p>
+
+                                <p>l' is infeasible, thus ignore it</p>
                             </div>
                             <div>
                                 <h3>Label processed</h3>
@@ -466,6 +478,8 @@ The implementation is a label-setting algorithm. This means that there must be o
                                  <p>      l'=(l,w) &larr; EXTEND(l,e)</p></div>
                             <div><p>      IF l' &isin; FEASIBLE(w)</p> 
                                  <p>         U &larr; U &cup; {l'}</p></div>
+                            <div><p>      ELSE</p> 
+                                 <p>         throw away l'</p></div>
                             <div><p>   P &larr; P &cup; {l}</p></div>
                             <div><p>   (* Dominance step *)</p>
                                  <p>   U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
@@ -747,8 +761,11 @@ url: <a href="http://dx.doi.org/10.1007/0-387-25486-2_2">http://dx.doi.org/10.10
 <dd>
 <br>
 available online:
-<a href="http://logistik.bwl.uni-mainz.de/Dateien/or_2004-01.pdf">server 1</a>
-<a href="https://www.researchgate.net/profile/Stefan_Irnich2/publication/227142556_Shortest_Path_Problems_with_Resource_Constraints/links/0deec523898ae43b84000000.pdf/download?version=vs">server 2</a>
+<a href="http://logistik.bwl.uni-mainz.de/Dateien/or_2004-01.pdf">v1 server 1</a>
+<a href="https://www.researchgate.net/profile/Stefan_Irnich2/publication/227142556_Shortest_Path_Problems_with_Resource_Constraints/links/0deec523898ae43b84000000.pdf/download?version=vs">v1 server 2</a>
+<a href="http://www2.imm.dtu.dk/courses/02735/rcsppchapter.pdf">v2</a>
+
+
 </dd>
 <br>
 

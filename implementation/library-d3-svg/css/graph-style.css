@@ -80,8 +80,11 @@ circle.selected{
 
 /*  only in shortest paths */
 .timewindow {
-  fill: lavender;
-  fill-opacity: 0.5;
+  fill: rgb(152, 198, 234);
+  fill-opacity: 1.0;
+  stroke-width: 2;
+  stroke: rgb(0, 101, 189);
+}
 }
 
 #testArc {

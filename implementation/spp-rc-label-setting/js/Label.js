@@ -98,7 +98,7 @@ Graph.Label.feasible = function(label) {
 //                console.log2("waiting time of "+diff+" at "+label.nodeId);
         }else{
            label.wait = residentVertex.resources[0] - label.resources[CONSTRAINED_RESOURCE_INDEX]; //saved so we can draw a nice path
-           logger.log3("waiting time of "+residentVertex.resources[0]+"-"+label.resources[CONSTRAINED_RESOURCE_INDEX]+"="+l_dash.wait+" at "+l_dash.nodeId);
+           //logger.log3("waiting time of "+residentVertex.resources[0]+"-"+label.resources[CONSTRAINED_RESOURCE_INDEX]+"="+label.wait+" at "+label.nodeId);
            label.resources[CONSTRAINED_RESOURCE_INDEX]=residentVertex.resources[0];
         }
         return true;

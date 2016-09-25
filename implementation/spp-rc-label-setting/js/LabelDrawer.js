@@ -25,7 +25,9 @@ var LabelDrawer = function(svgOrigin,algo){
     var svg = svgOrigin.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    var svg_timewindow=svg.append("rect").attr("class", "timewindow");
     var svg_labels=svg.append("g").attr("id", "labels");
+
 
     var x = d3.scale.linear()
         .range([margin.left, width-margin.right]);
@@ -68,8 +70,41 @@ var LabelDrawer = function(svgOrigin,algo){
       return "translate(" + x(d.x) + "," + y(d.y) + ")"
     ;};
 
+    var residentNodeFilter=d3.select("#filterLabelsByResidentNode").property("value");
+
+    d3.select("#filterLabelsByResidentNode").on('change',function(e){
+      that.setResidentNodeFilter(this.value,false,true);
+    });
+
+    var that = this;
+
+    this.setResidentNodeFilter = function(name,noUpdate,userChoseFilter){
+      residentNodeFilter=name;
+      d3.select("#filterLabelsByResidentNode").property("value",residentNodeFilter); //does not trigger 'change' event
+      if(!noUpdate) that.updateLabels(algo.getState(),userChoseFilter);
+    }
+
+
+
     /////////////////
     //PRIVILEDGED
+
+    this.reset = function(){
+      var arr = Graph.instance.getNodes().map(function(n){
+          return n.id;
+      });
+
+      arr.unshift("all");
+
+
+
+      var selection = d3.select("#filterLabelsByResidentNode")
+                        .selectAll('option').data(arr);
+
+       selection.enter().append('option')
+        .attr('value',function(d){return d})
+        .text(function(d){return d});
+    }
 
     this.clear = function(){
         svg_labels.selectAll("g").remove();
@@ -105,22 +140,44 @@ var LabelDrawer = function(svgOrigin,algo){
                          .y(function(d) { return y(d[1]); })
                          .interpolate("linear");//basis");
 
-    this.updateLabels = function(s){
+    this.updateLabels = function(s,userChoseFilter){
+
+       if(!userChoseFilter){
+        if(s.id==STATUS_PATH_EXTEND_FEASIBLE || s.id==STATUS_PATH_EXTEND_UNFEASIBLE){
+          this.setResidentNodeFilter(Graph.Label.get(s.l_dashId).nodeId,true);
+        }else{
+          this.setResidentNodeFilter("all",true);
+        }
+       }
+
+       this.updateTimeWindow(s);
 
         //var labels = s.U.concat(s.P)
         //if(s.currentLabel) labels.push(s.currentLabel);
         //if(s.l_dash) labels.push(s.l_dash);
+        
+        var labels = [];//Graph.Label.labels.values();
+          if(s.lId){
+            labels.push(Graph.Label.get(s.lId));
+          }
+          if(s.l_dashId){
+            labels.push(Graph.Label.get(s.l_dashId));
+          }
+          for(var i=0; i<s.U.length; i++){
+            labels.push(Graph.Label.get(s.U[i]));
+          }
+          for(var i=0; i<s.P.length; i++){
+            labels.push(Graph.Label.get(s.P[i]));
+          }
 
-        var labels = [];// = Graph.Label.labels.values();
-        if(s.lId){
-          labels.push(Graph.Label.get(s.lId));
+        if(residentNodeFilter != "all"){
+
+            labels = labels.filter(function(d){
+              return d.nodeId == residentNodeFilter;
+            })
         }
-        for(var i=0; i<s.U.length; i++){
-          labels.push(Graph.Label.get(s.U[i]));
-        }
-        for(var i=0; i<s.P.length; i++){
-          labels.push(Graph.Label.get(s.P[i]));
-        }
+
+
 //         console.log(labels);
 //         console.log(s.U,s.lId,s.P);
 
@@ -144,9 +201,15 @@ var LabelDrawer = function(svgOrigin,algo){
 
         // ENTER
         // Create new elements as needed.
-          var enterSelection = selection
-            .enter().append("g")
-            .attr("class","label unselectable")
+          var enterSelection = 
+          selection.enter().append("g")
+            .attr("class","label unselectable");
+
+
+        enterSelection
+            .attr("opacity","1e-6")
+            .transition().duration(500)
+            .attr("opacity","1");
 
          var enterSelectionLabelPath = enterSelection.append("path")
             .attr("class","labelpath") //is not transformed
@@ -157,10 +220,8 @@ var LabelDrawer = function(svgOrigin,algo){
           var enterSelectionLabelEnd = enterSelection.append("g")
             .attr("class","labelend")
             .attr("transform",function(d){return labelEndTransform(Graph.Label.get(d.parentId))})// start at parent position and transition to new position
-            .style("opacity",1e-6)
+            //.style("opacity",1e-6)
 
-          var enterSelectionTimeWindow = enterSelection.append("rect")
-            .attr("class","timewindow")
 
 
 
@@ -207,6 +268,7 @@ var LabelDrawer = function(svgOrigin,algo){
         //     })
 
 
+       // selection.enter().selectAll(".labelend")
 
 
 
@@ -217,9 +279,8 @@ var LabelDrawer = function(svgOrigin,algo){
         // Appending to the enter selection expands the update selection to include
         // entering elements; so, operations on the update selection after appending to
         // the enter selection will apply to both entering and updating nodes.
+
         selection.selectAll(".labelend")
-            .transition().duration(500)
-            .style("opacity",1)
             .attr("transform",labelEndTransform)
 
         selection.selectAll("path")
@@ -232,34 +293,10 @@ var LabelDrawer = function(svgOrigin,algo){
               return (d.id == algo.getState().l_dashId) ? "5,5" : "0";
             })
             .style("stroke",function(d){
-              return (d.id == algo.getState().l_dashId) ? "red" : "gray";
+              return (d.id == algo.getState().l_dashId) ? "orange" : "gray";
             })
 
-        selection.selectAll("rect.timewindow")
-//             .transition().duration(500)
-            .each(function(d){
-                var yVals = y.range();
-                var residentNode = Graph.instance.nodes.get(d.nodeId);
-                var xStart = x(residentNode.resources[0]);
-                var www = x(residentNode.resources[1])-xStart;
-                    
-                    if(www<=0){
-                      www=6;
-                      xStart-=3;
-                    }
 
-                d3.select(this).attr({
-                    x : xStart,
-                    width : www,
-                    y: yVals[1],
-                    height : yVals[0]+margin.top
-                })
-            })
-            .style("display",function(d){
-              if(algo.getState().id != STATUS_PATH_EXTEND_FEASIBLE) return "none";
-              var l_dash_last = s.U[s.U.length-1]; 
-              return ((l_dash_last && (d.id == l_dash_last)) ? "block" : "none")
-            });
 
 
 //             .transition()
@@ -276,14 +313,14 @@ var LabelDrawer = function(svgOrigin,algo){
 
 
         selection.selectAll(".labelend rect")
-            .attr("width",function(d){return d.id.length*7})
-            .attr("x",function(d){return d.id.length*(-3.5)})
+            .attr("width",10)//function(d){return d.id.length*7})
+            .attr("x",-5)//function(d){return d.id.length*(-3.5)})
             .style("fill",function(d){
               //  if(s.id == algo.STATUS_DOMINANCE){
               //     return algo.dominanceStepNodeColors(d.nodeId);
               // }
                 if(d.id == s.lId) return const_Colors.CurrentNodeColor;
-                if(d.id == s.l_dashId) return "lightgray";
+                if(d.id == s.l_dashId) return "orange";
                 if(s.U.some(function(a){return a==d.id})) return const_Colors.PQColor;
                 if(s.P.some(function(a){return a==d.id})) return const_Colors.FinishedNodeColor;
             })
@@ -300,10 +337,38 @@ var LabelDrawer = function(svgOrigin,algo){
 
         // EXIT
         // Remove old elements as needed.
-         selection.exit()//.transition()
-            //.attr("opacity","1e-6")
+         selection.exit()
+            .attr("opacity","1")
+            .transition().duration(500)
+            .attr("opacity","1e-6")
             .remove();
     
     } //end updateNodes()
+
+
+    this.updateTimeWindow = function(s){
+      if(residentNodeFilter == "all"){
+        svg_timewindow
+//             .attr("opacity","1")
+//             .transition().duration(500)
+            .attr("opacity",1e-6)
+      }else{
+        var residentNode = Graph.instance.nodes.get(residentNodeFilter);
+        var yVals = y.range();
+        var xStart = x(residentNode.resources[0]);
+        var www = x(residentNode.resources[1])-xStart;
+        if(www<=0){
+          www=6;
+          xStart-=3;
+        }
+        svg_timewindow.attr({
+            x : xStart,
+            width : www,
+            y: yVals[1],
+            height : yVals[0]+margin.top,
+            opacity : 1
+        })
+      }
+    }
 
 } //end constructor GraphDrawer

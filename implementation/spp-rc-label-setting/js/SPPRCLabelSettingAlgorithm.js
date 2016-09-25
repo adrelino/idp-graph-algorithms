@@ -4,9 +4,10 @@ var STATUS_INIT = 2;
 var STATUS_MAINLOOP = 3;
 var STATUS_PATH_EXTEND = 4;
 var STATUS_PATH_EXTEND_FEASIBLE = 5;
-var STATUS_LABEL_PROCESSED = 6;
-var STATUS_DOMINANCE = 7;
-var STATUS_FINISHED = 8;
+var STATUS_PATH_EXTEND_UNFEASIBLE = 6;
+var STATUS_LABEL_PROCESSED = 7;
+var STATUS_DOMINANCE = 8;
+var STATUS_FINISHED = 9;
 
 /**
  * SPPRC Label Setting Algorithm
@@ -57,10 +58,12 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     this.onNodesEntered = function(selection) {
         //select source and target nodes
         selection
+        .style("cursor","pointer")
         .on("click", function(d) {
             if (s.id == STATUS_SELECTSOURCE) {
                 that.nextStepChoice(d);
             }else{
+              labelDrawer.setResidentNodeFilter(d.id,false,true);
               console.log(d);
               //highlight all labels which have this node as residentVertex
             }
@@ -78,7 +81,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             }else{
               return global_NodeLayout['fillStyle'];
             }
-        })
+        });
     }
     
     this.onEdgesEntered = function(selection) {
@@ -102,7 +105,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
               if(s.lId && (d.id == s.currentArcId)){
                 attr["stroke-width"]=4;
 //                 if(s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH){
-                  attr["stroke"]=const_Colors.CurrentNodeColor;
+                  attr["stroke"]="orange";//const_Colors.CurrentNodeColor;
                   attr["marker-end"]="url(#arrowhead2-red)";
 //                 }else{
 //                   attr["stroke"]="green";
@@ -159,6 +162,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         logger.reset();
 
         if(Graph.instance){
+          labelDrawer.reset();
           this.nextStepChoice(Graph.instance.nodes.get(0),true);
         }
 
@@ -273,6 +277,20 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         d3.select("#ta_td_P").text("{"+s.P.join(",")+"}");
         d3.select("#ta_td_l_dash").text(s.l_dashId ? s.l_dashId : "-");
 
+
+//         if(Graph.instance){
+//           var nodes =Graph.instance.getNodes();
+//         console.log(nodes);
+//        // d3.select("#algoInformationen2").text(Graph.instance.getNodes().map(function(n){return n.id;}).join(","));
+//         var foo = d3.select("#algoInfo2H").data(nodes);
+//         foo.enter().append("th").text(function(d){return d.id});
+//         foo.selectAll("td").text("st");
+//         //foo.enter().append("td").text("st");
+//         //foo.selectAll("td").text(function(d){return d.state.endingPaths ? d.state.endingPaths.join(",") : ""});
+
+//         }
+
+
         if(this.fastForwardIntervalID != null){
             this.setDisabledForward(true,false);
             this.setDisabledBackward(true);
@@ -334,6 +352,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
                 pathExtend();
                 break;
             case STATUS_PATH_EXTEND_FEASIBLE:
+            case STATUS_PATH_EXTEND_UNFEASIBLE:
                 pathExtendFeasible();
                 break;
             case STATUS_LABEL_PROCESSED:
@@ -418,7 +437,11 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             var l_dash = Graph.Label.extend(l,arc); //TODO do we need the extended label already here?
             logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
             s.l_dashId = l_dash.id;
-            setStatus(STATUS_PATH_EXTEND_FEASIBLE);
+            if(Graph.Label.feasible(l_dash)){
+              setStatus(STATUS_PATH_EXTEND_FEASIBLE);
+            }else{
+              setStatus(STATUS_PATH_EXTEND_UNFEASIBLE);
+            }
         }
     }
 
