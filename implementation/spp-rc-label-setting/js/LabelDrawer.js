@@ -121,10 +121,10 @@ var LabelDrawer = function(svgOrigin,algo){
         return "translate("+x(d.resources[0])+","+y(d.resources[1])+")";
     }
 
-    var generatePathCoordinatesFromLabel = function(d){
+    var generatePathCoordinatesFromLabel = function(d,repeatParentAtEnd){
         var pathinfo = [];
         var current=d;
-        var i=1;
+        var i=5;
         do{
             pathinfo.push(current.resources);
             if(current.wait){
@@ -132,6 +132,10 @@ var LabelDrawer = function(svgOrigin,algo){
             }
         }
         while((current=Graph.Label.get(current.parentId)) && i--);
+        pathinfo.reverse();
+        if(repeatParentAtEnd && pathinfo.length>=2){
+          pathinfo[pathinfo.length-1]=pathinfo[pathinfo.length-2];
+        }
         return pathinfo;//.reverse();
     }
 
@@ -150,7 +154,6 @@ var LabelDrawer = function(svgOrigin,algo){
         }
        }
 
-       this.updateTimeWindow(s);
 
         //var labels = s.U.concat(s.P)
         //if(s.currentLabel) labels.push(s.currentLabel);
@@ -191,6 +194,9 @@ var LabelDrawer = function(svgOrigin,algo){
         t.select("g.x.axis").call(xAxis);
 
 
+        this.updateTimeWindow(s);
+
+
         // DATA JOIN
         // Join new data with old elements, if any.
           var selection = svg_labels.selectAll(".label")
@@ -215,23 +221,11 @@ var LabelDrawer = function(svgOrigin,algo){
             .attr("class","labelpath") //is not transformed
             .attr("stroke", "gray")
             .attr("stroke-width", 2)
-            .attr("fill", "none");
+            .attr("fill", "none")
           
           var enterSelectionLabelEnd = enterSelection.append("g")
-            .attr("class","labelend")
-            .attr("transform",function(d){return labelEndTransform(Graph.Label.get(d.parentId))})// start at parent position and transition to new position
+              .attr("class","labelend")
             //.style("opacity",1e-6)
-
-
-
-
-
-//<rect x="50" y="20" rx="20" ry="20" width="150" height="150"
-//  style="fill:red;stroke:black;stroke-width:5;opacity:0.5" />
-
-//           enterSelection.append("path")
-//               .attr("d", d3.svg.symbol().type("triangle-down"))
-//               .style({fill:"red", "opacity":0.5});
 
 
            enterSelectionLabelEnd
@@ -243,6 +237,7 @@ var LabelDrawer = function(svgOrigin,algo){
                 .append("text")
                 .style("text-anchor", "middle")
                 .attr("dominant-baseline","middle")
+                .text(function(d){return d.id});
 
 //             .append("path")
 //                 .attr("d",shapeFun)
@@ -281,19 +276,29 @@ var LabelDrawer = function(svgOrigin,algo){
         // the enter selection will apply to both entering and updating nodes.
 
         selection.selectAll(".labelend")
+            .attr("transform",function(d){
+              return labelEndTransform(d.id == s.l_dashId ? Graph.Label.get(d.parentId) : d)
+              })// start at parent position and transition to new position
+            .transition().duration(1000)
             .attr("transform",labelEndTransform)
 
         selection.selectAll("path")
-            //.transition().duration(500)
-            .attr("d",function(d){
-                var coords = generatePathCoordinatesFromLabel(d);
-                return lineFunction(coords);
-            })
             .style("stroke-dasharray",function(d){
               return (d.id == algo.getState().l_dashId) ? "5,5" : "0";
             })
             .style("stroke",function(d){
-              return (d.id == algo.getState().l_dashId) ? "orange" : "gray";
+              if(d.id == s.l_dashId) return "orange";
+              else if(d.id == s.lId) return "red";
+              return "gray"
+            })
+            .attr("d",function(d){
+                var coords = generatePathCoordinatesFromLabel(d,d.id == s.l_dashId);
+                return lineFunction(coords);
+            })
+            .transition().duration(1000)
+            .attr("d",function(d){
+                var coords = generatePathCoordinatesFromLabel(d,false);
+                return lineFunction(coords);
             })
 
 
@@ -329,9 +334,6 @@ var LabelDrawer = function(svgOrigin,algo){
                // if(s.currentLabel && d.id==s.currentLabel.id) return const_Colors.NodeBorderHighlight;
             })
             .style("stroke-width",0.5)
-
-        selection.selectAll(".labelend text").text(function(d){return d.id});
-
 
 
 
