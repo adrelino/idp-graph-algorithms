@@ -225,7 +225,12 @@ var LabelDrawer = function(svgOrigin,algo){
           
           var enterSelectionLabelEnd = enterSelection.append("g")
               .attr("class","labelend")
-            //.style("opacity",1e-6)
+              .style("cursor","pointer")
+              .on("click", function(d) {
+                    algo.setHighlightPathForLabel(d.id,false,true);
+                    console.log(d);
+                    //highlight path for this label
+              })
 
 
            enterSelectionLabelEnd

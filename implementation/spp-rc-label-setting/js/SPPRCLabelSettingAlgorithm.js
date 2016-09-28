@@ -54,6 +54,24 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         else
             return d.id;
     }
+
+
+
+    var that = this;
+
+    var highlightPathForLabel=d3.select("#highlightPathForLabel").property("value");
+
+    d3.select("#highlightPathForLabel").on('change',function(e){
+      that.setHighlightPathForLabel(this.value,false,true);
+    });
+
+    this.setHighlightPathForLabel = function(name,noUpdate,userChoseFilter){
+      highlightPathForLabel=name;
+      d3.select("#highlightPathForLabel").property("value",highlightPathForLabel); //does not trigger 'change' event
+      if(!noUpdate) that.update(userChoseFilter);
+    }
+
+
     
     this.onNodesEntered = function(selection) {
         //select source and target nodes
@@ -99,6 +117,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 //             }
 //         })
 
+      var labelToHighlightPath = Graph.Label.get(highlightPathForLabel);
+
        selection.selectAll("line")
             .each(function(d){
               var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
@@ -111,6 +131,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 //                   attr["stroke"]="green";
 //                   attr["marker-end"]="url(#arrowhead2-green)";
 //                 }
+              }else if(labelToHighlightPath && labelToHighlightPath.arcIds.indexOf(d.id) >= 0){
+                  attr["stroke"]="red";//const_Colors.CurrentNodeColor;
               }
               d3.select(this).style(attr);
             })
@@ -178,12 +200,40 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * Makes the view consistent with the state
      * @method
      */
-    this.update = function(){
+    this.update = function(userChoseFilter){
 
         this.updateDescriptionAndPseudocode();
         logger.update();
 
-        labelDrawer.updateLabels(s);
+        labelDrawer.updateLabels(s,userChoseFilter);
+
+
+          var labelIds = [];//Graph.Label.labels.values();
+          if(s.lId){
+            labelIds.push(s.lId);
+          }
+          if(s.l_dashId){
+            labelIds.push(s.l_dashId);
+          }
+          for(var i=0; i<s.U.length; i++){
+            labelIds.push(s.U[i]);
+          }
+          for(var i=0; i<s.P.length; i++){
+            labelIds.push(s.P[i]);
+          }
+
+        var selection = d3.select("#highlightPathForLabel")
+                        .selectAll('option').data(labelIds);
+
+           selection.enter().append('option');
+
+           selection
+            .attr('value',function(d){return d})
+            .text(function(d){return d});
+
+            selection.exit().remove();
+
+
 
         if(Graph.instance){
              SPPRCLabelSettingAlgorithm.prototype.update.call(this); //updates the graph
