@@ -18,6 +18,7 @@ var STATUS_FINISHED = 10;
  * @class
  */
 function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
+  GoldbergTarjanPushRelabelAlgorithmInstance=this;
     GraphDrawer.call(this,svgSelection);
 
     /**
@@ -34,7 +35,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      * the logger instance
      * @type Logger
      */
-    var logger = new Logger(d3.select("#logger"));
+    var logger = new Logger(d3.select("#logger"),d3.select("#loggerLastEntry"));
 
     /**
      * The canvas to draw the heigh function
@@ -432,7 +433,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         s.sourceId = d.id;
         this.setDisabledBackward(false);
         setStatus(STATUS_SELECTTARGET,STATUS_SELECTTARGET); //so that idPrev == id so that we see "select target" after we clicked on source node
-        logger.log("selected node " + d.id + " as s");
+        logger.log("selected node <span style='color:rgb(51, 204, 51)'>" + d.id + " as source s</span>");
     };
 
     /**
@@ -442,7 +443,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         s.targetId = d.id;
         this.setDisabledForward(false);
         setStatus(STATUS_INITPREFLOW,STATUS_START); //so that after selecting the target, we jump from display before click (on nodes) to display after click (on next button)
-        logger.log("selected node " + d.id + " as t");
+        logger.log("selected node <span style='color:rgb(51, 204, 51)'>" + d.id + " as target t</span>");
     };
 
 
@@ -455,23 +456,31 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     function initPreflow() {
         var source = Graph.instance.nodes.get(s.sourceId);
         var forwardStar = source.getOutEdges();
-        
+
+        var text = "Init preflow: <span style='color:skyblue'>";
+        var text2 = ", add nodes <span style='color:rgb(255, 255, 112)'>";
+
         for (var i = 0; i < forwardStar.length; i++) {
             var e = forwardStar[i];
             //init preflow from source node
             e.state.flow = e.resources[0];
+            text +="f("+e.start.id+","+e.end.id+")="+e.state.flow+" ";
             source.state.excess -= e.state.flow;
             e.end.state.excess = e.state.flow;
 
             //add node to active queue
             if (e.end.id != s.targetId) {
+                text2 += e.end.id + " ";
                 s.activeNodeIds.push(e.end.id);
             }
         }
-        
+
+        text +="</span>";
+        text2 +="</span> to Q";
+
         setStatus(STATUS_INITDISTANCEFUNCTION);
         
-        logger.log("Init preflow. source excess: " + source.state.excess);
+        logger.log(text + text2);//" source excess: " + source.state.excess);
     }
 
     /**
@@ -489,6 +498,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         
         var queue = [target];
 
+        var text = "";
+
         //BFS traversal
         while (queue.length > 0) {
             var node = queue.shift();
@@ -499,12 +510,13 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
                     queue.push(neighbourNode);
                     neighbourNode.state.visited = true;
                     neighbourNode.state.height = node.state.height + 1;
+                    text +="h("+neighbourNode.id+")="+neighbourNode.state.height+",";
                 }
             }
         }
         
         setStatus(STATUS_MAINLOOP);
-        logger.log("Init distfun. source height: " + source.state.height);
+        logger.log("Init height: h(t)=0,"+text+"h(s)=" + source.state.height);
     }
     
     var mainLoopIt = 0;
@@ -537,7 +549,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         updateResidualEdgesForwardStar(s.currentNodeId);
 
 
-        logger.log("Main Loop Iteration " + (mainLoopIt++) + " popped node " + s.currentNodeId);
+        logger.log("Main loop #" + (mainLoopIt++) + ": pop <span style='color:red'>node v=" + s.currentNodeId + "</span> from Q");
         
         setStatus(STATUS_ADMISSIBLEPUSH);
     //   if(active.length>0){

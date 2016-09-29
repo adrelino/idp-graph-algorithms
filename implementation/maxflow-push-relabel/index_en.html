@@ -170,7 +170,7 @@
     </nav>
     <div>
     <header>
-        <img src="img/ahuja-small-progress.svg" alt="A maximum flow"></img>
+        <img src="img/ahuja-small_progress.svg"></img>
         <span class="adrianheader">Goldberg Tarjan Push Relabel Algorithm</span>
         <img style="position:absolute; right:0px" src="../library/img/TUMLogo.png" alt="Technische Universität München">
     </header>
@@ -193,27 +193,16 @@
             <div id="te_div_Einfuehrungstext">
 
                 <div id="te_div_beispiel1Container">
-                <div id="svgtest"></div>
-                <img id="te_img_beispiel1" src="img/ahuja.svg" alt="ahuja">
-<!--                 <object data="img/ahuja.svg" type="image/svg+xml" width="300px"> -->
-<!--                 type="image/svg+xml"-->
-
-<!--                 <svg> 
-                    <image xlink:href="img/ahuja.svg" src="svg.png">
-                </svg> -->
-
-
+                  <img id="te_img_beispiel1" src="img/ahuja_final.svg">
                 <p>The maximum s-t flow has a value of 6</p></div>
-<!--                 <div id="te_div_beispiel1Container"><img id="te_img_beispiel1" src="https://i1.wp.com/cs.stanford.edu/people/trevisan/cs261-11/network1.png" alt="Flow problem in network routing capacity"><p>Flow problem in network routing capacity</p></div> -->
                 
                 <h1>The maximum flow problem</h1>
                 <p>Suppose that we have a communication network, in which certain pairs of nodes are linked by connections; each connection has a limit to the rate at which data can be sent.
                 Given two nodes on the network, what is the maximum rate at which one can send data to the other, assuming no other pair of nodes are attempting to communicate? <a href="https://lucatrevisan.wordpress.com/2011/02/04/cs261-lecture-9-maximum-flow/">(source)</a></p>
-                
                 <p>
                 This is a typical instance of a maximum flow problem: given an underlying network, where the edge weights denote the maximum possible capacity per edge, one wants to find out how much can be transerred over the edges from the source node s to the target node t.</p>
                 </p>
-                <h2>This applet presents the generic Goldberg Tarjan's Push Relabel algorithm which calculates the maximum s-t flow on a directed, weighted graph in a fairly good runtime. More classical but slower algorithms are Ford-Fulkerson/Edmonds-Karp/Dinic algorithms</h2>
+                <h2>This applet presents Goldberg Tarjan's Push Relabel algorithm with the FIFO selection rule which calculates the maximum s-t flow on a directed, weighted graph in \(O(|V|^3)\). This is much faster than the older Edmonds-Karp or Dinic's algorithm, which are based on the Ford-Fulkerson method.</h2>
                 <div id ="te_div_Entscheidung">
                     <h2>What do you want to do first?</h2>
                     <button id="te_button_gotoDrawGraph">Test the algorithm!</button> <button id="te_button_gotoIdee">Read detailed description of the algorithm</button>
@@ -255,14 +244,18 @@
                     <h3>Start with an example graphs:</h3>
                     <label for="graphSelector">Select </label>
                     <select name="graphSelector" id="tg_select_GraphSelector">
-                        <option selected = true label="ahuja page 227">graph1</option>
+                        <option label="Ahuja p.227">ahuja</option>
+                        <option selected = true label="Ahuja small">ahuja-small</option>
+                        <option label="Corman p.726">corman</option>
+                        <option label="Corman small">corman-small</option>
+                        <option label="Corman rotated">corman-rotated</option>
+                        <option label="Jungnickel p.214">jungnickel</option>
+                        <option label="Wikipedia">wiki</option>
+
+                        <option label="European capitals (double edges)">europe</option>
+
                         <option label="graph 2">graph2</option>
-                        <option label="European capitals (double edges)">graph3</option>
-                        <option label="corman page 726">graph4</option>
                         <option label="graph 5">graph5</option>
-                        <option label="from wikipedia">graph6</option>
-                        <option label="jungnickel page 214">graph7</option>
-                        <option label="corman rotated">corman2</option>
                     </select>
 
 
@@ -307,11 +300,11 @@
                    <table>
                     <tr>
                       <td class="svgContainer">
-                        <svg class="graphCanvas" id="ta_canvas_graph" width="350" height="450"></svg>
+                        <svg class="graphCanvas" id="ta_canvas_graph" width="350" height="500"></svg>
                         <a class="svgDownloader" download="maxflow-graph-algorithm-graph.svg" href="data:text/plain,test">maxflow-graph-algorithm-graph.svg</a>
                       </td>
                       <td class="svgContainer">
-                        <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="450"></svg>
+                        <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="500"></svg>
                         <select id="heightFunctionXAxis">
                             <option value="graph">y/x (graph)</option>
                             <option value="excess">height/excess</option>
@@ -391,12 +384,12 @@
                                 <p>Set f(e) = c(e) for all edges emanating s and set f(e) = 0 for all other edges. Add all nodes v &ne; t having (s,v) &isin; E to the queue Q of active nodes.</p>
                             </div>
                             <div>
-                                <h3>Initializing the distance function</h3>
-                                <p>For each node v &ne; s set d(v) to the shortest directed path from v to t in the network G where the length of a path is the number of edges of the path. (In particular, set d(t) = 0).
+                                <h3>Initializing the height function</h3>
+                                <p>For each node v &ne; s set h(v) to the shortest directed path from v to t in the network G where the length of a path is the number of edges of the path. (In particular, set h(t) = 0).
 
                                 This can be done in time O(|V| + |E|) by a breadth first search starting at t and using all edges in the opposite direction. The source s isn’t reached by this BFS.
 
-                                We initialize d(s) by setting d(s) = |V|.</p>
+                                We initialize h(s) by setting h(s) = |V|.</p>
                             </div>
                             <div>
                                 <h3>Main loop</h3>
@@ -404,7 +397,7 @@
                             </div>
                             <div>
                                 <h3>Check for admissible push operations</h3>
-                                <p>While e(v) > 0 and the residual network G'=(V,E') contains an edge that is legal with respect to the current distance function ( i.e., there is an edge e' = (v, w) having d(v) = d(w) +  1 ) apply a push</p>
+                                <p>While e(v) > 0 and the residual network G'=(V,E') contains an edge that is legal with respect to the current height function ( i.e., there is an edge e' = (v, w) having h(v) = h(w) +  1 ) apply a push</p>
                             </div>
 <!--                             The residual network G'=(V,E') around a node v can be constructed on the fly. For this, we have to consider both the incoming (u,v) as well as the outgoing (v,w) edges in E. -->
                             <div>
@@ -421,8 +414,8 @@
                             </div>
                             <div>
                                 <h3>Relabel</h3>
-                                <p>Increase the distance d(v) of v to the value</p>
-                                <p>min{ d(w)+1 | (v,w) is edge of the residual network G'}</p>
+                                <p>Increase the height h(v) of v to the value</p>
+                                <p>min{ h(w)+1 | (v,w) is edge of the residual network G'}</p>
                                 <p>add v at the end of the queue Q after that.</p>
                             </div>
                             <div>
@@ -431,6 +424,8 @@
                                 <p id="finalflow" style="color:green"></p>
                             </div>
                         </div>
+                        <div id="loggerLastEntry"></div>
+
 <!--var STATUS_SELECTSOURCE = id++;
     var STATUS_SELECTTARGET = id++;
     var STATUS_START = id++;
@@ -442,67 +437,33 @@
     var STATUS_ADMISSIBLERELABEL = id++;
     var STATUS_RELABEL = id++;
     var STATUS_FINISHED = id; -->
-                        <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
-                            <div><p>s &larr; pick(v)</p></div>
-                            <div><p>t &larr; pick(v)</p></div>
-                            <div><p>BEGIN</p></div>
-                            <div><p>(* Initializing the preflow *)</p>
-                                 <p> FOR ALL e  = (u,w) &isin;E DO</p>
-                                 <p>    IF u == s THEN f(e) &larr; c(e)</p>
-                                 <p>    ELSE f(e) &larr; 0</p>
-                                 <p>    IF u == s AND w &ne; t THEN Q.add(w)</p></div>
-                            <div><p>(* Initializing the distance function *)</p>
-                                 <p> d(s) = |V|</p>
-                                 <p> FOR ALL v != s &isin; V DO</p>
-                                 <p>    d(v) &larr; number of segments on directed path to t</p></div>
-                            <div><p>(* Main Loop *)</p>
-                                 <p> WHILE Q &ne; &empty; DO</p>
-                                 <p>    v &larr; Q.pop()</p></div>
-                            <div><p>    WHILE e(v) > 0 </p>
-                                 <p>    AND &exist; e'=(v,w) &isin; E' with d(v) == d(w) + 1</p></div>
-                            <div><p>       (* PUSH *)</p>
-                                 <p>       push min{e(v),c'(e')} flow from v to w</p>
-                                 <p>       IF w != s,t AND w &notin; Q THEN Q.add(w)</p></div>
-                            <div><p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E'; d(v) == d(w) + 1</p></div>
-                            <div><p>       (* RELABEL *)</p>
-                                 <p>       d(v) &larr; min{d(w)+1 | (v,w) &isin; E'</p>
-                                 <p>       Q.add(v)</p></div>
-                            <div><p>END</p></div>
-
-<!--                             <p> d(t) = 0</p> -->
-<!--                             <p>    ELSE f(e)=0</p>
-                                 <p>    IF u==s AND w != t THEN queue.add(w)</p> -->
-<!--                             <p class="pseudocode" id="ta_p_l4">  FOR i = 2,..,n DO</p>
-                            <p class="pseudocode" id="ta_p_l4">    d(v[i]) &larr; &#8734;, parent(v[i]) &larr; NULL</p> -->
-
-<!--                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  d(v[1]) &larr; 0</p>
-                            <p class="pseudocode" id="ta_p_l3">  FOR j = 2,..,n DO</p>
-                            <p class="pseudocode" id="ta_p_l4">    d(v[j]) &larr; &#8734;</p>
-                            <p class="pseudocode" id="ta_p_l5">  FOR i = 1,..,(|V|-1) DO</p>
-                            <p class="pseudocode" id="ta_p_l6">    FOR ALL (u,v) in E DO</p>
-                            <p class="pseudocode" id="ta_p_l7">      d(v) &larr; min(d(v), d(u)+l(u,v))</p>
-                            <p class="pseudocode" id="ta_p_l8">  FOR ALL (u,v) in E DO</p>
-                            <p class="pseudocode" id="ta_p_l9">    IF d(v) > d(u) + l(u,v) DO</p>
-                            <p class="pseudocode" id="ta_p_l10">      Message: "Negative Circle"</p>
-                            <p class="pseudocode" id="ta_p_l11">END</p> -->
-
-<!--                             <p class="pseudocode" id="ta_p_l1">BEGIN</p>
-                            <p class="pseudocode" id="ta_p_l2">  IF Graph ungültig THEN END</p>
-                            <p class="pseudocode" id="ta_p_l3">  start &larr; geeigneter Knoten</p>
-                            <p class="pseudocode" id="ta_p_l4">  tour &larr; {start}</p>
-                            <p class="pseudocode" id="ta_p_l5">  REPEAT</p>
-                            <p class="pseudocode" id="ta_p_l6">    akt = start &larr; Knoten aus tour mit <br />                  unbesuchten Kanten</p>
-                            <p class="pseudocode" id="ta_p_l7">    subtour &larr; {start}</p>
-                            <p class="pseudocode" id="ta_p_l8">    DO</p>
-                            <p class="pseudocode" id="ta_p_l9">      {akt, u} &larr; Suche unbesuchte Kante</p>
-                            <p class="pseudocode" id="ta_p_l10">      subtour &larr; subtour &#8746; {u}</p>
-                            <p class="pseudocode" id="ta_p_l11">      akt &larr; u</p>
-                            <p class="pseudocode" id="ta_p_l12">    WHILE start &#8800; akt</p>
-                            <p class="pseudocode" id="ta_p_l13">    Integriere subtour in tour</p>
-                            <p class="pseudocode" id="ta_p_l14">  UNTIL tour ist Eulerweg/-tour</p>
-                            <p class="pseudocode" id="ta_p_l15">END</p>  -->
-                        </div>
+<div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
+<div><p>s &larr; pick(v)</p></div>
+<div><p>t &larr; pick(v)</p></div>
+<div><p>BEGIN</p></div>
+<div><p>(* Initializing the preflow *)</p>
+   <p> FOR ALL e  = (u,w) &isin;E DO</p>
+   <p>    IF u == s THEN f(e) &larr; c(e)</p>
+   <p>    ELSE f(e) &larr; 0</p>
+   <p>    IF u == s AND w &ne; t THEN Q.add(w)</p></div>
+<div><p>(* Initializing the height function *)</p>
+   <p> h(s) = |V|</p>
+   <p> FOR ALL v != s &isin; V DO</p>
+   <p>    h(v) &larr; number of segments on directed path to t</p></div>
+<div><p>(* Main Loop *)</p>
+   <p> WHILE Q &ne; &empty; DO</p>
+   <p>    v &larr; Q.pop()</p></div>
+<div><p>    WHILE e(v) > 0 </p>
+   <p>    AND &exist; e'=(v,w) &isin; E' with h(v) == h(w) + 1</p></div>
+<div><p>       (* PUSH *)</p>
+   <p>       push min{e(v),c'(e')} flow from v to w</p>
+   <p>       IF w != s,t AND w &notin; Q THEN Q.add(w)</p></div>
+<div><p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E'; h(v) == h(w) + 1</p></div>
+<div><p>       (* RELABEL *)</p>
+   <p>       h(v) &larr; min{h(w)+1 | (v,w) &isin; E'</p>
+   <p>       Q.add(v)</p></div>
+<div><p>END</p></div>
+</div>
                 <!--    </div> -->
                             <h3>Variable status</h3>
                             <table class="algoInformationen">
@@ -535,200 +496,106 @@
         <div id="tab_ti" style="display: none;">
             <div id="ti_div_Einfuehrungstext">
                 <div class="BeispielbildContainer">
-                    <img src="https://i1.wp.com/cs.stanford.edu/people/trevisan/cs261-11/network1.png" alt="Network " /><p>Network max flow <sup>1</sup></p><br />
-<!--                     <img src="img/koenigsberg_degree.png" alt="Gerade (grün) und ungerade (rot) Grade" /><p>Gerade (<span style="color: green;">grün</span>) und ungerade Grade (<span style="color: red;">rot</span>)</p><br /> -->
-<!--                     <img src="img/graph1.png" alt="Eulerscher Graph" /><p>Eulerscher Graph</p><br /> -->
-<!--                     <img src="img/graph2.png" alt="Der erste gefundene Kreis (blau)" /><p>Der erste gefundene Kreis (<span style="color: #0000cc">blau</span>)</p><br /> -->
-<!--                     <img src="img/graph3.png" alt="Zweiter Kreis (grün) und komplette Eulertour (a - c - e - f - c - d - b - a)" /><p>Zweiter Kreis (<span style="color: green;">grün</span>) und komplette Eulertour<br />(a - c - e - f - c - d - b - a)</p> -->
+                    <img src="img/ahuja_init.svg"/>
+                    <p>Graph \(G=(V,E)\) with capacities \(c(e)\geq0 \forall e\in E\)</p>
                 </div>
                 <h1>Maximum Flows</h1>
-                <p>In many applications one wants to know how much flow of a certain resource can simultaneously be transferred over a network from a to b.                
-                Depending on the context, flow can mean different things: The amount of water in a water pipe system in your city or the bandwidth of a computer network. 
-                
+                <p>In many applications one wants to know how much flow of a certain resource can simultaneously be transferred over a network from a to b.
+                Depending on the context, flow can mean different things: The amount of water in a water pipe system in your city or the bandwidth of a computer network.
                 However, the links in the network on paths from a to b can only handle flow up to their maximum capacity. One now seeks an assignemt of flow values to edges that fulfills all the capacity constraints of the edges and the flow conservation property on all the inner nodes, meaning we don't want leaks in our pipe system.
-
                 </p>
                 <p><strong>In general we speak of a flow</strong>.
                 Therefore one assigns a flow value to each edge in our network, the graph</p>
-                <p>Dijkstra's Algorithm computes shortest &ndash; or cheapest paths, if all cost are positive numbers.
-                However, if one allows negative numbers, the algorithm will fail.</p>
-                <p>The Bellman-Ford Algorithm by contrast can also deal with negative cost.</p>
-                <p>These can for example occur when a taxi driver receives more money for a tour than he spends on fuel. If he does not transport somebody, his cost are positive.</p>
-                <h1>Idea of the Algorithm</h1>
-<!--                 <div class="BeispielbildContainer">
-                    <img id="ti_img_beispiel4_1" src="img/graph1.png" alt="Edge before update."><p>This edge is a short-cut:<br> We know that we have to pay 20 in order to go from the starting node to the left node. The path from the left to the right node has cost 1.<br> Therefore one can go from the starting node to the node on the right with a total cost of 21.</p>
-                    <img id="ti_img_beispiel4_2" src="img/graph1.png" alt="Edge before update.">
-                </div> -->
-                <p>The Bellman-Ford Algorithm computes the <strong>cost</strong> of the cheapest paths from a starting node to all other nodes in the graph. Thus, he can also construct the paths afterwards.</p>
-                <p>The algorithm proceeds in an interactive manner, by beginning with a bad estimate of the cost and then improving it until the correct value is found.</p>
-                <p>The first estimate is:</p>
-                <ul>
-                    <li> <strong>The starting node has cost 0</strong>, as his distance to itself is obviously 0.
-                    <li> <strong>All other node have cost infinity</strong>, which is the worst estimate possible.
-                </ul>
-                <p>Afterwards, the algorithm checks every edge for the following condition: <strong>Are the cost of the source of the edge plus the cost for using the edge smaller than the cost of the edge's target?</strong></p>
-                <p>If this is the case, we have found a <strong>short-cut</strong>: It is more profitable to use the edge which was just checked, than using the path used so far. 
-                    Therefore the cost of the edge's target get updated: They are set to the cost of the source plus the cost for using the edge (compare example on the right).</p>
-                <p>Looking at all edges of the graph and updating the cost of the nodes is called a <strong>phase</strong>. Unfortunately, it is not sufficient to look at all edges only once. 
-                    After the first phase, the cost of all nodes for which the shortest path only uses one edge have been calculated correctly. After two phases all paths that use at most two edges have been computed correctly, and so on.</p>
-<!--                 <div class="BeispielbildContainer"><img id="ti_img_beispiel3" src="img/graph1.png" alt="Graph with distances.">
-                    <p>The green path from the starting node is the cheapest path. It uses 3 edges.</p>
-                </div> -->
-                <p>How many phases ware necessary? To answer this question, the observation that <strong>a shortest path has to use less edges than there are nodes in the graph.</strong>
-                    Thus, we need at most one phase less than the number of nodes in the graph. A shortest path that uses more edges than the number of nodes would visit some node twice and thus build a circle.</p>
-                <h1>Construction of the shortest path</h1>
-                <p>Each time when updating the cost of some node, the algorithm saves the edge that was used for the update as the <strong>predecessor</strong> of the node.</p>
-                <p>At the end of the algorithm, the shortest path to each node can be constructed by going backwards using the predecessor edges until the starting node is reached.</p>
-                <h1>Circles with negative weight</h1>
-<!--                 <div class="BeispielbildContainer"><img id="ti_img_beispiel2" src="img/graph1.png" alt="Graph with negative circle."><p>A cheapest path had to use this circle infinitely often. The cost would be reduced in each iteration.</p></div> -->
-                <p>If the graph contains a circle with a negative sum of edge weights &ndash; a <strong>Negative Circle</strong>, the algorithm probably will not find a cheapest path.</p>
-                <p>As can be seen in the example on the right, paths in this case can be infinitely cheap &ndash; one keeps on going through the circle.</p>
-                <p>This problem occurs if the negative circle can be reached from the starting node.
-                    Luckily, the algorithm can detect whether a negative circle exists.
-                    This is checked in the last step of the algorithm.</p>
-                <p>A negative circle can be reached if and only if after iterating all phases, one can still find a short-cut. 
-                    <strong>Therefore, at the end the algorithm checks one more time for all edges </strong>whether the cost of the source node plus the cost of the edge are less than the cost of the target node.
-                    If this is the case for an edge, the message "Negative Circle found" is returned.</p>
-                <p>One can even find the negative circle with the help of the predecessor edges: One just goes back until one traversed a circle (that had negative weight).</p>
-                <h1>What now?</h1>
-                <div class="Entscheidungsweg" id="ti_div_EntscheidungLeft">
-                    <h3>Create a graph and play through the algorithm</h3>
-                    <button id="ti_button_gotoDrawGraph">Try algorithm after creating a graph</button>
-                    <button id="ti_button_gotoAlgorithm">Try algorithm on an example graph</button>
+                <p>The Push-Relabel Algorithm of Goldberg and Tarjan computes the maximum s-t flow on a graph</p>
+               
+               <h2>Flow in graphs</h2>
+               <p>digraph \(G = (V, E)\)</p>
+                <div>A flow network \( N=(G,c,s,t) \)<br>
+                    <ul>
+                        <li>capacity \(\forall e \in E: c(e) \geq 0 \)</li>
+                        <li>source and sink \( s,t \in V \)</li>
+                    </ul>
                 </div>
-                <br style="clear: both;" />
-                <p style="font-size: 10px; text-align: right;"><a name="bridge_copyright"></a><sup>1</sup> Von Bogdan Giuşcă unter GNU Free Documentation License 1.2, vgl. <a href="http://http://commons.wikimedia.org/wiki/File:Konigsberg_bridges.png">Wikimedia</a>.</p>
-            </div>
+
+                <div>A flow on N: \( f : E \rightarrow \mathbb{R}_o^+ \)
+                    <ol>
+                        <li>feasability / capacity constraints: \( \forall e \in E : f(e) \leq c(e) \) </li>
+                        <li>flow conservation: \( \forall u \in V \setminus \{s,t\} : \sum_{v \in V} f(u,v) = \sum_{v \in V} f(v,u)\)</li>
+                    </ol>
+                </div>
+
+                <li>flow conservation:
+				\( \forall u \in V \setminus\{s,t\}: e(u) = 0\)</li>
+
+
+               <h2>The residual network</h2>
+                <div class="BeispielbildContainer">
+                    <img width="200px" src="img/residual-network.png"/>
+                    <p>create the residual network</p>
+                </div>
+For a (not necessarily feasible) flow \(f : E \rightarrow \mathbb{R}\) in \(G = (V,E) \) we can construct the so called residual network \(G' = (V, E') \):
+Create the graph G0 from G by copying all nodes of G and adding edges to G0 under the following rules.
+
+
+               <h1>Idea of the algorithm</h1>
+
+               <h2>preflow</h2>
+
+
+			 preflow:
+				\( \forall u \in V \setminus\{s,t\}: e(u) \geq 0\)
+
+               <h2>height function</h2>
+               height \( h(u), u \in V \)
+
+               <h2>excess</h2>
+               <li>exess  \( e(u) = \sum_{v \in V} f(u,v) - \sum_{v \in V} f(v,u), u \in V \)</li>
+
+               </div>
         </div>
 
        
         <!-- TAB Weiteres -->
-        <div id="tab_tw" style="display: none;">
-            <div id="tw_Accordion">
-                <h3>Wie sieht der (Pseudo-)Code des Algorithmus aus?</h3>
-                <div>
-                    <pre><code>Eingabe: Ungerichteter Graph G=(V,E), keine oder genau zwei Knoten besitzen einen ungeraden Grad
-Ausgabe: Eulertour/-weg als Liste von Knoten</code></pre>
+<div id="tab_tw" style="display: none;">
+<div id="tw_Accordion">
+<h3>What is the pseudocode of the algorithm?</h3>
+<div>
+<pre><code>
+Input:  a directed graph G=(V,E) with source node s, target node t.
+        edge capacities c(e)>=0 for all edges
+Output: A feasible maximum s-t flow f(e) satisfying:
+        capacity constraints : 0<=f(e)<=c(e) for all edges
+        flow conservation : f(u,v) == f(v,u) for all nodes except s,t
+        The flow value of f(e) is maximized along all feasible flows
+</code></pre><!-- , which fulfills the capacity constraints f(e) leq c(e) for all edges, flow conservation at all inner nodes and maximises the flow value over all feasible flows. -->
 <hr>
-<pre>
-<code>BEGIN
-    IF Graph ungültig THEN END
-    IF Graph semi-eulersch THEN
-        start &larr; Knoten mit ungeradem Grad
-    ELSE
-        start &larr; beliebiger Knoten
-    subtour &larr; &empty;
-    tour &larr; {start}
-    REPEAT
-        start &larr;  Knoten aus tour mit unbesuchten Kanten
-        subtour &larr; {start}
-        akt = start
-        DO
-            {akt, u} &larr; Suche unbesuchte Kante von akt aus
-            subtour &larr; subtour &#8746; {u}
-            akt &larr; u
-        WHILE start &#8800; akt
-        Integriere subtour in tour
-    UNTIL tour ist Eulerweg/-tour
-END</code></pre>
-            </div>
+<pre><code id=tw_div_statusPseudocode>
+</code></pre>
+</div>
+<h3>How fast is the algorithm?</h3>
+<div>
 
-                                <h3>What is the pseudocode of the algorithm?</h3>
-                <div><pre><code>Input: Weighted, undirected graph G=(V,E) with weight function l.
-Output: A list {d(v[j]) : j = 1,..,n} containing the distances dist(v[1],v[j]) = d(v[j]),
-         if there are no negative circles reachable from v[1]. 
-         The message "Negative Circle" is shown, if a negative circle can be reached from v[1].</code></pre>
-<hr><pre><code>
-BEGIN
-   d(v[1]) &larr; 0
-   FOR j = 2,..,n DO
-      d(v[j]) &larr; &#8734;
-   FOR i = 1,..,(|V|-1) DO
-      FOR ALL (u,v) in E DO
-         d(v) &larr; min(d(v), d(u) + l(u,v))
-   FOR ALL (u,v) in E DO
-      IF d(v) > d(u) + l(u,v) DO
-         Message: "Negative Circle"
-END</code></pre></div>
-
-
-                <h3>Wie schnell ist der Algorithmus?</h3>
-                <div>
-                    <h2>Geschwindigkeit von Algorithmen</h2>
-                    <p>Die Geschwindigkeit von Algorithmen wird üblicherweise in der <strong>Anzahl an Einzelschritten</strong> gemessen, die der Algorithmus bei der Ausführung benötigt.</p>
-                    <p>Einzelschritte sind beispielsweise:</p>
-                    <ul>
-                      <li>Zuweisungen &ndash; Weise Knoten 1 den Wert 20 zu.</li>
-                      <li>Vergleiche  &ndash; Ist 20 größer als 23?</li>
-                      <li>Vergleich und Zuweisung  &ndash; Falls 20 größer als 15 ist, setze Variable <var>n</var> auf 20.</li>
-                      <li>Einfache Arithmetische Operationen &ndash; Was ist 5 + 5 ?</li>
-                    </ul>
-                    <p>Da es sehr schwierig sein kann, diese Einzelschritte exakt zu zählen, möchte man nur die ungefähre <strong>Größenordnung</strong> der Anzahl Schritte wissen. Man spricht auch von der <strong>Laufzeit</strong> des Algorithmus. Meistens ist es besonders interessant, zu wissen, wie die Geschwindigkeit des Algorithmus von der Größe der Eingabe (hier: Anzahl Kanten und Knoten im Graph) abhängt.</p>
-                    <h2>Laufzeit des Hierholzer Algorithmus</h2>
-                    <p>Wir gehen von einem Graphen \(G = (V, E)\) mit \(|V| = n\) und \(|E| = m\) aus. Der Algorithmus bestimmt im ersten Schritt eine erste Tour \(T\). Um die nächsten Subtouren zu bestimmen, muss der Algorithmus einen Knoten aus \(T\) finden, der noch unbesuchte Kanten besitzt. Dieser Knoten dient als Start für die folgenden Subtouren mit denen die Tour erweitert wird. Ausgehend von einer leeren initialen Tour, kann die Tour maximal um n Knoten erweitert werden. Nach jeder vollständigen Subtour wird ein neuer Startknoten für folgende Subtouren bestimmt. Bei der Prüfung auf unbesuchte Kanten müssen im ungünstigsten Fall m Kanten betrachtet werden. Damit besitzt der Algorithmus eine polynomielle Laufzeit von \(O(n*m)\).</p>
-                    <p>Der Algorithmus kann weiter optimiert werden, indem man eine separate Adjazenzliste speichert, aus der bereits genutzte Kanten gelöscht werden. So muss man zur Überprüfung auf unbesuchte Kanten pro Knoten nicht jedes Mal alle Kanten betrachtet, sondern insgesamt jede Kante nur ein einziges Mal. Damit ist eine lineare Laufzeit von \(O(n+m)\) möglich.</p>
-                    <p>Die gleiche Laufzeit wird außerdem benötigt, um zu prüfen, ob ein Graph eulersch ist und der Hierholzer Algorithmus überhaupt angewendet werden kann.</p>
-                </div>
-
-
-                <h3>How fast is the algorithm?</h3>
-                <div>
-                    <h2>Speed of the algorithms</h2>
-                    <p>The speed of an algorithm is the <strong>total number of individual steps</strong> which are performed during the execution.</p>
-                    <p>These steps are for example:</p>
-                    <ul>
-                        <li>Assignments &ndash; Set distance of a node to 20.
-                        </li>
-                        <li>Comparisons &ndash; Is 20 greater than 23?
-                        </li>
-                        <li>Comparison and assignment &ndash; If 20 is greater than 15, set variable
-                            <var>n</var>
-                            to 20
-                        </li>
-                        <li>Simple Arithmetic Operations &ndash; What is 5 + 5?
-                        </li>
-                    </ul>
-                    <p>Since it can be very difficult to count all individual steps, it is desirable to only count the approximate magnitude of the number of steps. This is also called the running time of an algorithm. Particularly, it is interesting to know the running time of an algorithm based on the size of the input (in this case the number of the vertices and the edges of the graph).</p>
-                    <h2>Running time of the Bellman-Ford Algorithm</h2>
-                    <p>We assume that the algorithm is run on a graph with <var>n</var> nodes and <var>m</var> edges.</p>
-                    <p>At the beginning, the value &#8734; is assigned to each node. We need <var>n</var> steps for that.</p>
-                    <p>Then we do the <var>n-1</var> phases of the algorithm &ndash; one phase less than the number of nodes. 
-                        In each phase, all edges of the graph are checked, and the distance value of the target node may be changed.
-                        We can interpret this check and assignment of a new value as one step and therefore have <var>m</var> steps in each phase.
-                        In total all phases together require <var>m &middot; (n-1)</var> steps.</p>
-                    <p>Afterwards, the algorithm checks whether there is a negative circle, for which he looks at each edge once.
-                        Altogether he needs <var>m</var> steps for the check.</p>
-                    <p><strong>The total running time of the algorithm </strong> is of the magnitude <var>m &middot; n</var>, as the <var>n</var> steps at the beginning and the <var>m</var>
-                        steps at the end can be neglected compared to the <var>m &middot; (n-1)</var> steps for the phases.</p>
-                </div>
-                <h3>How can one prove that the result is always correct?</h3>
-                <div>
-                    <h2>A mathematical proof</h2>
-                    <p>In this section we will prove that the Bellman-Ford Algorithm always returns a correct result, if the graph does not contain negative circles that can be reached from the starting node.</p>
-                    <h3>The principle of induction</h3>
-                    <p>The proof is based on the principle of induction. We first prove that at the beginning of the first phase, the cost for at least one node have been calculated correctly. Then, we show that in each phase we improve the current estimates.
-                    At the end of each phase, we thus know the correct cost for more nodes than at the beginning of the phase. Additionally, we do not destroy any information in the respective phase
-                    &ndash; the estimates can only get better.</p>
-                    <p>Finally, we conclude that we do not need as many phases as the number of nodes in order to compute the correct cost correctly.</p>
-                    <h3>After phase <var>i</var> the following holds:</h3>
-                    <p>The algorithm has &ndash; as an estimate &ndash; assigned to each node <var>u</var> maximally the length of the shortest path from the starting node to <var>u</var> that uses at most <var>i</var>
-                    edges (if such a path exists).</p>
-                    <p>Let us have a look at this statement in detail for a node <var>u</var> at the end of phase <var>i</var>:</p>
-                    <p>If no path from the starting node to <var>u</var> that uses at most <var>i</var> edges exists, we do not know anything.</p>
-                    <p>If a path from the starting node to <var>u</var> using at most <var>i</var> edges exists, we know that the cost estimate for <var>u</var>
-                    is as high as the cost of the path or lower. The reason is the following: If we consider the path without its last edge, we yield a path using <var>i</var>-1 edges.
-                    The cost of the path's last node has been calculated correctly in the last phase. In this phase we have considered all edges, including the last part of the path.
-                    As we have updated the cost correctly when considering the last part of the path, the cost of the last node of the path (that is using <var>i</var> edges) correctly.</p>
-                    <h3>The number of phases needed is smaller than the number of nodes.</h3>
-                    <p>A path using at least as many edges as the number of nodes cannot be a shortest path if all circle have positive total weight. With each edge the path uses he "sees" another node (the target node of the edge).
-                    Additionally, we have to count the starting node the path saw without using another edge. If he uses as many edges as the number of nodes, it has seen at least one node twice or &ndash; to rephrase it &ndash; has used a circle.
-                    As we have assumed that all circles have positive weight, skipping the circle would have been shorter.</p>
-                    <p>If there are circles with a total weight of 0, it simply is as expensive to use the circle than to not do it. 
-                        In this case paths that use less edges than the number of nodes suffice as well.</p>
-                </div>
-                <h3>References</h3>
-                <div>
-                <h4>Literature</h4>
+The running time of the generic Goldberg and Tarjan's push relabel algorithm (1988) is \( O(|V|^2|E|) \).
+<p>
+This is the same asymptotical performance as that of Dinic's algorithm (1970), itself a tuned version of Edmonds–Karp algorithm \( O(|V||E|^2) \).
+These two classical maximum flow algorithms, emerging from the Ford-Fulkerson method (1956) are based on augmenting s-t paths and preserve the flow conservation property at inner nodes (e.g no excess) even during the course of the algorithm.
+</p><p>
+So why did we even need another method if it is not asymptotically faster than the existing ones and adds additional complexity?
+It turns out that we can further tune the generic algorithm by specifiing the order in which we choose the active nodes which we apply push and relabel operations to.
+</p><p>
+In particular, the variant implemented in this applet chooses the FIFO rule when selecting active nodes from the queue Q, which has a running time of  \( O(|V|^3) \), which is better than the previous bound, especially on dense graphs (it is actually independend on the number of edges).
+</p><p>
+Certain modifications of the generic algorithm  are among the fastest algorithms known today to solve maximum flow problems. For a comparison, please refer to this <a href="https://en.wikipedia.org/wiki/Maximum_flow_problem#Solutions">table</a>.
+</p>
+</div>
+<h3>When does the algorithm terminate?</h3>
+<div>
+The algorithm terminates when the queue containing the active nodes is empty. When that happens, the preflow is also a 
+feasible maximum flow since the residual network doesn’t contain augmenting pathes from s to t (since d(s) = |V|). 
+</div>
+<h3>References</h3>
+<div>
+<h4>Literature</h4>
 <dl>
 
 <dt>[GT88] (primary)</dt>
@@ -799,16 +666,14 @@ VI: Graph Algorithms
                 <a href="http://www.boost.org/doc/libs/1_61_0/libs/graph/doc/graph_theory_review.html#sec:network-flow-algorithms">Network flows Intro</a>
                 <a href="http://www.boost.org/doc/libs/1_61_0/libs/graph/doc/push_relabel_max_flow.html">push_relabel_max_flow</a>
                 </li>
-                <li><a href="https://en.wikipedia.org/wiki/Maximum_flow_problem">wiki entry</a></li>
+                <li>Wikipedia
+                <a href="https://en.wikipedia.org/wiki/Maximum_flow_problem">Maximum flow problem</a>
+                <a href="https://en.wikipedia.org/wiki/Push–relabel_maximum_flow_algorithm">Push-relabel maximum flow algorithm</a>
+                </li>
                 <li><a href="https://lucatrevisan.wordpress.com/2011/02/04/cs261-lecture-9-maximum-flow/">blog entry</a></li>
                 <li><a href="https://www.topcoder.com/community/data-science/data-science-tutorials/maximum-flow-section-1/">topcoder tutorial</a></li>
                 </ol>
                 </div>
-                <h3>Where can I find more information about graph algorithms?</h3>
-                <div><p>Other graph algorithms are explained on the <a href="http://www-m9.ma.tum.de/Allgemeines/Routenplanung">Website of Chair M9</a> of the TU München.</p>
-                <p>Furthermore there is an interesting book about shortest paths: <a href="http://www-m9.ma.tum.de/Ruth/WebHome">Das Geheimnis des kürzesten Weges</a></p>
-                <p><a href="http://www.ma.tum.de/Studium/StudieninteressierteEn">Studying mathematics at the TU München</a> answers all questions about graph theory (if an answer is known).</p>
-                
             </div>
         </div>
     </div>
