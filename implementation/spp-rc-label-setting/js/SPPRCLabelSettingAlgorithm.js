@@ -30,7 +30,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * the logger instance
      * @type Logger
      */
-    var logger = new Logger(d3.select("#logger"));
+    var logger = new Logger(d3.select("#logger"),d3.select("#loggerLastEntry"));
 
     var labelDrawer = new LabelDrawer(svgSelection2,this);
 
