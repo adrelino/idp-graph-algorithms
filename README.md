@@ -3,10 +3,11 @@
 ## TODOS
 
 ### SPPRC:
-- [ ] Interaktivität: rechts click auf label: links den pfad hervoheben (rot oder fett))
 - [ ] Dominance: in sortierter reihenfolge nach resident vertex abarbeiten. Dazu neuen Status je residentVertex einführen
 - [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
 - [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
+- [x] Interaktivität: rechts click auf label: links den pfad hervoheben (rot oder fett))
+  [(2016-09-28)]
 - [x] Beim extenden zwischenlabel ausblenden, am anfang vom loop alle wieder anzeigen
   [(2016-09-26)](https://github.com/adrelino/idp-graph-algorithms/commit/b2686514061b6f3dc1076fc42e9cea68a996fa7b)
   * label von dem aus extended wird (rot) wird mit transition ausgeblendet, das neue label (orange) mit transition eingeblendet
@@ -32,6 +33,14 @@
   * Kante e wird links fett dargestellt
 
 ### Goldberg-Tarjan:
+- [ ] Und dann vllt noch ein paar Farben beim Variablenstatus?
+- [x] Ich würde noch vorschlagen, die Texte noch leicht zu ergänzen:
+  * Wenn du Knoten auswählst und die rot markierst, weise darauf hin (...pop v from the queue (marked in red on the left)... oder ähnlich). Ebenso bei den Knoten in der Queue in gelb und der Kante in rot.
+  * Falls du in Beschreibung noch Platz hast, kannst du eventuell auch bei den Push- und Relabel-Operationen kurz aufführen, wie viel du pusht und auf welches Level du relabelst (also den tatsächlichen Wert). 
+  Ich könnte mir einfach eine zusätzliche Zeile mit "New height of node 5: 10" vorstellen.
+  [(2016-09-29)]
+- [x] Du sprichst manchmal von distance, manchmal von height. Versuche, das eindeutig zu halten.
+  [(2016-09-29)]
 - [x] Im rechten Teil: nicht alle Kanten e in g zeigen, sondern nur Kanten des Residual Netwerks g', welche den aktuellen (roten) Knoten verlassen. Diese gestrichelt rendern und mit ihren Residual Kapazitäten c'. Ausserdem bei einem push die residual Kante über die gepusht wurde fett rot hervorheben, und bei einem relabel die residual kante zum Knoten mit der niedrigsten Höhe grün hervorheben.
   [(2016-05-31)](https://github.com/adrelino/idp-graph-algorithms/commit/ed1a0cc161a97bc6153aabd4daaee3121c8eea3f)
   * added graph' option to right side, readded exessBar and nodeText height / excess in Heightfunction drawer, whose display depends on currently selected viewing mode
@@ -56,6 +65,8 @@
   * man kann wählen zwischen Excess / id auf der x Achse. Höhe war sowieso schon auf der y Achse.
 
 ### Beide:
+- [ ] Tabs sollten wir am Ende wieder einfügen, von der Synchronisierung passt es aber. 
+- [ ] Die Menge der Informationen und die Visualisierung sollten passen, arbeite wie oben erwähnt noch etwas daran, die Informationen auch mit dem Text zu verknüpfen (sonst wird es etwas unübersichtlich).
 - [x] Beschreibung beschreibt was gerade links passiert ist / ab initialize beschreibungen eins früher anzeigen
   (2016-05-25)
   * noch offen: BEGIN/START des Algorithmus taucht nicht im LOG auf

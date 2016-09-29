@@ -59,7 +59,7 @@ Graph.ResidualEdge.prototype.increaseFlow = function(delta){
 }
 
 Graph.ResidualEdge.prototype.toString = function() {
-  return (this.forward ? "forward " : "backward ") + this.start().id + "->" + this.end().id + " (" + this.c_dash() + ")";
+  return (this.forward ? "forward " : "backward ") + "residual edge e'=("+this.start().id + "," + this.end().id + ") with c'=" + this.c_dash();
 }
 
 //not necessarily legal, forward star of node in G'

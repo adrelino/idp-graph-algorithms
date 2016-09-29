@@ -597,10 +597,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             s.e_dash = v.getLegalResidualEdge();
             if(s.e_dash){
               setStatus(STATUS_PUSH);
-              logger.log2("admissiblePush on residual edge " + s.e_dash.toString());
+              logger.log2("admissible push on " + s.e_dash.toString());
             }else{
               setStatus(STATUS_ADMISSIBLERELABEL);
-              logger.log2("no admissiblePush, excess=" + v.state.excess);
+              logger.log2("no admissible push, e(v)=" + v.state.excess);
             }
         } else {
           setStatus(STATUS_MAINLOOP);
@@ -628,7 +628,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         }
         
         var sat = e_dash.c_dash() == 0 ? " [saturating] " : " [nonsaturating] ";
-        logger.log3("push " + delta + " from " + v.id + " to " + w.id + sat);
+        logger.log3(sat +" push of " + delta + " from node <span style='color:red'>" + that.nodeLabel(v) + "</span> to " + that.nodeLabel(w) + " along red edge");
         setStatus(STATUS_ADMISSIBLEPUSH);
     }
 
@@ -639,10 +639,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         if (v.state.excess > 0 && (s.e_dash = v.getLegalResidualEdge()) == null) { //todo: check if e_dash can ever be not null here, since we pushed till we saturated all edges beforehand anyways
             setStatus(STATUS_RELABEL);
-            logger.log2("admissibleRelabel on edge " + s.e_dash + " excess" + v.state.excess);
+            logger.log2("admissible relabel, e(v)=" + v.state.excess);
         } else {
             setStatus(STATUS_MAINLOOP); //jump to loop head
-            logger.log2("no admissibleRelabel");
+            logger.log2("no admissible relabel");
         }
     }
 
@@ -665,7 +665,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         //make ourself 1 higher than him
         var newheight = 1 + s.e_dash.end().state.height;
 
-        logger.log3("relabel " + node.id + " from " + node.state.height + " to " + newheight);
+        logger.log3("relabel node <span style='color:red'>v=" + node.id + "</span> from h=" + node.state.height + " to h=" + newheight+ ", add v to <span style='color:yellow'>Q (yellow)</span>");
         node.state.height = newheight;
         s.activeNodeIds.push(node.id);
         

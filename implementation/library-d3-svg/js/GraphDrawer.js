@@ -122,7 +122,9 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
     }
     transform = transform.bind(this);
 
+    NOSQUEEZE=false;
     this.squeeze = function(){
+        if(NOSQUEEZE) return; //define flag for debug
         var nodes;
 
         if(Graph.instance && (nodes = Graph.instance.getNodes())){
