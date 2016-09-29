@@ -39,9 +39,9 @@ function svgSerialize(svgNode){
   //var svgHtml = svgContainer.html();
 
   var svgHtml = (new XMLSerializer()).serializeToString(svgNode);//svgOrigin.node()
-  var seed = 50 + Math.floor(Math.random()*1000000); //lower 50 ones are reserved for my own use
+  //var seed = 50 + Math.floor(Math.random()*1000000); //lower 50 ones are reserved for my own use
 
-  svgHtml = svgHtml.replace(/arrowhead2/g,"arrowhead"+seed);
+  //svgHtml = svgHtml.replace(/arrowhead2/g,"arrowhead"+seed);
 
   //                 svgHtml = '<?xml-stylesheet type="text/css" href="href="../library-d3-svg/css/graph-style.css" ?>' + svgHtml;
 
@@ -85,12 +85,14 @@ function svgSerializeAndCrop(svgNode){
     algo.svgOrigin.select("g").attr("transform",oldTra+","+transl);//.each("end",function(){
     algo.svgOrigin.attr("width",width);
     algo.svgOrigin.attr("height",height);
+    algo.svgOrigin.attr("viewBox","0 0 "+width+" "+height);//http://stackoverflow.com/questions/19484707/how-can-i-make-an-svg-scale-with-its-parent-container
   }
 
   var href = svgSerialize(svgNode);
 
   if(algo){
     //move back
+    algo.svgOrigin.attr("viewBox",null);
     algo.svgOrigin.attr("width",oldWidth);
     algo.svgOrigin.attr("height",oldHeight);
     algo.svgOrigin.select("g").attr("transform",oldTra);

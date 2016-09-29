@@ -82,10 +82,13 @@ function AlgorithmTab(algo,p_tab) {
 
         $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
         
-        var sel = d3.select("#ta_div_statusPseudocode").selectAll("div").selectAll("p")
+        var pseudocode = d3.select("#ta_div_statusPseudocode")
+        var sel = pseudocode.selectAll("div").selectAll("p")
         sel.attr("class", function(a, pInDivCounter, divCounter) {
             return "pseudocode";
         });
+
+        d3.select("#tw_div_statusPseudocode").text(pseudocode.text())
 
         Tab.prototype.init.call(this);
 
