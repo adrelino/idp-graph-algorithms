@@ -149,6 +149,8 @@ var LabelDrawer = function(svgOrigin,algo){
        if(!userChoseFilter){
         if(s.id==STATUS_PATH_EXTEND_FEASIBLE || s.id==STATUS_PATH_EXTEND_UNFEASIBLE){
           this.setResidentNodeFilter(Graph.Label.get(s.l_dashId).nodeId,true);
+        }else if(s.currentNodeIdDominance != null && (s.id==STATUS_DOMINANCE || s.id==STATUS_DOMINANCE_NODE)){
+          this.setResidentNodeFilter(s.currentNodeIdDominance,true);
         }else{
           this.setResidentNodeFilter("all",true);
         }

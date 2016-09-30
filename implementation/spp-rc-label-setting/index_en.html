@@ -235,8 +235,8 @@
                     <label for="graphSelector">Select </label>
                     <select name="graphSelector" id="tg_select_GraphSelector">
                         <option label="Minimal unfeasible">minimal-unfeasible</option>
-                        <option selected = true label="Minimal dominated">minimal-dominated</option>
-                        <option label="Minimal uncomparable">minimal-uncomparable</option>
+                        <option label="Minimal dominated">minimal-dominated</option>
+                        <option selected = true label="Minimal uncomparable">minimal-uncomparable</option>
                         <option label="Irnich Fig. 1 (A small SPPRC example)">graph1</option>
                         <option label="Irnich Fig. 1 with dominated paths">graph2</option>
                         <option label="Irnich small">irnich-small</option>
@@ -453,10 +453,10 @@
          <p>   FORALL v &isin; V\{s}</p></div>
     <div><p>     U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
     <div><p>END</p>
+         <p>t &larr; pick(v)</p>
          <p>(* Filtering step *)</p>
-         <p>t &larr; hover(v)</p>
-         <p>FORALL l=(~,t) &in; P</p>
-         <p>   highlight(l)</p></div>
+         <p>solution &larr; l=(~,t) &in; P : </p>
+         <p>cost(l) = min(cost(l)) &forall; l=(~,t) &in; P </p></div>
 </div>
 <!--                     </div> -->
                     <h3>Variable status</h3>

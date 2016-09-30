@@ -1,4 +1,5 @@
-var CONSTRAINED_RESOURCE_INDEX = 0; //the other one is unconstrained but should be minimized. E.g.: min cost, constrained time
+var CONSTRAINED_RESOURCE_INDEX = 0; //constrained time
+var MINIMIZED_RESOURCE_INDEX = 1; //min cost unconstrained but should be minimized.
 
 
 //http://stackoverflow.com/questions/3145030/convert-integer-into-its-character-equivalent-in-javascript
@@ -77,6 +78,18 @@ Graph.Label.prototype.nodeIdChain = function(){
   return this.arcIds.map(function(arcId){
     return Graph.instance.edges.get(arcId).end.id;
   }).join("->");
+}
+
+Graph.Label.prototype.isCheaper = function(other){
+  return this.resources[MINIMIZED_RESOURCE_INDEX] < other.resources[MINIMIZED_RESOURCE_INDEX];
+}
+
+Graph.Label.prototype.cost = function(){
+  return this.resources[MINIMIZED_RESOURCE_INDEX];
+}
+
+Graph.Label.prototype.time = function(){
+  return this.resources[CONSTRAINED_RESOURCE_INDEX];
 }
 
 //static method, not instance, so that we can serialize more easily

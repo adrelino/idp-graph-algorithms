@@ -84,6 +84,10 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             }else{
               labelDrawer.setResidentNodeFilter(d.id,false,true);
               console.log(d);
+              if(s.id == STATUS_FINISHED){
+                console.log("filter");
+                that.filter(d);
+              }
               //highlight all labels which have this node as residentVertex
             }
         })
@@ -180,7 +184,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             currentResidentNodeEdgeIndex: -1, //for iteration outgoing edges in label extension step
             currentArcId: null,
             currentNodeIndexDominance: 0, //for iterating nodes in dominance step
-            currentNodeIdDominance: -1 //for iterating nodes in dominance step
+            currentNodeIdDominance: null //for iterating nodes in dominance step
         };
 
         setStatus(STATUS_SELECTSOURCE);
@@ -419,7 +423,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
                 dominanceNode();
                 break;
             case STATUS_FINISHED:
-//                 this.filter();
+            //                 this.filter();
                 this.stopFastForward();
                 break;
             default:
@@ -428,7 +432,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         }
 
         //update view with status values
-        this.update(s.id==STATUS_DOMINANCE ||s.id==STATUS_DOMINANCE_NODE);
+        this.update();
     };
 
 
@@ -545,13 +549,13 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 
         if(s.currentNodeIndexDominance >= nodes.length){
             s.currentNodeIndexDominance=0;
-            s.currentNodeIdDominance=0;
+            s.currentNodeIdDominance=null;
             logger.log2("iterated all nodes");
             setStatus(STATUS_MAINLOOP);
         }else{
           var node = nodes[s.currentNodeIndexDominance++];
           s.currentNodeIdDominance = node.id;
-          labelDrawer.setResidentNodeFilter(s.currentNodeIdDominance,true,true);
+          //labelDrawer.setResidentNodeFilter(s.currentNodeIdDominance,true,true);
           setStatus(STATUS_DOMINANCE_NODE);
           logger.log2("node "+node.id+ "checked for dominance");
         }
@@ -602,9 +606,27 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     /**
      * discard strictly dominated labels in both P and U
      */
-    function filter() {
-        //TODO
+    this.filter = function(targetNode) {
         logger.log("filter solution step");
+        var labelIds = targetNode.state.endingPaths;
+        var labels = labelIds.map(function(id){
+          return Graph.Label.get(id);
+        });
+
+        var minCostLabel = labels[0];
+
+        if(labels.length>1){
+          for(var i=1; i< labels.length; i++){
+            if(labels[i].isCheaper(minCostLabel)){
+              minCostLabel=labels[i];
+            }
+          }
+        }
+
+        s.targetId = targetNode.id;
+
+        logger.log("label with minimal cost ending in "+ targetNode.id + " is "+ minCostLabel.id + " with cost of "+minCostLabel.cost());
+        this.setHighlightPathForLabel(minCostLabel.id,false,true)
         setStatus(STATUS_FINISHED);
     }
 
