@@ -403,10 +403,14 @@
 <!--                                 <p>If negative cycles were allowed, one would need to employ a Label Correcting algorithm in the style of Bellmann-Ford</p> -->
                             </div>
                             <div>
-                                <h3>Dominance step</h3>
+                                <h3>Dominance step 1/2</h3>
                                 <p>For all the paths which end in some node v, prune the paths/labels which are striclty dominated in both sets U and P</p>
+                            </div>
+                            <div>
+                                <h3>Dominance step 2/2</h3>
                                 <p>l_1=(~,v) dominates l_2=(~,v) &hArr; time(l1) &lt; time(l2) AND cost(l1) &lt; cost(l2) </p>
                             </div>
+
                             <div>
                                 <h3>Finished</h3>
                                 <p>The algorithm terminated since there are no more unprocessed labels to extend</p>
@@ -423,8 +427,10 @@
     var STATUS_MAINLOOP = id++;
     var STATUS_PATH_EXTEND = id++;
     var STATUS_PATH_EXTEND_FEASIBLE = id++;
+    var STATUS_PATH_EXTEND_UNFEASIBLE
     var STATUS_LABEL_PROCESSED = id++;
     var STATUS_DOMINANCE = id++;
+    var STATUS_DOMINANCE_NODE = id++;
     var STATUS_FINISHED = id;-->
 <div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
     <div><p>s &larr; pick(v)</p></div>
@@ -444,8 +450,8 @@
          <p>         throw away l'</p></div>
     <div><p>   P &larr; P &cup; {l}</p></div>
     <div><p>   (* Dominance step *)</p>
-         <p>   FORALL v &isin; V\{s}</p>
-         <p>     U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
+         <p>   FORALL v &isin; V\{s}</p></div>
+    <div><p>     U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
     <div><p>END</p>
          <p>(* Filtering step *)</p>
          <p>t &larr; hover(v)</p>

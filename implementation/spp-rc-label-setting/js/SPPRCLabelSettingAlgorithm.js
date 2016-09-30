@@ -7,8 +7,8 @@ var STATUS_PATH_EXTEND_FEASIBLE = 5;
 var STATUS_PATH_EXTEND_UNFEASIBLE = 6;
 var STATUS_LABEL_PROCESSED = 7;
 var STATUS_DOMINANCE = 8;
-var STATUS_DOMINANCE_ = 8;
-var STATUS_FINISHED = 9;
+var STATUS_DOMINANCE_NODE = 9;
+var STATUS_FINISHED = 10;
 
 /**
  * SPPRC Label Setting Algorithm
@@ -178,7 +178,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             sourceId: -1,
             mainLoopIt : 1,
             currentResidentNodeEdgeIndex: -1, //for iteration outgoing edges in label extension step
-            currentNodeIndexDominance: -1 //for iterating nodes in dominance step
+            currentArcId: null,
+            currentNodeIndexDominance: 0, //for iterating nodes in dominance step
+            currentNodeIdDominance: -1 //for iterating nodes in dominance step
         };
 
         setStatus(STATUS_SELECTSOURCE);
@@ -413,6 +415,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             case STATUS_DOMINANCE:
                 dominance();
                 break;
+            case STATUS_DOMINANCE_NODE:
+                dominanceNode();
+                break;
             case STATUS_FINISHED:
 //                 this.filter();
                 this.stopFastForward();
@@ -423,7 +428,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         }
 
         //update view with status values
-        this.update();
+        this.update(s.id==STATUS_DOMINANCE ||s.id==STATUS_DOMINANCE_NODE);
     };
 
 
@@ -532,7 +537,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * discard strictly dominated labels in both P and U
      */
     function dominance() {
-        //TODO
         logger.log2("dominance step");
 
         var nodes = Graph.instance.getNodes();
@@ -540,22 +544,32 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         var nooneDominated = true;
 
         if(s.currentNodeIndexDominance >= nodes.length){
+            s.currentNodeIndexDominance=0;
+            s.currentNodeIdDominance=0;
             logger.log2("iterated all nodes");
+            setStatus(STATUS_MAINLOOP);
         }else{
-          
+          var node = nodes[s.currentNodeIndexDominance++];
+          s.currentNodeIdDominance = node.id;
+          labelDrawer.setResidentNodeFilter(s.currentNodeIdDominance,true,true);
+          setStatus(STATUS_DOMINANCE_NODE);
+          logger.log2("node "+node.id+ "checked for dominance");
         }
+    }
 
-        for(v; s.currentNodeIndexDominance<nodes.length; i++){
-            var node = nodes[i];
-            if(!node.state.endingPaths || node.state.endingPaths.length<=1) continue;
+    function dominanceNode(){
+        var node = Graph.instance.nodes.get(s.currentNodeIdDominance);
+        if(!node.state.endingPaths || node.state.endingPaths.length<=1){
+            logger.log2("not more than 1 path ending in resident node "+node.id);
+        }else{
             logger.log2("dominance step for resident node "+node.id);
             for(var j = 0; j < node.state.endingPaths.length; j++){
                 //remove all other paths in upper right cone of this
                 var path = Graph.Label.get(node.state.endingPaths[j]);
-                
+
                 for(var k = 0; k < node.state.endingPaths.length; k++){
                     if(j==k) continue;
-                    
+
                     var otherpath = Graph.Label.get(node.state.endingPaths[k]);
 
                     if(!path || !otherpath || path == otherpath) continue;
@@ -568,15 +582,12 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
                         }
 
                         //Graph.Label.remove(removed);
-
-                        nooneDominated=false;
-
                         logger.log3(Graph.Label.toString(otherpath) +" dominated by " + Graph.Label.toString(path));
                         k--;
 
                         var indexInU = s.U.indexOf(removed);
                         if(indexInU>=0) s.U.splice(indexInU,1);
-                        
+
                         var indexInP = s.P.indexOf(removed);
                         if(indexInP>=0) s.P.splice(indexInP,1);
 
@@ -585,10 +596,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             }
         }
 
-        if(nooneDominated)
-            logger.log3("no label is dominated");
-
-        setStatus(STATUS_MAINLOOP);
+        setStatus(STATUS_DOMINANCE);
     }
 
     /**

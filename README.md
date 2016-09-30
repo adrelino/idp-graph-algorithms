@@ -3,9 +3,12 @@
 ## TODOS
 
 ### SPPRC:
-- [ ] Dominance: in sortierter reihenfolge nach resident vertex abarbeiten. Dazu neuen Status je residentVertex einführen
 - [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
 - [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
+- [ ] Filtering step fertig implementieren: target t auswählen können sobald main loop fertig, dann für diesen den pfad mit geringsten kosten berechnen
+- [x] Dominance: in sortierter reihenfolge nach resident vertex abarbeiten. Dazu neuen Status je residentVertex einführen
+  (2016-09-30)
+  * TODO: tunen der Label Sichtbarkeit und Node highlight
 - [x] Interaktivität: rechts click auf label: links den pfad hervoheben (rot oder fett))
   [(2016-09-28)]
 - [x] Beim extenden zwischenlabel ausblenden, am anfang vom loop alle wieder anzeigen
