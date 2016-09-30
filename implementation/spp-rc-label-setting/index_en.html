@@ -234,8 +234,8 @@
                     <h3>Start with an example graphs:</h3>
                     <label for="graphSelector">Select </label>
                     <select name="graphSelector" id="tg_select_GraphSelector">
-                        <option selected = true label="Minimal unfeasible">minimal-unfeasible</option>
-                        <option label="Minimal dominated">minimal-dominated</option>
+                        <option label="Minimal unfeasible">minimal-unfeasible</option>
+                        <option selected = true label="Minimal dominated">minimal-dominated</option>
                         <option label="Minimal uncomparable">minimal-uncomparable</option>
                         <option label="Irnich Fig. 1 (A small SPPRC example)">graph1</option>
                         <option label="Irnich Fig. 1 with dominated paths">graph2</option>
@@ -444,7 +444,8 @@
          <p>         throw away l'</p></div>
     <div><p>   P &larr; P &cup; {l}</p></div>
     <div><p>   (* Dominance step *)</p>
-         <p>   U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
+         <p>   FORALL v &isin; V\{s}</p>
+         <p>     U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
     <div><p>END</p>
          <p>(* Filtering step *)</p>
          <p>t &larr; hover(v)</p>
@@ -513,7 +514,6 @@ The problem is NP-hard in the strong sense. If the path need not be elementary, 
 </p>
 <p>The two-resource SPPRC, better known as the shortest path problem with time windows (SPPTW), was first studied in Desrosiers et al. (1983) and Desrosiers et al. (1984). The resource cost is unconstrained while the resource time is restricted by corresponding time windows. <a href="#irnich">[ID05]</a></p>
 
-
 <h1>Idea of the algorithm</h1>
 <p>
 It is necessary to explain some fundamental ideas and point out the differences to a labelling algorithm for the shortest path problem without resource constraints (SPP).
@@ -533,7 +533,15 @@ A resource extension function is defined on each arc in a graph for each resourc
 <i>Labels</i> are used to store the information on the resource values for partial paths. A label in an SPPRC labelling algorithm is not a mere triple of resident vertex, current cost and predecessor vertex, as it is the case in labelling algorithms for the SPP. A label for an SPPRC labelling algorithm stores its resident vertex, its predecessor <i>arc</i> over which it has been extended, its predecessor label, and its current vector of resource values. The criterion to be minimized (cost, travel time, travel distance, whatsoever) is also treated as a (possibly unconstrained) resource. It is necessary to store the predecessor arc instead of the predecessor vertex, because, due to the resource constraints, one can not assume that the underlying graph is simple. Labels reside at vertices, and they are propagated via resource extension functions when they are extended along an arc. An <i>extension</i> of a label along an arc (<i>i</i>, <i>j</i>) is <i>feasible</i> if the resulting label <i>l</i> at <i>j</i> is feasible, which is the case if and only if all resource values of <i>l</i> are within their resource windows.
 </p>
 
-<h2>Dominance</h2>
+<h2>Incomparable paths</h2>
+The main difficulty of the SPPRC/SPPTW compared to the SPP is that (partial) paths ending in the same node may be incomparable, 
+meaning we cannot say that a path is better than another. In the SPPTW, this is the case if 
+path a is better with respect to time, but path b is better with respect to cost. Thus, one has to keep both paths, since there might be 
+extensions of b might be unfeasible in nodes further down the path, but feasible if we extend a.
+
+
+
+<h2>Dominance and the pareto frontier</h2>
 
 <p>
 To keep the number of labels as small as possible, it is decisive to perform a <i>dominance step</i> for eliminating unnecessary labels. A label <i>l</i><sub>1</sub> <i>dominates</i> a label <i>l</i><sub>2</sub> if both reside at the same vertex and if, for each feasible extension of <i>l</i><sub>2</sub>, there is also a feasible extension of <i>l</i><sub>1</sub> where the value of each cardinally scaled resource is less than or equal to the value of the resource in the extension of <i>l</i><sub>2</sub>, and where the value of each nominally scaled resource is equal to the value of the resource in the extension of <i>l</i><sub>2</sub>. Dominated labels need not be extended. A label which is not dominated by any other label is called undominated or Pareto-optimal. The application of the dominance principle is optional&mdash;at least from a theoretical perspective.

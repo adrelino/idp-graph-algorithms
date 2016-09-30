@@ -251,6 +251,7 @@
                         <option label="Corman rotated">corman-rotated</option>
                         <option label="Jungnickel p.214">jungnickel</option>
                         <option label="Wikipedia">wiki</option>
+                        <option label="Algoprak Push-Relabel example">algoprak-push-relabel-example</option>
 
                         <option label="European capitals (double edges)">europe</option>
 
@@ -442,16 +443,16 @@
 <div><p>t &larr; pick(v)</p></div>
 <div><p>BEGIN</p></div>
 <div><p>(* Initializing the preflow *)</p>
-   <p> FOR ALL e  = (u,w) &isin;E DO</p>
+   <p> FORALL e=(u,w) &isin; E</p>
    <p>    IF u == s THEN f(e) &larr; c(e)</p>
    <p>    ELSE f(e) &larr; 0</p>
    <p>    IF u == s AND w &ne; t THEN Q.add(w)</p></div>
 <div><p>(* Initializing the height function *)</p>
    <p> h(s) = |V|</p>
-   <p> FOR ALL v != s &isin; V DO</p>
+   <p> FORALL v &isin; V\{s}</p>
    <p>    h(v) &larr; number of segments on directed path to t</p></div>
 <div><p>(* Main Loop *)</p>
-   <p> WHILE Q &ne; &empty; DO</p>
+   <p> WHILE Q &ne; &empty;</p>
    <p>    v &larr; Q.pop()</p></div>
 <div><p>    WHILE e(v) > 0 </p>
    <p>    AND &exist; e'=(v,w) &isin; E' with h(v) == h(w) + 1</p></div>

@@ -7,6 +7,7 @@ var STATUS_PATH_EXTEND_FEASIBLE = 5;
 var STATUS_PATH_EXTEND_UNFEASIBLE = 6;
 var STATUS_LABEL_PROCESSED = 7;
 var STATUS_DOMINANCE = 8;
+var STATUS_DOMINANCE_ = 8;
 var STATUS_FINISHED = 9;
 
 /**
@@ -176,7 +177,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             P: [],
             sourceId: -1,
             mainLoopIt : 1,
-            currentResidentNodeEdgeIndex: -1 //for iteration outgoing edges in label extension step
+            currentResidentNodeEdgeIndex: -1, //for iteration outgoing edges in label extension step
+            currentNodeIndexDominance: -1 //for iterating nodes in dominance step
         };
 
         setStatus(STATUS_SELECTSOURCE);
@@ -537,9 +539,16 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 
         var nooneDominated = true;
 
-        for(var i=0; i<nodes.length; i++){
+        if(s.currentNodeIndexDominance >= nodes.length){
+            logger.log2("iterated all nodes");
+        }else{
+          
+        }
+
+        for(v; s.currentNodeIndexDominance<nodes.length; i++){
             var node = nodes[i];
-            if(!node.state.endingPaths) continue;
+            if(!node.state.endingPaths || node.state.endingPaths.length<=1) continue;
+            logger.log2("dominance step for resident node "+node.id);
             for(var j = 0; j < node.state.endingPaths.length; j++){
                 //remove all other paths in upper right cone of this
                 var path = Graph.Label.get(node.state.endingPaths[j]);
