@@ -70,40 +70,10 @@ var LabelDrawer = function(svgOrigin,algo){
       return "translate(" + x(d.x) + "," + y(d.y) + ")"
     ;};
 
-    var residentNodeFilter=d3.select("#filterLabelsByResidentNode").property("value");
-
-    d3.select("#filterLabelsByResidentNode").on('change',function(e){
-      that.setResidentNodeFilter(this.value,false,true);
-    });
-
-    var that = this;
-
-    this.setResidentNodeFilter = function(name,noUpdate,userChoseFilter){
-      residentNodeFilter=name;
-      d3.select("#filterLabelsByResidentNode").property("value",residentNodeFilter); //does not trigger 'change' event
-      if(!noUpdate) that.updateLabels(algo.getState(),userChoseFilter);
-    }
-
-
-
     /////////////////
     //PRIVILEDGED
 
     this.reset = function(){
-      var arr = Graph.instance.getNodes().map(function(n){
-          return n.id;
-      });
-
-      arr.unshift("all");
-
-
-
-      var selection = d3.select("#filterLabelsByResidentNode")
-                        .selectAll('option').data(arr);
-
-       selection.enter().append('option')
-        .attr('value',function(d){return d})
-        .text(function(d){return d});
     }
 
     this.clear = function(){
@@ -148,11 +118,11 @@ var LabelDrawer = function(svgOrigin,algo){
 
        if(!userChoseFilter){
         if(s.id==STATUS_PATH_EXTEND_FEASIBLE || s.id==STATUS_PATH_EXTEND_UNFEASIBLE){
-          this.setResidentNodeFilter(Graph.Label.get(s.l_dashId).nodeId,true);
+          algo.setResidentNodeFilter(Graph.Label.get(s.l_dashId).nodeId,true);
         }else if(s.currentNodeIdDominance != null && (s.id==STATUS_DOMINANCE || s.id==STATUS_DOMINANCE_NODE)){
-          this.setResidentNodeFilter(s.currentNodeIdDominance,true);
+          algo.setResidentNodeFilter(s.currentNodeIdDominance,true);
         }else{
-          this.setResidentNodeFilter("all",true);
+          algo.setResidentNodeFilter("all",true);
         }
        }
 
@@ -175,10 +145,10 @@ var LabelDrawer = function(svgOrigin,algo){
             labels.push(Graph.Label.get(s.P[i]));
           }
 
-        if(residentNodeFilter != "all"){
+        if(s.residentNodeFilterId != "all"){
 
             labels = labels.filter(function(d){
-              return d.nodeId == residentNodeFilter;
+              return d.nodeId == s.residentNodeFilterId;
             })
         }
 
@@ -221,9 +191,8 @@ var LabelDrawer = function(svgOrigin,algo){
 
          var enterSelectionLabelPath = enterSelection.append("path")
             .attr("class","labelpath") //is not transformed
-            .attr("stroke", "gray")
-            .attr("stroke-width", 2)
-            .attr("fill", "none")
+            .style("stroke", "gray")
+            .style("fill","none")
           
           var enterSelectionLabelEnd = enterSelection.append("g")
               .attr("class","labelend")
@@ -238,7 +207,7 @@ var LabelDrawer = function(svgOrigin,algo){
            enterSelectionLabelEnd
                 .append("rect")
                 .attr({"rx":50, "ry":5, "height":20, "y":-10})
-                .style({fill:"red", "stroke-width":2});// , "fill-opacity":1});
+                .style({"fill":"red", "stroke-width":2});// , "fill-opacity":1});
 
            enterSelectionLabelEnd
                 .append("text")
@@ -286,23 +255,25 @@ var LabelDrawer = function(svgOrigin,algo){
             .attr("transform",function(d){
               return labelEndTransform(d.id == s.l_dashId ? Graph.Label.get(d.parentId) : d)
               })// start at parent position and transition to new position
-            .transition().duration(1000)
+            .transition().duration(500)
             .attr("transform",labelEndTransform)
 
         selection.selectAll("path")
+            .style("stroke-width",function(d){return d.id==s.highlightPathForLabelId ? 4 : 2;})
             .style("stroke-dasharray",function(d){
               return (d.id == algo.getState().l_dashId) ? "5,5" : "0";
             })
             .style("stroke",function(d){
               if(d.id == s.l_dashId) return "orange";
               else if(d.id == s.lId) return "red";
+              else if(d.id == s.minCostLabelId) return "green";
               return "gray"
             })
             .attr("d",function(d){
                 var coords = generatePathCoordinatesFromLabel(d,d.id == s.l_dashId);
                 return lineFunction(coords);
             })
-            .transition().duration(1000)
+            .transition().duration(500)
             .attr("d",function(d){
                 var coords = generatePathCoordinatesFromLabel(d,false);
                 return lineFunction(coords);
@@ -331,6 +302,7 @@ var LabelDrawer = function(svgOrigin,algo){
               //  if(s.id == algo.STATUS_DOMINANCE){
               //     return algo.dominanceStepNodeColors(d.nodeId);
               // }
+                if(d.id == s.minCostLabelId) return const_Colors.StartNodeColor;
                 if(d.id == s.lId) return const_Colors.CurrentNodeColor;
                 if(d.id == s.l_dashId) return "orange";
                 if(s.U.some(function(a){return a==d.id})) return const_Colors.PQColor;
@@ -340,7 +312,9 @@ var LabelDrawer = function(svgOrigin,algo){
               return "black";
                // if(s.currentLabel && d.id==s.currentLabel.id) return const_Colors.NodeBorderHighlight;
             })
-            .style("stroke-width",0.5)
+            .style("stroke-width",function(d){
+              return d.id == s.highlightPathForLabelId ? 2 : 0.5;
+            })
 
 
 
@@ -356,13 +330,13 @@ var LabelDrawer = function(svgOrigin,algo){
 
 
     this.updateTimeWindow = function(s){
-      if(residentNodeFilter == "all"){
+      if(s.residentNodeFilterId == "all"){
         svg_timewindow
 //             .attr("opacity","1")
 //             .transition().duration(500)
             .attr("opacity",1e-6)
       }else{
-        var residentNode = Graph.instance.nodes.get(residentNodeFilter);
+        var residentNode = Graph.instance.nodes.get(s.residentNodeFilterId);
         var yVals = y.range();
         var xStart = x(residentNode.resources[0]);
         var www = x(residentNode.resources[1])-xStart;

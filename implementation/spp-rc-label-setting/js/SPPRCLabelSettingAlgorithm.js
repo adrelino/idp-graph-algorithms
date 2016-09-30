@@ -33,7 +33,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      */
     var logger = new Logger(d3.select("#logger"),d3.select("#loggerLastEntry"));
 
-    var labelDrawer = new LabelDrawer(svgSelection2,this);
 
     /**
      * status variables
@@ -44,6 +43,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     this.getState = function(){
       return s;
     }
+
+    var labelDrawer = new LabelDrawer(svgSelection2,this);
+
     
     var colormap = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"].reverse();
 
@@ -52,25 +54,41 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     this.nodeLabel = function(d) {
         if (d.id == s.sourceId)
             return "s";
+        else if(d.id == s.targetId)
+            return "t";
         else
             return d.id;
     }
 
 
+    ///////////
+    //SELECTBOXES
 
-    var that = this;
+    var highlightPathForLabelSelectBox = d3.select("#highlightPathForLabel");
 
-    var highlightPathForLabel=d3.select("#highlightPathForLabel").property("value");
-
-    d3.select("#highlightPathForLabel").on('change',function(e){
+    highlightPathForLabelSelectBox.on('change',function(e){
       that.setHighlightPathForLabel(this.value,false,true);
     });
 
     this.setHighlightPathForLabel = function(name,noUpdate,userChoseFilter){
-      highlightPathForLabel=name;
-      d3.select("#highlightPathForLabel").property("value",highlightPathForLabel); //does not trigger 'change' event
+      s.highlightPathForLabelId = name;
+      highlightPathForLabelSelectBox.property("value",name); //does not trigger 'change' event
       if(!noUpdate) that.update(userChoseFilter);
     }
+
+    var residentNodeFilterSelectBox=d3.select("#filterLabelsByResidentNode");
+
+    residentNodeFilterSelectBox.on('change',function(e){
+      that.setResidentNodeFilter(this.value,false,true);
+    });
+
+    this.setResidentNodeFilter = function(name,noUpdate,userChoseFilter){
+      s.residentNodeFilterId = name;
+      residentNodeFilterSelectBox.property("value",name); //does not trigger 'change' event
+      if(!noUpdate) that.update(userChoseFilter);
+    }
+
+    ///////////
 
 
     
@@ -82,7 +100,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             if (s.id == STATUS_SELECTSOURCE) {
                 that.nextStepChoice(d);
             }else{
-              labelDrawer.setResidentNodeFilter(d.id,false,true);
+              that.setResidentNodeFilter(d.id,false,true);
               console.log(d);
               if(s.id == STATUS_FINISHED){
                 console.log("filter");
@@ -99,12 +117,14 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         .style("fill", function(d) {
             if (s.lId && (d.id == Graph.Label.get(s.lId).nodeId)) {
                 return const_Colors.NodeBorderHighlight;
-            } else if (d.id == s.sourceId){
+            } else if (d.id == s.sourceId || d.id == s.targetId){
                 return const_Colors.StartNodeColor;
             }else{
               return global_NodeLayout['fillStyle'];
             }
-        });
+        })
+        //.style("stroke",function(d){return d.id==s.residentNodeFilterId ? "black" : global_NodeLayout['borderColor']})
+        .style("stroke-width",function(d){return d.id==s.residentNodeFilterId ? "4" : global_NodeLayout['borderWidth']});
     }
     
     this.onEdgesEntered = function(selection) {
@@ -112,35 +132,36 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     }
     
     this.onEdgesUpdated = function(selection) {
-//         selection
-//         .selectAll("line")
-//         .style("stroke-width", function(d) {
-//             if (s.lId && (d.id == s.currentArcId )){//s.lId.arcId)) {
-//                 return 4;
-//             }else{
-//               return 2;
-//             }
-//         })
+        //fat edges on complete path
+        var labelToHighlightPath = Graph.Label.get(s.highlightPathForLabelId);
 
-      var labelToHighlightPath = Graph.Label.get(highlightPathForLabel);
+        //green edges on complete path
+        var minCostPath = Graph.Label.get(s.minCostLabelId);
 
-       selection.selectAll("line")
-            .each(function(d){
-              var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
-              if(s.lId && (d.id == s.currentArcId)){
-                attr["stroke-width"]=4;
+
+
+        selection.selectAll("line").each(function(d){
+            var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
+            if(s.lId && (d.id == s.currentArcId)){
 //                 if(s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH){
-                  attr["stroke"]="orange";//const_Colors.CurrentNodeColor;
-                  attr["marker-end"]="url(#arrowhead2-red)";
+                attr["stroke"]="orange";//const_Colors.CurrentNodeColor;
+                attr["marker-end"]="url(#arrowhead2-red)";
 //                 }else{
 //                   attr["stroke"]="green";
 //                   attr["marker-end"]="url(#arrowhead2-green)";
 //                 }
-              }else if(labelToHighlightPath && labelToHighlightPath.arcIds.indexOf(d.id) >= 0){
-                  attr["stroke"]="red";//const_Colors.CurrentNodeColor;
-              }
-              d3.select(this).style(attr);
-            })
+            }
+
+            if(labelToHighlightPath && labelToHighlightPath.arcIds.indexOf(d.id) >= 0){
+                attr["stroke-width"]=4;
+            }
+
+            if(minCostPath && minCostPath.arcIds.indexOf(d.id) >= 0){
+                attr["stroke"]='green';
+            }
+
+            d3.select(this).style(attr);
+           });
     }
 
 
@@ -184,15 +205,33 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             currentResidentNodeEdgeIndex: -1, //for iteration outgoing edges in label extension step
             currentArcId: null,
             currentNodeIndexDominance: 0, //for iterating nodes in dominance step
-            currentNodeIdDominance: null //for iterating nodes in dominance step
+            currentNodeIdDominance: null, //for iterating nodes in dominance step
+            targetId : null, //only in filtering step for solution
+            minCostLabelId : null //only in filtering step for solution
         };
 
         setStatus(STATUS_SELECTSOURCE);
 
         logger.reset();
 
+        s.highlightPathForLabelId=highlightPathForLabelSelectBox.property("value");
+        s.residentNodeFilterId=residentNodeFilterSelectBox.property("value");
+
+
         if(Graph.instance){
           labelDrawer.reset();
+
+          var arr = Graph.instance.getNodes().map(function(n){
+              return n.id;
+          });
+          arr.unshift("all");
+          var selection = residentNodeFilterSelectBox.selectAll('option').data(arr);
+          selection.enter().append('option');
+          selection
+            .attr('value',function(d){return d})
+            .text(function(d){return d});
+          selection.exit().remove();
+
           this.nextStepChoice(Graph.instance.nodes.get(0),true);
         }
 
@@ -557,7 +596,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
           s.currentNodeIdDominance = node.id;
           //labelDrawer.setResidentNodeFilter(s.currentNodeIdDominance,true,true);
           setStatus(STATUS_DOMINANCE_NODE);
-          logger.log2("node "+node.id+ "checked for dominance");
+          logger.log2("node "+node.id+ " checked for dominance");
         }
     }
 
@@ -624,6 +663,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         }
 
         s.targetId = targetNode.id;
+        s.minCostLabelId = minCostLabel.id;
 
         logger.log("label with minimal cost ending in "+ targetNode.id + " is "+ minCostLabel.id + " with cost of "+minCostLabel.cost());
         this.setHighlightPathForLabel(minCostLabel.id,false,true)

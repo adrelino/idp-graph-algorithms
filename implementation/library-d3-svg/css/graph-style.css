@@ -82,7 +82,7 @@ circle.selected{
 .timewindow {
   fill: rgb(152, 198, 234);
   fill-opacity: 1.0;
-  stroke-width: 2;
+  stroke-width: 4;
   stroke: rgb(0, 101, 189);
 }
 }
