@@ -123,7 +123,7 @@ function AlgorithmTab(algo,p_tab) {
         algo.fastForwardIntervalID = null;
         d3.select("#ta_button_vorspulen").property("checked",false);
         $("#ta_button_vorspulen").button("option",fastforwardOptions);
-        algo.update();
+        //algo.update();
     };
     
     

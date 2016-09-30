@@ -5,7 +5,10 @@
 ### SPPRC:
 - [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
 - [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
-- [ ] Filtering step fertig implementieren: target t auswählen können sobald main loop fertig, dann für diesen den pfad mit geringsten kosten berechnen
+- [ ] Dominance: ignore vertices with less than 2 incoming paths, nicer log messages
+- [x] Filtering step fertig implementieren: target t auswählen können sobald main loop fertig, dann für diesen den pfad mit geringsten kosten berechnen
+  (2016-09-30)
+  * best cost path to target t is shown in green on both sides when in last step of algorithm and clicked on node.
 - [x] Dominance: in sortierter reihenfolge nach resident vertex abarbeiten. Dazu neuen Status je residentVertex einführen
   (2016-09-30)
   * TODO: tunen der Label Sichtbarkeit und Node highlight

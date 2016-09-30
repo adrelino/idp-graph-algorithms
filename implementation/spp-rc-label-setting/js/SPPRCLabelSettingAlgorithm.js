@@ -65,11 +65,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     //SELECTBOXES
 
     var highlightPathForLabelSelectBox = d3.select("#highlightPathForLabel");
-
     highlightPathForLabelSelectBox.on('change',function(e){
       that.setHighlightPathForLabel(this.value,false,true);
     });
-
     this.setHighlightPathForLabel = function(name,noUpdate,userChoseFilter){
       s.highlightPathForLabelId = name;
       highlightPathForLabelSelectBox.property("value",name); //does not trigger 'change' event
@@ -77,11 +75,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     }
 
     var residentNodeFilterSelectBox=d3.select("#filterLabelsByResidentNode");
-
     residentNodeFilterSelectBox.on('change',function(e){
       that.setResidentNodeFilter(this.value,false,true);
     });
-
     this.setResidentNodeFilter = function(name,noUpdate,userChoseFilter){
       s.residentNodeFilterId = name;
       residentNodeFilterSelectBox.property("value",name); //does not trigger 'change' event
@@ -196,10 +192,10 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s = {
             id: 0, //status id
             idPrev: 0,
+            U: [], //unprocessed
+            P: [], //processed
             lId: null, //current label
-            l_dashId: null, //current extended label
-            U: [],
-            P: [],
+            l_dashId: null, //current extended label. does not need to go into U or P afterwards
             sourceId: -1,
             mainLoopIt : 1,
             currentResidentNodeEdgeIndex: -1, //for iteration outgoing edges in label extension step
@@ -249,38 +245,24 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      */
     this.update = function(userChoseFilter){
 
-        this.updateDescriptionAndPseudocode();
+        var labelIds = [];//Graph.Label.labels.values();
+        if(s.lId){
+          labelIds.push(s.lId);
+        }
+        if(s.l_dashId){
+          labelIds.push(s.l_dashId);
+        }
+        for(var i=0; i<s.U.length; i++){
+          labelIds.push(s.U[i]);
+        }
+        for(var i=0; i<s.P.length; i++){
+          labelIds.push(s.P[i]);
+        }
+
+        this.updateDescriptionAndPseudocode(labelIds);
         logger.update();
 
         labelDrawer.updateLabels(s,userChoseFilter);
-
-
-          var labelIds = [];//Graph.Label.labels.values();
-          if(s.lId){
-            labelIds.push(s.lId);
-          }
-          if(s.l_dashId){
-            labelIds.push(s.l_dashId);
-          }
-          for(var i=0; i<s.U.length; i++){
-            labelIds.push(s.U[i]);
-          }
-          for(var i=0; i<s.P.length; i++){
-            labelIds.push(s.P[i]);
-          }
-
-        var selection = d3.select("#highlightPathForLabel")
-                        .selectAll('option').data(labelIds);
-
-           selection.enter().append('option');
-
-           selection
-            .attr('value',function(d){return d})
-            .text(function(d){return d});
-
-            selection.exit().remove();
-
-
 
         if(Graph.instance){
              SPPRCLabelSettingAlgorithm.prototype.update.call(this); //updates the graph
@@ -358,7 +340,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * updates status description and pseudocode highlight based on current s.id
      * @method
      */
-    this.updateDescriptionAndPseudocode = function() {
+    this.updateDescriptionAndPseudocode = function(labelIds) {
         var sel = d3.select("#ta_div_statusPseudocode").selectAll("div").selectAll("p")
         sel.classed("marked", function(a, pInDivCounter, divCounter) {
             return divCounter == s.idPrev;
@@ -374,7 +356,13 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         d3.select("#ta_td_P").text("{"+s.P.join(",")+"}");
         d3.select("#ta_td_l_dash").text(s.l_dashId ? s.l_dashId : "-");
 
-
+        var selection = highlightPathForLabelSelectBox.selectAll('option').data(labelIds);
+           selection.enter().append('option');
+           selection
+            .attr('value',function(d){return d})
+            .text(function(d){return d});
+            selection.exit().remove();
+            
 //         if(Graph.instance){
 //           var nodes =Graph.instance.getNodes();
 //         console.log(nodes);
@@ -394,7 +382,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         }else if (s.id == STATUS_SELECTSOURCE) {
             this.setDisabledBackward(true);
             this.setDisabledForward(true);
-        } else if (s.id == STATUS_FINISHED) {
+        } else if (s.idPrev == STATUS_FINISHED) {
             this.setDisabledForward(true);
             this.setDisabledBackward(false);
         }else{
@@ -462,7 +450,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
                 dominanceNode();
                 break;
             case STATUS_FINISHED:
-            //                 this.filter();
+                this.filter();
                 this.stopFastForward();
                 break;
             default:
@@ -506,10 +494,11 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     */
     function mainLoop() {
         if (s.U.length == 0) {
-            setStatus(STATUS_FINISHED,STATUS_FINISHED);
+            setStatus(STATUS_FINISHED);
             s.lId = null;
             // that.stopFastForward();
             logger.log("Finished");
+            that.nextStepChoice();
             return;
         }
         
@@ -590,7 +579,15 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             s.currentNodeIndexDominance=0;
             s.currentNodeIdDominance=null;
             logger.log2("iterated all nodes");
-            setStatus(STATUS_MAINLOOP);
+            if (s.U.length == 0) {
+              setStatus(STATUS_FINISHED);
+              s.lId = null;
+              // that.stopFastForward();
+              logger.log("Finished");
+              return;
+            }else{
+              setStatus(STATUS_MAINLOOP);
+            }
         }else{
           var node = nodes[s.currentNodeIndexDominance++];
           s.currentNodeIdDominance = node.id;
@@ -646,6 +643,10 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * discard strictly dominated labels in both P and U
      */
     this.filter = function(targetNode) {
+        if(!targetNode){
+          //pick node with highest label as t per default
+          targetNode = Graph.instance.nodes.get(Graph.instance.nodeIds-1);
+        }
         logger.log("filter solution step");
         var labelIds = targetNode.state.endingPaths;
         var labels = labelIds.map(function(id){
@@ -666,7 +667,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.minCostLabelId = minCostLabel.id;
 
         logger.log("label with minimal cost ending in "+ targetNode.id + " is "+ minCostLabel.id + " with cost of "+minCostLabel.cost());
-        this.setHighlightPathForLabel(minCostLabel.id,false,true)
+        //this.setHighlightPathForLabel(minCostLabel.id,true,true);
+        this.setResidentNodeFilter(targetNode.id,false,true);
         setStatus(STATUS_FINISHED);
     }
 
