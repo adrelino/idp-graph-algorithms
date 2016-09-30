@@ -235,8 +235,14 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
             selection.selectAll("text.label")
                  .text(this.nodeLabel);
 
-            selection.selectAll("text.resource")
-                .text(this.nodeText);
+            var res = selection.selectAll("text.resource")
+            
+            if(this.nodeHtml){
+              res.html(this.nodeHtml);
+            }else{
+              res.text(this.nodeText);
+            }
+            
 
 
         // EXIT
@@ -288,8 +294,15 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
 //             .duration(750)
 //             .style("opacity",1);
             
-        selt.selectAll("text.resource")
-            .text(this.edgeText)
+        var res = selt.selectAll("text.resource");
+
+          if(this.edgeHtml){
+            res.html(this.edgeHtml);
+          }else{
+            res.text(this.edgeText);
+          }
+
+            res
             .style("text-anchor", function(d){
                 var arrowXProj = that.nodeX(d.start)-that.nodeX(d.end);
                 return (arrowXProj>0) ? "start" : "end";

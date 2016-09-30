@@ -60,6 +60,14 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             return d.id;
     }
 
+    this.edgeHtml = function(d){
+      return "("+d.resources[0]+",<tspan style='fill:magenta'>"+d.resources[1]+"</tspan>)";
+    }
+
+    this.edgeStyle = function(d){
+      return "("+d.resources[0]+",<span style='color:magenta'>"+d.resources[1]+"</span>)";
+    }
+
 
     ///////////
     //SELECTBOXES
@@ -113,8 +121,10 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         .style("fill", function(d) {
             if (s.lId && (d.id == Graph.Label.get(s.lId).nodeId)) {
                 return const_Colors.NodeBorderHighlight;
-            } else if (d.id == s.sourceId || d.id == s.targetId){
+            } else if (d.id == s.sourceId){
                 return const_Colors.StartNodeColor;
+            }else if (d.id == s.targetId){
+                return "magenta";
             }else{
               return global_NodeLayout['fillStyle'];
             }
@@ -153,7 +163,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             }
 
             if(minCostPath && minCostPath.arcIds.indexOf(d.id) >= 0){
-                attr["stroke"]='green';
+                attr["stroke"]='magenta';
             }
 
             d3.select(this).style(attr);
@@ -470,7 +480,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.sourceId = d.id;
         this.setDisabledBackward(false);
         setStatus(STATUS_INIT,STATUS_START);
-        logger.log("Picked node '" + d.id + "' as start node 's'");
+        logger.log("Picked s &larr; " + d.id + " as start node.");
     };
 
 
@@ -486,7 +496,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.U.push(label.id);
         setStatus(STATUS_MAINLOOP);
         
-        logger.log("Init labels. Add trivial label "+Graph.Label.toString(label)+" to U");
+        logger.log("Initialize: Add trivial label "+label.toString(true)+" to U");
     }
         
     /**
@@ -504,7 +514,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         
         s.lId = s.U.shift();
         s.currentResidentNodeEdgeIndex = 0;
-        logger.log("Main loop iteration " + (s.mainLoopIt++) + ": picked label " + Graph.Label.toString(Graph.Label.get(s.lId))+ " from U");
+        logger.log("Main loop iteration " + (s.mainLoopIt++) + ": picked  l=" + Graph.Label.get(s.lId).toString(true)+ " from U");
         
         setStatus(STATUS_PATH_EXTEND);
     }
@@ -524,7 +534,8 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             var arc = outEdges[s.currentResidentNodeEdgeIndex++];
             s.currentArcId=arc.id;
             var l_dash = Graph.Label.extend(l,arc); //TODO do we need the extended label already here?
-            logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
+            //logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
+            logger.log2("Extend l="+l.toString()+" along e="+that.edgeStyle(arc)+" to get l'="+l_dash.toString());
             s.l_dashId = l_dash.id;
             if(Graph.Label.feasible(l_dash)){
               setStatus(STATUS_PATH_EXTEND_FEASIBLE);
@@ -547,9 +558,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             s.U.push(s.l_dashId);
             if(!w.state.endingPaths) w.state.endingPaths = [];
             w.state.endingPaths.push(s.l_dashId);
-            logger.log3(Graph.Label.toString(l_dash) + " feasible in " + w.toString(true,nodeResourceStyle) + ", add to U");
+            logger.log3("l'="+Graph.Label.toString(l_dash) + " feasible in w=" + w.toString(true) + ", add to U");
         }else{
-            logger.log3(Graph.Label.toString(l_dash) + " infeasible in " + w.toString(true,nodeResourceStyle))
+            logger.log3("l'="+Graph.Label.toString(l_dash) + " infeasible in w=" + w.toString(true))
         }
         s.l_dashId = null;
         setStatus(STATUS_PATH_EXTEND); // go back to inner FORALL loop head
@@ -569,72 +580,98 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      * discard strictly dominated labels in both P and U
      */
     function dominance() {
-        logger.log2("dominance step");
-
         var nodes = Graph.instance.getNodes();
+        var node = null;
+        var text = "Dominance 1/2: ";
+        var skipped = [];
 
-        var nooneDominated = true;
+        for(;s.currentNodeIndexDominance<nodes.length;s.currentNodeIndexDominance++){
+          node = nodes[s.currentNodeIndexDominance];
+          if(node.state.endingPaths && node.state.endingPaths.length>1){
+            break;
+          }else{
+            skipped.push(node.id);
+            node=null;
+          }
+        }
+//         do{
+//           node = nodes[s.currentNodeIndexDominance++];
+//           if(node && (!node.state.endingPaths || node.state.endingPaths.length<=1)){
+//             skip +=node.id+" ";
+//           }
+//         }while(s.currentNodeIndexDominance<nodes.length && (!node.state.endingPaths || node.state.endingPaths.length<=1));
+//         //logger.log2("not more than 1 path ending in resident node "+node.id););
 
-        if(s.currentNodeIndexDominance >= nodes.length){
+        var skip="";
+        if(skipped.length){
+          skip = "v="+skipped.join(",") +" skipped. ";
+        }
+
+        var end ="";
+
+        if(!node){//s.currentNodeIndexDominance >= nodes.length){
             s.currentNodeIndexDominance=0;
             s.currentNodeIdDominance=null;
-            logger.log2("iterated all nodes");
+            end= "Checked all nodes.";
             if (s.U.length == 0) {
               setStatus(STATUS_FINISHED);
               s.lId = null;
               // that.stopFastForward();
-              logger.log("Finished");
+              //logger.log("Finished");
               return;
             }else{
               setStatus(STATUS_MAINLOOP);
             }
         }else{
-          var node = nodes[s.currentNodeIndexDominance++];
           s.currentNodeIdDominance = node.id;
           //labelDrawer.setResidentNodeFilter(s.currentNodeIdDominance,true,true);
           setStatus(STATUS_DOMINANCE_NODE);
-          logger.log2("node "+node.id+ " checked for dominance");
+          end = "Checking " + node.state.endingPaths.length + " paths ending in v="+node.id;
         }
+
+        logger.log2(text + skip + end);
     }
 
     function dominanceNode(){
         var node = Graph.instance.nodes.get(s.currentNodeIdDominance);
-        if(!node.state.endingPaths || node.state.endingPaths.length<=1){
-            logger.log2("not more than 1 path ending in resident node "+node.id);
-        }else{
-            logger.log2("dominance step for resident node "+node.id);
-            for(var j = 0; j < node.state.endingPaths.length; j++){
-                //remove all other paths in upper right cone of this
-                var path = Graph.Label.get(node.state.endingPaths[j]);
+        var dominated = [];
+        var removedLabels = [];
+        for(var j = 0; j < node.state.endingPaths.length; j++){
+            //remove all other paths in upper right cone of this
+            var path = Graph.Label.get(node.state.endingPaths[j]);
+            for(var k = 0; k < node.state.endingPaths.length; k++){
+                if(j==k) continue;
+                var otherpath = Graph.Label.get(node.state.endingPaths[k]);
+                if(!path || !otherpath || path == otherpath) continue;
+                if( path.resources.every(function(r,l){
+                    return r <= otherpath.resources[l]
+                    })){
+                    var removed = node.state.endingPaths.splice(k,1)[0];
 
-                for(var k = 0; k < node.state.endingPaths.length; k++){
-                    if(j==k) continue;
-
-                    var otherpath = Graph.Label.get(node.state.endingPaths[k]);
-
-                    if(!path || !otherpath || path == otherpath) continue;
-                    if( path.resources.every(function(r,l){
-                        return r <= otherpath.resources[l]
-                        })){
-                        var removed = node.state.endingPaths.splice(k,1)[0];
-                        if(removed != otherpath.id){
-                            console.log("error");
-                        }
-
-                        //Graph.Label.remove(removed);
-                        logger.log3(Graph.Label.toString(otherpath) +" dominated by " + Graph.Label.toString(path));
-                        k--;
-
-                        var indexInU = s.U.indexOf(removed);
-                        if(indexInU>=0) s.U.splice(indexInU,1);
-
-                        var indexInP = s.P.indexOf(removed);
-                        if(indexInP>=0) s.P.splice(indexInP,1);
-
+                    if(removed != otherpath.id){
+                        console.log("error");
                     }
+                    dominated.push(Graph.Label.toString(otherpath) +" > " + Graph.Label.toString(path));
+                    removedLabels.push(otherpath.id);
+
+                    var indexInU = s.U.indexOf(removed);
+                    if(indexInU>=0) s.U.splice(indexInU,1);
+
+                    var indexInP = s.P.indexOf(removed);
+                    if(indexInP>=0) s.P.splice(indexInP,1);
                 }
             }
         }
+
+        var text = "Dominance 2/2: v="+node.id;
+
+        if(removedLabels.length>0){
+          logger.log3(text + " : "+removedLabels.join(",") +(removedLabels.length>1 ? " are" : " is") +" dominated.");
+        }else{
+          logger.log3(text + " : no dominated paths!");
+        }
+        
+        s.currentNodeIndexDominance++;
 
         setStatus(STATUS_DOMINANCE);
     }
@@ -647,8 +684,11 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
           //pick node with highest label as t per default
           targetNode = Graph.instance.nodes.get(Graph.instance.nodeIds-1);
         }
+        setStatus(STATUS_FINISHED);
+
         logger.log("filter solution step");
         var labelIds = targetNode.state.endingPaths;
+        if(!labelIds) return;
         var labels = labelIds.map(function(id){
           return Graph.Label.get(id);
         });
@@ -669,7 +709,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         logger.log("label with minimal cost ending in "+ targetNode.id + " is "+ minCostLabel.id + " with cost of "+minCostLabel.cost());
         //this.setHighlightPathForLabel(minCostLabel.id,true,true);
         this.setResidentNodeFilter(targetNode.id,false,true);
-        setStatus(STATUS_FINISHED);
     }
 
     function nodeResourceStyle(d,i){
@@ -677,7 +716,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     }
 
     function edgeResourceStyle(d,i){
-        return "<span style=color:" + ((i==CONSTRAINED_RESOURCE_INDEX) ? "red" : "green") + ">"+d+"</span>";
+        return "<span style=color:" + ((i==CONSTRAINED_RESOURCE_INDEX) ? "black" : "magenta") + ">"+d+"</span>";
     }
 }
 

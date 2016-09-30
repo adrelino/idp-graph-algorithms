@@ -64,6 +64,7 @@ var LabelDrawer = function(svgOrigin,algo){
           //.attr("y", -3)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
+          .style("fill","magenta")
           .text("cost")
 
     var transform = function(d){
@@ -266,7 +267,7 @@ var LabelDrawer = function(svgOrigin,algo){
             .style("stroke",function(d){
               if(d.id == s.l_dashId) return "orange";
               else if(d.id == s.lId) return "red";
-              else if(d.id == s.minCostLabelId) return "green";
+              else if(d.id == s.minCostLabelId) return "magenta";
               return "gray"
             })
             .attr("d",function(d){
@@ -302,7 +303,7 @@ var LabelDrawer = function(svgOrigin,algo){
               //  if(s.id == algo.STATUS_DOMINANCE){
               //     return algo.dominanceStepNodeColors(d.nodeId);
               // }
-                if(d.id == s.minCostLabelId) return const_Colors.StartNodeColor;
+                if(d.id == s.minCostLabelId) return "magenta";
                 if(d.id == s.lId) return const_Colors.CurrentNodeColor;
                 if(d.id == s.l_dashId) return "orange";
                 if(s.U.some(function(a){return a==d.id})) return const_Colors.PQColor;

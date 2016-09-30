@@ -92,10 +92,14 @@ Graph.Label.prototype.time = function(){
   return this.resources[CONSTRAINED_RESOURCE_INDEX];
 }
 
+Graph.Label.prototype.toString = function(full){
+  return this.id+(full ? "("+this.parentId+","+this.nodeId+")" : "");
+}
+
 //static method, not instance, so that we can serialize more easily
 Graph.Label.toString = function(label) {
-    return label.id /*+" edges:" +label.edgeIdChain() + */+":" +label.nodeIdChain() + " ("+ label.resources.map(function(d,i){
-        return "<span style=color:" + ((i==CONSTRAINED_RESOURCE_INDEX) ? "red" : "green") + ">"+d+"</span>";
+    return label.id /*+" edges:" +label.edgeIdChain() + */+" with resource consumption ("+ label.resources.map(function(d,i){
+        return "<span style=color:" + ((i==CONSTRAINED_RESOURCE_INDEX) ? "black" : "magenta") + ">"+d+"</span>";
     }).join(",")+")";
 }
 
