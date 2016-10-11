@@ -72,6 +72,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         else
             return d.id;
     }
+
+//     this.nodeText = function(d){
+//       return "[" + d.state.height +","+d.state.excess+"]";
+//     }
     
     /**
      * display current flow along edge together with the maximum capacity of the edge
@@ -140,15 +144,14 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         selection.selectAll("line.arrow")
             .each(function(d){
               var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
-              if(s.e_dash && d.id == s.e_dash.id && (s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH || s.idPrev==STATUS_RELABEL)){
+              if(s.e_dash && d.id == s.e_dash.id){// && (s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH || s.idPrev==STATUS_RELABEL)){
                 attr["stroke-width"]=4;
-                if(s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH){
-                  attr["stroke"]="red";
-                  attr["marker-end"]="url(#arrowhead2-red)";
-                }else{
-                  attr["stroke"]="green";
-                  attr["marker-end"]="url(#arrowhead2-green)";
-                }
+                attr["stroke"]="orange";
+                //attr["marker-end"]="url(#arrowhead2-red)";
+              }else if(s.e_star && d.id == s.e_star.id){
+                attr["stroke-width"]=4;
+                attr["stroke"]="green";
+                //attr["marker-end"]="url(#arrowhead2-green)";
               }
               d3.select(this).style(attr);
             })
@@ -194,6 +197,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             sourceId: -1,
             targetId: -1,
             e_dash:null,
+            e_star:null,
             e_dashes_forward_star_map:null //maps each edge id to outgoing residual edge from currentNodeId used in HeightfunctionDrawer.js
         };
 
@@ -318,23 +322,29 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             return (divCounter == s.idPrev) ? "block" : "none";
         });
 
-        var vText = "";
+        var vText = "-";
         if(Graph.instance){
           var v = Graph.instance.nodes.get(s.currentNodeId);
           if(v){
-            vText = v.id +", e(v)="+ v.state.excess;
+            vText = v.id;// +", e(v)="+ v.state.excess;
           }
         }
 
         d3.select("#ta_td_v").text(vText);
         d3.select("#ta_td_queue").text("{"+s.activeNodeIds.join(",")+"}");
+        
         if(s.e_dash){
         var e_dash = new Graph.ResidualEdge(s.e_dash);
           d3.select("#ta_td_e_dash").text(e_dash.toString());
-          d3.select("#ta_td_c_dash").text(e_dash.c_dash());
         }else{
-          d3.select("#ta_td_e_dash").text('');
-          d3.select("#ta_td_c_dash").text('');
+          d3.select("#ta_td_e_dash").text('-');
+        }
+
+        if(s.e_star){
+        var e_star = new Graph.ResidualEdge(s.e_star);
+          d3.select("#ta_td_e_star").text(e_star.toString());
+        }else{
+          d3.select("#ta_td_e_star").text('-');
         }
 
         if(this.fastForwardIntervalID != null){
@@ -534,6 +544,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      * main loop: pops the current node from the queue until empty
      */
     function mainLoop() {
+        s.e_star = null;
         if (s.activeNodeIds.length == 0) {
             setStatus(STATUS_FINISHED,STATUS_FINISHED); //so that we display finished, not mainloop when done
             s.currentNodeId=-1;
@@ -592,6 +603,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
  * checks if we can apply a push operation. Together with push() mimics the inner WHILE loop
  */
     function admissiblePush() {
+      s.e_dash=null;
         var v = Graph.instance.nodes.get(s.currentNodeId);
         if (v.state.excess > 0){
             s.e_dash = v.getLegalResidualEdge();
@@ -655,15 +667,15 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         var residualEdges = node.getAllOutgoingResidualEdges();
 
         //find neighbouring node in G' with lowest height
-        s.e_dash = residualEdges[0];
+        s.e_star = residualEdges[0];
         for(var i=0; i<residualEdges.length; i++){
-          if(residualEdges[i].end().state.height < s.e_dash.end().state.height){
-            s.e_dash=residualEdges[i];
+          if(residualEdges[i].end().state.height < s.e_star.end().state.height){
+            s.e_star=residualEdges[i];
           }
         }
         
         //make ourself 1 higher than him
-        var newheight = 1 + s.e_dash.end().state.height;
+        var newheight = 1 + s.e_star.end().state.height;
 
         logger.log3("relabel node <span style='color:red'>v=" + node.id + "</span> from h=" + node.state.height + " to h=" + newheight+ ", add v to <span style='color:yellow'>Q (yellow)</span>");
         node.state.height = newheight;

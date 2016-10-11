@@ -450,18 +450,18 @@
 <div><p>(* Initializing the height function *)</p>
    <p> h(s) = |V|</p>
    <p> FORALL v &isin; V\{s}</p>
-   <p>    h(v) &larr; number of segments on directed path to t</p></div>
+   <p>    h(v) &larr; #arcs on directed v-t path</p></div>
 <div><p>(* Main Loop *)</p>
    <p> WHILE Q &ne; &empty;</p>
    <p>    v &larr; Q.pop()</p></div>
-<div><p>    WHILE e(v) > 0 </p>
-   <p>    AND &exist; e'=(v,w) &isin; E' with h(v) == h(w) + 1</p></div>
+<div><p>    WHILE e(v)>0 </p>
+   <p>    AND &exist; e'=(v,w)&isin;E'|h(v)==h(w)+1</p></div>
 <div><p>       (* PUSH *)</p>
    <p>       push min{e(v),c'(e')} flow from v to w</p>
    <p>       IF w != s,t AND w &notin; Q THEN Q.add(w)</p></div>
-<div><p>     IF e(v) > 0 AND &#8708; e'=(v,w) &isin; E'; h(v) == h(w) + 1</p></div>
+<div><p>     IF e(v)>0 AND &#8708; e'=(v,w)&isin;E'|h(v)==h(w)+1</p></div>
 <div><p>       (* RELABEL *)</p>
-   <p>       h(v) &larr; min{h(w)+1 | (v,w) &isin; E'</p>
+   <p>       h(v) &larr; 1+min{h(w)|e*=(v,w)&isin;E'}</p>
    <p>       Q.add(v)</p></div>
 <div><p>END</p></div>
 </div>
@@ -472,13 +472,13 @@
                                     <th class="algoInfoTH"><span>v</span></th>
                                     <th class="algoInfoTH"><span>Q</span></th>
                                     <th class="algoInfoTH"><span>e'</span></th>
-                                    <th class="algoInfoTH"><span>c'</span></th>
+                                    <th class="algoInfoTH"><span>e*</span></th>
                                 </tr>
                                 <tr>
-                                    <td id="ta_td_v" class="algoInfoTD">-</td>
-                                    <td id="ta_td_queue" class="algoInfoTD">&#8709;</td>
-                                    <td id="ta_td_e_dash" class="algoInfoTD">-</td>
-                                    <td id="ta_td_c_dash" class="algoInfoTD">-</td>
+                                    <td id="ta_td_v" class="algoInfoTD" style="background-color:rgba(255,0,0,0.5)">-</td>
+                                    <td id="ta_td_queue" class="algoInfoTD" style="background-color:rgba(255,255,0,0.5)">&#8709;</td>
+                                    <td id="ta_td_e_dash" class="algoInfoTD" style="background-color:rgba(255,127,0,0.5)">-</td>
+                                    <td id="ta_td_e_star" class="algoInfoTD" style="background-color:rgba(0,128,0,0.5)">-</td>
                                 </tr>
                             </table>
                        <div id="ta_div_statusLogger">
