@@ -2,9 +2,26 @@
 
 ## TODOS
 
+### Beide:
+- [ ] More: Speed and Termination of algorithm: Sketch a nice proof, link to references for more details.
+- [ ] Introduction und Description: Problemstellung sowie Idee des algorithmus text finalisieren
+- [ ] Legende vervollständigen/ an neue Farben anpassen
+- [ ] Tabs sollten wir am Ende wieder einfügen, von der Synchronisierung passt es aber. 
+- [ ] Die Menge der Informationen und die Visualisierung sollten passen, arbeite wie oben erwähnt noch etwas daran, die Informationen auch mit dem Text zu verknüpfen (sonst wird es etwas unübersichtlich).
+- [x] Beschreibung beschreibt was gerade links passiert ist / ab initialize beschreibungen eins früher anzeigen
+  (2016-05-25)
+  * noch offen: BEGIN/START des Algorithmus taucht nicht im LOG auf
+
 ### SPPRC:
+- [ ] Description: 
+  * describe how to extend a label
+  * describe how to check for feasability
+  * describe dominance step
 - [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
 - [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
+- [x] Description: 
+  * describe incomparable paths / paretor frontier
+  (2016-10-01)
 - [x] Dominance: ignore vertices with less than 2 incoming paths, nicer log messages
   (2016-10-01)
 - [x] Filtering step fertig implementieren: target t auswählen können sobald main loop fertig, dann für diesen den pfad mit geringsten kosten berechnen
@@ -40,7 +57,12 @@
   * Kante e wird links fett dargestellt
 
 ### Goldberg-Tarjan:
-- [ ] Und dann vllt noch ein paar Farben beim Variablenstatus?
+- [ ] Description: 
+  * describe how to construct the residual network
+  * describe how to carry out push and relabel operations (like in algoprak reference)
+- [ ] hide or dash with fewer dashes the residual edges with 0 capacity (because by definition, these don't actually exist)
+- [x] Und dann vllt noch ein paar Farben beim Variablenstatus?
+  (2016-10-11) red, yellow for active vertex and queue, orange and green for active edge in push or relabel operation
 - [x] Ich würde noch vorschlagen, die Texte noch leicht zu ergänzen:
   * Wenn du Knoten auswählst und die rot markierst, weise darauf hin (...pop v from the queue (marked in red on the left)... oder ähnlich). Ebenso bei den Knoten in der Queue in gelb und der Kante in rot.
   * Falls du in Beschreibung noch Platz hast, kannst du eventuell auch bei den Push- und Relabel-Operationen kurz aufführen, wie viel du pusht und auf welches Level du relabelst (also den tatsächlichen Wert). 
@@ -70,10 +92,3 @@
 - [x] Bei Darstellung der Höhefunktion die ID-Achse weglassen, stattdessen evtl. Knoten nach Höhe abfallend sortieren (macht die Idee des Algorithmus klarer?)
   (2016-04-26)
   * man kann wählen zwischen Excess / id auf der x Achse. Höhe war sowieso schon auf der y Achse.
-
-### Beide:
-- [ ] Tabs sollten wir am Ende wieder einfügen, von der Synchronisierung passt es aber. 
-- [ ] Die Menge der Informationen und die Visualisierung sollten passen, arbeite wie oben erwähnt noch etwas daran, die Informationen auch mit dem Text zu verknüpfen (sonst wird es etwas unübersichtlich).
-- [x] Beschreibung beschreibt was gerade links passiert ist / ab initialize beschreibungen eins früher anzeigen
-  (2016-05-25)
-  * noch offen: BEGIN/START des Algorithmus taucht nicht im LOG auf
