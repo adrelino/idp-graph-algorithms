@@ -61,6 +61,10 @@
   * describe how to construct the residual network
   * describe how to carry out push and relabel operations (like in algoprak reference)
 - [ ] hide or dash with fewer dashes the residual edges with 0 capacity (because by definition, these don't actually exist)
+- [x] Stefan Walzer TU Ilmenau: Wir bevorzugen die „height/id“ Ansicht (weil wir den excess Wert nicht so entscheidend finden und weil es passieren kann, dass Knoten in der „height/excess“ Ansicht übereinander liegen). Leider schalten die Implementierung bei jeden Klick auf „next“ zu „height/excess“ um.
+  [(2016-11-09)](https://github.com/adrelino/idp-graph-algorithms/commit/0bafdb612932fbd30064df44c8097a4a5b5beafe)
+  * added checkbox to fix axis during algorithm execution
+  * added url param ?axis=[height/id, height/excess, y/x] to preselect and fix axis initially.
 - [x] Und dann vllt noch ein paar Farben beim Variablenstatus?
   (2016-10-11) red, yellow for active vertex and queue, orange and green for active edge in push or relabel operation
 - [x] Ich würde noch vorschlagen, die Texte noch leicht zu ergänzen:

@@ -67,7 +67,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
        .attr("height", function(d) {
            return algo.flowWidth(Math.abs(Graph.instance.nodes.get(d.id).state.excess),50)
        })
-       .style("display",(algo.getState().id == STATUS_FINISHED || xFunName=="excess") ? "none" : "block");
+       .style("display",(algo.getState().id == STATUS_FINISHED || xFunName==AXIS_EXCESS) ? "none" : "block");
       /*
      selection.selectAll(".height")
        .transition()
@@ -80,8 +80,8 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     }
 
     this.nodeText = function(d){
-      if(xFunName=="excess") return "";
-      if(xFunName=="id") return " / "+d.state.excess;
+      if(xFunName==AXIS_EXCESS) return "";
+      if(xFunName==AXIS_ID) return " / "+d.state.excess;
       return d.state.height + " / " + d.state.excess;
     }
 
@@ -158,30 +158,49 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
       });
     }
 
-    var xAxisOptions = {
-      "excess" : function(d){return +d.state.excess},
-      "id" : function(d){return +d.id},
-      "graph" : function(d){return +d.x}
+    var AXIS_EXCESS = "height/excess";//"excess";
+    var AXIS_ID = "height/id";// "id"
+    var AXIS_GRAPH = "y/x";//graph";
+
+
+    var axisOptions = {};
+    axisOptions[AXIS_EXCESS] = {
+      "x" : function(d){return +d.state.excess},
+      "y" : function(d){return +d.state.height}
+    };
+    axisOptions[AXIS_ID] = {
+      "x" : function(d){return +d.id},
+      "y" : function(d){return +d.state.height}
+    };
+    axisOptions[AXIS_GRAPH] = {
+      "x" : function(d){return +d.x},
+      "y" : function(d){return +d.y}
     }
 
-    var yAxisOptions = {
-      "excess" : function(d){return +d.state.height},
-      "id" : function(d){return +d.state.height},
-      "graph" : function(d){return +d.y}
-    }
+    var selectBox = d3.select("#heightFunctionXAxis");
+    var heightFunctionXAxisKeepFixed = d3.select("#heightFunctionXAxisKeepFixed");
 
-    var xFunName=d3.select("#heightFunctionXAxis").property("value");
+    
+    var xFunName=selectBox.property("value");
 
-    d3.select("#heightFunctionXAxis").on('change',function(e){
+    selectBox.on('change',function(e){
       that.setXFunName(this.value);
     });
 
     this.setXFunName = function(name,noUpdate){
       xFunName=name;
-      d3.select("#heightFunctionXAxis").property("value",xFunName); //does not trigger 'change' event
+      selectBox.property("value",xFunName); //does not trigger 'change' event
       xAxisText.text(xFunName);
       if(!noUpdate) that.update();
     }
+
+    var axis = getUrlVars()["axis"];
+    if(axis && axisOptions[axis]){
+      xFunName=axis;
+      selectBox.property("value",xFunName); //does not trigger 'change' event
+      heightFunctionXAxisKeepFixed.property("checked",true);
+    }
+
 
     function tickForm(e,b){
         if(Math.floor(e) != e)
@@ -229,21 +248,21 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     var that = this;
 
     this.nodeX = function(d){
-        return xAxisOptions[xFunName](d);
+        return axisOptions[xFunName]["x"](d);
     };
 
     this.nodeY = function(d){
-        return yAxisOptions[xFunName](d);
+        return axisOptions[xFunName]["y"](d);
     }
 
     this.update = function(s){
 
-        if(s){
-          if(s.idPrev <= STATUS_INITPREFLOW) this.setXFunName("graph",true);
-          else if(s.idPrev == STATUS_INITDISTANCEFUNCTION /* || s.idPrev == STATUS_RELABEL || s.idPrev == STATUS_ADMISSIBLERELABEL*/) this.setXFunName("id",true);
-          //else if(s.idPrev == STATUS_MAINLOOP) this.setXFunName("graph",true);
-          else if(s.idPrev >= STATUS_FINISHED) this.setXFunName("graph",true);
-          else if(s.idPrev >= STATUS_MAINLOOP) this.setXFunName("excess",true);
+        if(s && !heightFunctionXAxisKeepFixed.property("checked")){
+          if(s.idPrev <= STATUS_INITPREFLOW) this.setXFunName(AXIS_GRAPH,true);
+          else if(s.idPrev == STATUS_INITDISTANCEFUNCTION /* || s.idPrev == STATUS_RELABEL || s.idPrev == STATUS_ADMISSIBLERELABEL*/) this.setXFunName(AXIS_ID,true);
+          //else if(s.idPrev == STATUS_MAINLOOP) this.setXFunName(AXIS_GRAPH,true);
+          else if(s.idPrev >= STATUS_FINISHED) this.setXFunName(AXIS_GRAPH,true);
+          else if(s.idPrev >= STATUS_MAINLOOP) this.setXFunName(AXIS_EXCESS,true);
         }
 
         var nodes = Graph.instance.getNodes();
@@ -257,10 +276,10 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
         xAxis.ticks(nodes.length);
 
 //         this.x.domain([0,d3.max(nodes, function(d) { return xFun(d)})]);
-        this.x.domain(d3.extent(nodes, function(d) { return xAxisOptions[xFunName](d)})); 
-        this.y.domain(d3.extent(nodes, function(d) { return yAxisOptions[xFunName](d)}));
+        this.x.domain(d3.extent(nodes, this.nodeX)); 
+        this.y.domain(d3.extent(nodes, this.nodeY));
 
-        var vis = (xFunName=="graph" ? "hidden" : "visible");
+        var vis = (xFunName==AXIS_GRAPH ? "hidden" : "visible");
 
         var t = this.svg.transition().duration(250);
         t.select("g.y.axis").call(yAxis).style("visibility",vis);

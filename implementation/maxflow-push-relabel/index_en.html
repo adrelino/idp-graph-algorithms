@@ -311,11 +311,14 @@
                       </td>
                       <td class="svgContainer">
                         <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="500"></svg>
+                        axis:
                         <select id="heightFunctionXAxis">
-                            <option value="graph">y/x (graph)</option>
-                            <option value="excess">height/excess</option>
-                            <option value="id">height/id</option>
-                        </select><br>
+                            <option value="y/x">y/x</option><!--graph-->
+                            <option value="height/excess">height/excess</option><!--excess-->
+                            <option value="height/id">height/id</option><!--id-->
+                        </select>
+                        <label><input type="checkbox" id="heightFunctionXAxisKeepFixed"> fixed</label>
+                        <br>
                         <a class="svgDownloader" download="maxflow-graph-algorithm-height.svg" href="data:text/plain,test">maxflow-graph-algorithm-height.svg</a>
                       </td>
                     </tr>
