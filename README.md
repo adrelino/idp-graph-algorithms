@@ -3,6 +3,9 @@
 ## TODOS
 
 ### Beide:
+- [ ] Zu den dynamischen Kommentaren/Log anzeigen: Das Log finde ich zu technisch, das aber in umformatierter/einfacher Form wäre ok.
+- [ ] Erzeugung von Kanten: Können diese zufällige Kantenbewertungen bekommen statt immer 0?
+- [ ] Ausführung: Zeit für Animation ausblenden, Tabs wieder einführen (dann muss ich die Texte nochmal lesen)
 - [ ] More: Speed and Termination of algorithm: Sketch a nice proof, link to references for more details.
 - [ ] Introduction und Description: Problemstellung sowie Idee des algorithmus text finalisieren
 - [ ] Legende vervollständigen/ an neue Farben anpassen
@@ -13,6 +16,11 @@
   * noch offen: BEGIN/START des Algorithmus taucht nicht im LOG auf
 
 ### SPPRC:
+- [ ] Einleitung finde ich sehr knapp, darf gerne noch ein wenig ausführlicher sein
+- [ ] Wie können Zeitfenster angepasst werden?
+- [ ] Ende der Ausführung: Kein Hover, um Pfade zu sehen, sondern ein Klick?
+- [ ] Zielknoten würde ich nicht wählen, lass es so. Könnte man den Start wählen, oder wird der immer vorgegeben?
+- [ ] Beschreibung: Auf Unvergleichbarkeit von Pfaden etwas ausführlicher eingehen (Bsp in 2-3 Sätzen?)
 - [ ] Description: 
   * describe how to extend a label
   * describe how to check for feasability
@@ -57,7 +65,9 @@
   * Kante e wird links fett dargestellt
 
 ### Goldberg-Tarjan:
-- [ ] Description: 
+- [ ] Ausführung: In den kurzen Beschreibungen gerade zu Beginn kurz darauf eingehen, wie die Begriffe visualisiert sind (Preflow, Active Nodes, Aktiver Knoten, ...)
+- [ ] Kann man Start- und Zielknoten wählen, oder werden die immer vorgegeben?
+- [ ] Beschreibung / Description:
   * describe how to construct the residual network
   * describe how to carry out push and relabel operations (like in algoprak reference)
 - [ ] hide or dash with fewer dashes the residual edges with 0 capacity (because by definition, these don't actually exist)
