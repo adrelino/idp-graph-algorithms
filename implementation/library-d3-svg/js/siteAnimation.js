@@ -164,3 +164,18 @@ function initializeSiteLayout(GraphAlgorithmConstructor) {
    svgHack();
    svgGraphCanvasDownloadable();
 }
+
+
+//http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
+    function(m,key,value) {
+      vars[key] = value;
+    });
+    return vars;
+  }
+
+function getUrlHash() {
+  return window.location.hash;
+}
