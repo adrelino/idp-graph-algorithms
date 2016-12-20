@@ -17,6 +17,11 @@
 \section*{Abstract}
 This interdisciplinary project deals with the vivid visualization of advanced graph algorithms. In particular, algorithms to solve two distinctive problems in discrete math are considered. Namely the \texttt{max-flow problem} as well as the \texttt{shortest path problem with resource constraints}.
 For efficiency reasons, one often employs advanced graph algorithms to solve above problems. The \texttt{max-flow problem} is solved using the efficient push-relabel algorithm of Goldberg-Tarjan. To solve the \texttt{shortest path problem with resource constraints}, we employ a generic label-setting algorithm which follows the dynamic programming principle.
+
+
+Both algorithms carry a lot of state variables and are thus not easy to understand intuitively. An additional visualization layer with an intuitive representation of all state variables and state transitions during algorithm execution was developed. It displays the height function of each node in case of the Tarjan-Goldberg algorithm or the pareto frontier of all labels resident in a certain node in case of the label-setting algorithm. To achieve the goal of a high interactivity, we replaced the previous Canvas based graph visualization code with a new implementation based on SVG, using D3.js, a JavaScript library for producing dynamic, interactive data visualizations in web browsers.
+
+
 %This IDP aims at extending the previous HTML5 framework that was developed at the chair to support advanced graph algorithms:
 %\begin{itemize}
 %	\item the Tarjan-Goldberg push-relabel algorithm to solve the maximum flow problem
@@ -37,8 +42,10 @@ For efficiency reasons, one often employs advanced graph algorithms to solve abo
 
 \selectlanguage{ngerman}
 \section*{Zusammenfassung}
-Das vorliegende interdisziplinäre Projekt beschäftigt sich mit der anschaulichen Darstellung von fortgeschrittenen Graphalgorithmen. Betrachtet werden zwei Verfahren zur Lösung von Problemstellungen der diskreten Mathematik. Die zu visualisierenden Problemstellungen sind hierbei das \texttt{Max-Flow Problem} sowie das \texttt{Kürzeste-Wege Problem mit Ressourcenbeschränkungen}.
-Als Lösungsverfahren für die aufgeführten Problemstellungen werden aus Effizienzgründen häufig fortgeschrittene Graphalgorithmen herangezogen. Für die Lösung des Max-Flow Problems findet der bekannte Push-Relabel Algorithmus von Goldberg-Tarjan in der Praxis häufig Anwendung. Zur Lösung des Kürzeste-Wege Problems mit Ressourcenbeschränkungen wird mit einem Label-Setting Algorithmus ein bekanntes Verfahren der dynamischen Programmierung vorgestellt.
+Das vorliegende interdisziplina\"are Projekt besch\"aftigt sich mit der anschaulichen Darstellung von fortgeschrittenen Graphalgorithmen. Betrachtet werden zwei Verfahren zur L\"osung von Problemstellungen der diskreten Mathematik. Die zu visualisierenden Problemstellungen sind hierbei das \texttt{Max-Flow Problem} sowie das \texttt{K\"urzeste-Wege Problem mit Ressourcenbeschr\"ankungen}. Als L\"osungsverfahren fu\"ur die aufgefu\"uhrten Problemstellungen werden aus Effizienzgr\"unden h\"aufig fortgeschrittene Graphalgorithmen herangezogen. F\"ur die L\"osung des Max-Flow Problems findet der bekannte Push-Relabel Algorithmus von Goldberg-Tarjan in der Praxis h\"aufig Anwendung. Zur L\"osung des K\"urzeste-Wege Problems mit Ressourcenbeschr\"ankungen wird mit einem Label-Setting Algorithmus ein bekanntes Verfahren der dynamischen Programmierung vorgestellt.
+
+
+Beide Algorithmen f\"uhren eine Menge an Statusvariablen mit sich und sind deshalb nicht leicht intuitiv zu verstehen. Es wurde eine zus\"atzliche Visualisierungsebene mit intuitiver Repr\"asentation aller Statusvariablen und -\"uberg\"ange entwickelt. Diese veranschaulicht die H\"ohenfuntion jedes Knotens im Falle des Tarjan-Goldberg Algorithmus oder die Pareto-Front im Falle des Label-Setting Algorithmus. Um hohe Interaktivit\"at zu erreichen ersetzten wir den bisherigen auf Canvas basierenden Graphen-Visualisierungscode mit einer neuen Implementierung basierend auf SVG mit D3.js, eine JavaScript Bibliothek zur Erzeugung dynamischer, interaktive Datenvisualisierungen in Web Browsern.
 %Das interdisziplinäre Projekt hat das Ziel, die erwähnten Problemstellungen mit einfachen Worten zu erklären und durch Beispiele zu motivieren sowie die verwendeten Lösungsverfahren graphisch zu veranschaulichen. Die Darstellung wird hierbei in Form einer separaten Web-Applikation für jede Problemstellung erfolgen, welche aus Gründen der einheitlichen Darstellung und der der leichteren Wartbarkeit auf ein gemeinsames, bereits existierendes Framework aufbauen wird.
 
 \selectlanguage{english}

@@ -15,8 +15,8 @@
 
 % ------------------------------------------------------------------------------
 %FixMe-Status: final (no FixMe comments) or draft (comments visible)
-\fxsetup{draft}
-%\fxsetup{final}
+%\fxsetup{draft}
+\fxsetup{final}
 % ------------------------------------------------------------------------------
 
 % ------------------------------------------------------------------------------
@@ -47,6 +47,7 @@
 %declaration,%
 abstract,%
 introduction,%
+main,
 % include own sections here (rule of thumb: one file per chapter)
 conclusion,%
 appendix%
@@ -85,7 +86,7 @@ appendix%
 %\subject{project}
 %\subject{seminar}
 \subject{idp}
-\subject{Interdisciplinary Research Project (IDP)}
+%\subject{Interdisciplinary Research Project (IDP)}
 \professor{Prof. Dr. Peter Gritzmann} %Themensteller
 \advisor{Wolfgang F. Riedl} %Betreuer
 \date{\today} %Submission Date
@@ -110,26 +111,26 @@ appendix%
 \mainmatter%
 \pagestyle{headings}
 
-\include{introduction}
-\include{conclusion}
+\input{main}
+%\include{conclusion}
 
 % appendices (if appropriate)
-\appendix
-\include{appendix}
+%\appendix
+%\include{appendix}
 % all appendices behind backmatter will go without numbers
 \backmatter
 
 %List of Figures
-\listoffigures
+%\listoffigures
 
-\vspace*{1.5cm}
+%\vspace*{1.5cm}
 
-All figures in this document were created by the author using TikZ, the excellent \TeX-package by Till Tantau, see \cite{Tantau2007}.
+%All figures in this document were created by the author using TikZ, the excellent \TeX-package by Till Tantau, see \cite{Tantau2007}.
 
 
 
 %List of Tables
-\listoftables
+%\listoftables
 
 
 %List of algorithms
@@ -149,7 +150,7 @@ All figures in this document were created by the author using TikZ, the excellen
 
 % Index
 % Add index to table of contents
-\addcontentsline{toc}{chapter}{Index}
+\addcontentsline{toc}{section}{Index}
 \printindex
 
 % Bibliography
@@ -157,7 +158,7 @@ All figures in this document were created by the author using TikZ, the excellen
 
 %In the final version, this should be empty and needn't be commented out. Someone who works sloppily should at least remember to comment out the fixme list, so that unfinished places are
 %not so obvious for the examiners.
-\listoffixmes
+%\listoffixmes
 %
 \end{document}
 % ==============================================================================
