@@ -1,4 +1,90 @@
 \chapter{Background}\label{ch:3}
+This chapter mathematically formalizes the problems we consider in this work as well as the algorithms used to solve these problems. We start with the basic definition of a graph and then look at different problems that can be defined on them. Finally, we  
 
-This chapter gives the theoretical preliminaries needed to follow the subsequent discussion of previous work as well as the derivation of our approach. 
-ther spaces.
+Problems defined on networks arise in many real-life applications. A network can be represented by a graph.
+
+\newcommand{\Ein}[1]{\delta^-(#1)}
+\newcommand{\Eout}[1]{\delta^+(#1)}
+\newcommand{\ein}{{e_{\text{in}}}}
+\newcommand{\eout}{{e_{\text{out}}}}
+
+\begin{definition}[directed graph]
+A graph is an ordered pair $G = (V, E)$ consisting of a vertex (or node) set $V$ and an edge (or arc) set $E$. In a \textit{directed graph (digraph)}, $E$ is a set of ordered pairs of vertices, a subset of the cartesian product of vertices, that is $E \subseteq V \times V$. Thus, each edge $e \in E$ can be uniquely identified by a pair of vertices from $V$, that is $e=(v,w)$ with $v,w \in V$ and $v \neq w$, where $v$ is the start vertex and $w$ is the end vertex of the directed edge or arc $e$ \cite{jungnickel2013graphs}[1.6]. For problems or algorithms defined on digraphs, it is often convenient to define the sets of edges coming into a vertex $v$ or leaving it.
+\begin{align}
+\text{incoming edges} \quad \quad \Ein{v}  &: \{ e=(u,v) \in E \; | \; u,v \in V \}  \\
+\text{outgoing edges} \quad \quad \Eout{v} &: \{ e=(v,w) \in E \; | \; v,w \in V \}
+\end{align}
+\end{definition}
+
+
+\section{The \maxflow{}}
+An important problem in many applications is to find out the maximum amount of flow that can simultaneously be transferred over a network between two points. % from $s$ to $t$. 
+Depending on the context, flow can mean different things, e.g the amount of water in a water pipe system in your city or the bandwidth of a computer network. We call such a network a \textit{flow network}:
+
+\begin{definition}[flow network]
+A \textit{flow network} $N$ is a 4-tuple $N=(G,c,s,t)$ consisting of \textit{digraph} $G$, a positive real-valued capacity function $c: E \rightarrow \mathbb{R}_+ , \forall e \in E : c(e) \geq 0$ defined on all edges of the graph and two designated vertices, the \textit{source} $s \in V$ and \textit{sink} (or target) $t \in V$ \cite{ahuja1993network}[1.2].
+\end{definition}
+
+
+%However, the links in the network on paths from $s$ to $t$ can only handle flow up to their maximum capacity $c$. One now seeks an assignment of flow values $f$ to edges $e$ that fulfills all the capacity constraints of the edges and the flow conservation property on all the inner nodes, meaning we don't want leaks in our pipe system.
+However, the individual links in the network can only handle flow up to their maximum capacity, e.g. they are limited by the thickness of the water pipe. Additionally, the total flow must be preserved at the intermediate joints, e.g. we don't want leaks in our pipe system. This is called a \textit{feasible flow}:% Given such a network, an obvious problem is to find out the maximum amount of flow that can simultaneously be transfered over the network, 
+
+
+\begin{definition}[feasible flow]
+A \textit{feasible flow} $f$ from $s$ to $t$ is a mapping $f : E \rightarrow \mathbb{R}$ satisfying two constraints: The \Eqref{eq:cap} ensures that the flow over an edge is always positive and not exceeding the edge's maximum capacity, while the \Eqref{eq:conserv} assures that the total flow into a vertex $v \notin {s,t}$ equals the total flow out of $v$:
+\begin{align}
+\forall e \in E &: 0 \leq f(e) \leq c(e) \eqname*[eq:cap]{capacity constraint} \\
+\forall v \in V \setminus \{s,t\} &: \sum_{e \in \Ein{v}} f(e) = \sum_{e \in \Eout{v}} f(e) \eqname*[eq:conserv]{flow conservation} \\ \nonumber
+\end{align}
+\end{definition}
+
+There might be many feasible flows (e.g the zero flow $f = 0 \, \forall e \in E$), but we are especially interested in transferring as much as possible across the network, the \textit{maximum flow}:
+\begin{problem}[maximum flow]
+A \textit{maximum flow} $\max \abs{f}$ is a \textit{feasible flow} that maximizes the \textit{flow value} $\abs{f}$, the amount of flow which flows from $s$ to $t$. This is the net flow into the sink $t$ or out of the source $s$:
+\begin{equation*}
+\abs{f} = \sum_{e \in \Ein{t}} f(e) = \sum_{e \in \Eout{s}} f(e)
+\end{equation*}
+\end{problem}
+
+
+An important concept in the context of flow algorithms is the residual network capturing possible change to $f$, defined by the residual capacities $c'$ and the \textit{residual graph} $G'$:
+\begin{definition}[residual graph]
+For a flow $f$ in $G=(V,E)$, we can construct the \textit{residual graph} $G' = (V,E')$ by copying all the vertices $v \in V$ from $G$ and for each $e \in E$ adding one or two edges $e'$ to $E'$ with \textit{residual capacity} $c'$ under the following rules \refFigure{fig:residual}:
+\begin{description}
+\item[forward edge] if $f(e) < c(e)$ for an edge $e=(a,b) \in E$, then add the forward edge $e' = (a,b)$ with residual capacity $c'(e') = c(e) - f(e)$ to $E'$.
+\item[backward edge] if $f(e) > 0$ for an edge $e=(a,b) \in E$, then add the backward edge $e' = (b,a)$ with residual capacity $c'(e') = f(e)$ to $E'$.
+\end{description}
+\end{definition}
+
+\begin{figure}
+\centering
+\includegraphics[]{fig/residual}
+\caption{Construction of the residual graph $G'$ \cite{mayer2013prakt}.}
+\label{fig:residual}
+\end{figure}
+
+
+
+\section{The \spprc{}}
+Another basic problem defined on networks is how to traverse a network to get from one point to another one as cheaply as possible. For this problem we wish to find a shortest path between two points.
+
+\begin{definition}[path]
+A \textit{path} $P = (e_1, e_2, ... e_p)$ is a finite sequence of arcs (some arcs may occur more than once) where the end vertex of $e_i \in E$ is identical to the start vertex of $e_{i+1} \in E$ for all $i=1,\dots,p-1$. For simple graphs, a path can be also be written as $P = (v_0,v_1,\dots,v_p)$ since the edges can be uniquely idetified by start and end vertex $e_i=(v_{i-1},v_i)$. The length of a path is $p$ \cite{irnich2005shortest}.
+\end{definition}
+
+
+The ordinary shortest path problem (SPP) is perhaps the simplest of all network problems. It seeks an (unconstrained) $s$-$t$ path of minimal cost (or length) between two points. A real-valued cost function $c : E \rightarrow \mathbb{R}$ is defined on all edges of the graph. The cost or length of a path is defined as the sum of the costs of all the edges along the path, that is $c(P)=\sum_{i=1}^p c(e_i)$. \\
+
+
+
+In the shortest path problem with resource constraints (SPPRC), each edge additionally carries a secondary (possibly higher-dimensional) resource vector or function $r$. A path $P$ is now constrained at the intermediate vertices $v_i$ with lower and upper bounds on the accumulated resource consumptions along the (partial) paths.\\
+
+\begin{example}[SPPTW]
+An illustrative example is the two-resource SPPRC, the shortest path problem with time windows (SPPTW). In addition to the \textit{cost} $c$, each edge additionally bears the resource \textit{time} $t$. Thus each edge is associated with the two-dimensional resource vector $(t,c) \forall e \in E$. The secondary resource \textit{time} is constrained, while the primary resource \textit{cost} is unconstrained, but seeks to be minimized.
+
+The accumulated consumptions of the resource \textit{time} along a path are constrained at the intermediate vertices along that path by lower and upper limits, that is the earliest arrival time $t_a$ and the latest departure time $t_b$ and called the \textit{resource window}, denoted as a tuple $[t_a,t_b] \forall v \in V$.
+\end{example}
+
+$[t_{arrival},t_{departure}] \forall v \in V$
+
+

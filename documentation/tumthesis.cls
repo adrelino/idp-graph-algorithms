@@ -58,7 +58,8 @@
     listof=totoc, %Entry in table of contents for list of figures/tables
     index=totoc, %Entry in table of contents for index
     bibliography=totoc, %Entry in table of contents for bibliography
-    BCOR=5mm %Binding correction, ensures sufficient space for binding
+    BCOR=10mm, %Binding correction, ensures sufficient space for binding
+    DIV=12
     ]%
 {scrbook}%
 
@@ -102,8 +103,8 @@
     hyperref=true, %
     maxbibnames=20, %
     maxcitenames=3, %
-    url=false, %
-    doi=false, %
+    url=true, %
+    doi=true, %
     firstinits=true,
     sorting=nty]%
 {biblatex}

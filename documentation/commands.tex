@@ -1,0 +1,15 @@
+\input{eqname}
+
+
+\newcommand{\refSec}[1]{(\cref{#1})}
+\newcommand{\refTable}[1]{(\cref{#1})}
+\newcommand{\refFigure}[1]{(\cref{#1})}
+%\newcommand{\Eqref}[1]{\cref{#1} : \eqnameformat{\nameref{#1}}} %\eqref{#1}
+%http://tex.stackexchange.com/questions/156067/suppress-link-or-just-the-color-of-a-specific-nameref
+\newcommand{\Eqref}[1]{\eqnameformat{\hypersetup{hidelinks}\nameref{#1}} \eqref{#1}}
+\newcommand{\refLine}[1]{(\cref{#1})} %\autoref label{algo:mv-addNodes}
+
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert} % absolute value: single vertical bars
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\Norm}[1]{\left\lVert#1\right\rVert} % norm: double vertical bars
+

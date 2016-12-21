@@ -27,6 +27,9 @@
 % ------------------------------------------------------------------------------
 
 \input{./contents/info}
+\input{commands}
+
+
 % ------------------------------------------------------------------------------
 % Data for the bibliography
 \addbibresource{./contents/resources.bib}
@@ -62,7 +65,14 @@
  pdfsubject={},%\defSubTitle},
  pdfkeywords={},%\subject{\defSubject}},
  colorlinks=true, %coloured links (for the PDF version)
-% colorlinks=false, % no coloured links (for the print version)
+ %colorlinks=false, % no coloured links (for the print version)
+ bookmarksnumbered=true,     
+ bookmarksopen=true,         
+ bookmarksopenlevel=1,
+ pdfstartview=Fit,           
+ %pdfpagemode=UseOutlines,    % this is the option you were lookin for
+ pdfpagelayout=TwoPageRight,
+    pdfborder={0 0 0},
 }
 % ------------------------------------------------------------------------------
 
@@ -145,15 +155,15 @@
 
 % Index
 % Add index to table of contents
-\addcontentsline{toc}{chapter}{Index}
-\printindex
+%\addcontentsline{toc}{chapter}{Index}
+%\printindex
 
 % Bibliography
 \printbibliography[heading=bibintoc]
 
 %In the final version, this should be empty and needn't be commented out. Someone who works sloppily should at least remember to comment out the fixme list, so that unfinished places are
 %not so obvious for the examiners.
-\listoffixmes
+%\listoffixmes
 %
 \end{document}
 % ==============================================================================
