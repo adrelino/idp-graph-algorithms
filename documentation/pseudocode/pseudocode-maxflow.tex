@@ -1,0 +1,53 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+%\newcommand{\setfont}[1]{\mathcal{#1}}
+\newcommand{\setfont}[1]{#1}
+
+\begin{document}
+
+\begin{algorithm}[h!]
+\caption{Goldberg-Tarjan Push-Relabel algorithm}
+\DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
+\KwIn{directed Graph $G=(V,E)$ with
+\begin{itemize}
+	\setlength\itemsep{0pt}
+	\setlength{\parskip}{0pt}
+	\item digraph $G=(V,E)$ with start $s$, sink $t$
+	\item $\forall$ edges $e \in E$: (cap) capacity 
+\end{itemize}
+}
+\KwOut{A feasible maximum s-t flow f(e)}\vspace{0.2cm}
+(* Initialize the preflow *)\;
+\ForAll{$e=(u,w) \in E$}{
+	\If{$u==s$}{
+		$f(e) \gets c(e)$\;
+		\If{$w \neq t$}{$Q$.add(w)}
+	}
+	\Else{$f(e) \gets 0$}
+}
+((* Initialize the height function *))\;
+$h(s) = |V|$\;
+\ForAll{$v \in V$}{
+	$h(v) \gets$ number of arcs on directed v-t path\;
+}
+((* Main Loop *))\;
+\While{$\setfont{Q} \neq \emptyset$}{
+	$v \gets \setfont{Q}$.pop()\;
+	\While{$e(v)>0$ AND $\exists e'=(v,w) \in E' | h(v)==h(w)+1$}{
+		(* Push *)\;
+		push $\min(e(v),c'(e'))$ flow from v to w\;
+		\If{$w \neq s,t$ AND $w \notin \setfont{Q}$}{
+			$\setfont{Q}$.add($w$)\;
+		}
+	}
+	\If{$e(v)>0$ AND $\not\exists e'=(v,w) \in E' | h(v)==h(w)+1$}{
+		(* Relabel *)\;
+		$h(v) \gets 1 + \min(h(w) | e*=(v,w)\in E'$ \;
+		$\setfont{Q}$.add($v$) \;
+	}
+}
+\end{algorithm}
+
+
+\end{document}

@@ -1,0 +1,69 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{color}
+
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+%\newcommand{\setfont}[1]{\mathcal{#1}}
+\newcommand{\setfont}[1]{#1}
+\newcommand{\tab}{{\color{white}.\hspace{1 cm}}}
+
+\begin{document}
+\section{tex4ht test}
+\subsection{using just lists and tabbing:}
+\textbf{Generic Dynamic Programming SPPRC Algorithm}\tab\\
+IN: directed Graph $G=(V,E)$ with \\
+\tab $\forall$ nodes $v \in V$: [arrive, depart] time window resource constraint \\
+\tab $\forall$ edges $e \in E$: (time,cost) 2-dimensional resource consumptions \\
+\tab start Node $s$, end Node $t$\\
+OUT: feasible, pareto-optimal $s \rightarrow t$ paths \\
+(* Initialize *) \\
+SET $U = \{(s)\}$ and $P = \emptyset$ \\
+WHILE ${U} \neq \emptyset$ DO \\
+\tab	(* Path extension step *)\\
+\tab	CHOOSE a path ${Q} \in {U}$ and REMOVE ${Q}$ from ${U}$\\
+\tab	FORALL arcs $(v({Q}), w) \in A$ of the forward star of $v({Q})$ \\
+\tab\tab	IF $({Q},w) \in {F}(s,w) \cap {G}$ THEN \\
+\tab\tab\tab		ADD $({Q},w)$ to ${U}$ \\
+\tab	ADD ${Q}$ to ${P}$ \\
+\tab	(* Dominance step *)\\
+\tab	IF (* any condition *) \\
+\tab\tab	APPLY dominance algorithm to paths from ${U} \cup {P}$ ending at some node $v$\\
+(* Filtering step *)\\
+FILTER ${P}$, i.e., identify a solution ${S} \subseteq {P}$\\
+
+\newpage
+\subsection{using algorithm2e environment:}
+\begin{algorithm}[h!]
+\DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
+\KwIn{directed Graph $G=(V,E)$ with
+\begin{itemize}
+	\setlength\itemsep{0pt}
+	\setlength{\parskip}{0pt}
+	\item $\forall$ nodes $v \in V$: [arrive, depart] time window resource constraint
+	\item $\forall$ edges $e \in E$: (time,cost) 2-dimensional resource consumptions
+	\item start Node $s$, end Node $t$
+\end{itemize}}
+\KwOut{feasible, pareto-optimal $s \rightarrow t$ paths} \vspace{0.2cm}
+(* Initialize *) \;
+SET $\setfont{U} = \{(s)\}$ and $\setfont{P} = \emptyset$ \;
+\While{$\setfont{U} \neq \emptyset$}{
+	(* Path extension step *)\;
+	CHOOSE a path $\setfont{Q} \in \setfont{U}$ and REMOVE $\setfont{Q}$ from $\setfont{U}$\;
+	\ForAll{arcs $(v(\setfont{Q}), w) \in A$ of the forward star of $v(\setfont{Q})$}{
+		\If{$(\setfont{Q},w) \in \setfont{F}(s,w) \cap \setfont{G}$}{
+			ADD $(\setfont{Q},w)$ to $\setfont{U}$
+		}
+	}
+	ADD $\setfont{Q}$ to $\setfont{P}$\;
+	(* Dominance step *)\;
+	\If{(* any condition *)}{
+		APPLY dominance algorithm to paths from $\setfont{U} \cup \setfont{P}$ ending at some node $v$\;
+	}
+}
+(* Filtering step *)\;
+FILTER $\setfont{P}$, i.e., identify a solution $\setfont{S} \subseteq \setfont{P}$\;
+\caption{Generic Dynamic Programming SPPRC Algorithm}
+\end{algorithm}
+
+
+\end{document}
