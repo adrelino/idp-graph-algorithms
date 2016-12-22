@@ -147,11 +147,11 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 
 
         selection.selectAll("line").each(function(d){
-            var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
+            var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth']};
             if(s.lId && (d.id == s.currentArcId)){
 //                 if(s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH){
                 attr["stroke"]="orange";//const_Colors.CurrentNodeColor;
-                attr["marker-end"]="url(#arrowhead2-red)";
+               // attr["marker-end"]="url(#arrowhead2-red)";
 //                 }else{
 //                   attr["stroke"]="green";
 //                   attr["marker-end"]="url(#arrowhead2-green)";

@@ -54,7 +54,8 @@
     <script src="../library-d3-svg/js/GraphEditorTab.js"></script>
     <script src="../library-d3-svg/js/siteAnimation.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/graph-style.css" />
+    <link id="graph-style" rel="stylesheet" type="text/css" href="../library-d3-svg/css/graph-style.css" />
+
     <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/style.css" />
 
 <!--     Files used only for this applet -->
@@ -65,23 +66,6 @@
     <title>Shortest Paths with Resource Constraints</title>
 </head>
 <body>
-
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xlink="http://www.w3.org/1999/xlink">
-  <defs>
-    <marker id="arrowhead2" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 0,0 V 8 L12,4 Z"></path>
-    </marker>
-
-     <marker id="arrowhead2-red" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse" fill="red">
-      <path d="M 0,0 V 8 L12,4 Z"></path>
-    </marker>
-
-     <marker id="arrowhead2-green" refX="24" refY="4" markerWidth="24" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse" fill="green">
-      <path d="M 0,0 V 8 L12,4 Z"></path>
-    </marker>
-  </defs>
-</svg>
-
     <noscript>
         <div class="ui-widget">
             <div class="ui-state-error ui-corner-all" style="padding: .7em;">

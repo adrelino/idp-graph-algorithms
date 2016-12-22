@@ -1,11 +1,27 @@
 var graphEditorTab = null, algorithmTab = null;
 
 function svgHack(){
-    //http://www.mediaevent.de/svg-in-html-seiten/
-   var imgs = d3.selectAll("img");
+//add arrowhead
+    d3.select("body").append("svg")
+        .attr("id","graph-defs")
+        .append("defs").append("marker")
+        .attr("id", "arrowhead2")
+        .attr("refX",12) /*must be smarter way to calculate shift*/
+        .attr("refY",2)
+        .attr("markerWidth", 12)
+        .attr("markerHeight", 4)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M 0,0 V 4 L6,2 Z"); //this is actual shape for arrowhead
 
-//    var sources = imgs[0].map(function(d){return d.src});
 
+
+//replace img with svg
+
+//     //http://www.mediaevent.de/svg-in-html-seiten/
+    var imgs = d3.selectAll("img");
+
+// //    var sources = imgs[0].map(function(d){return d.src});
 
    imgs.attr("src",function(a,b,c){
        var src = this.src;
@@ -22,7 +38,7 @@ function svgHack(){
 
                 newSVGElem.attr("class","svgText");
 
-                selection.remove();
+               selection.remove();
 
 //             var foo = selection.node().parentNode.innerHtml; //).append("div").html(text);
         });
@@ -31,14 +47,33 @@ function svgHack(){
    })
 }
 
-function svgSerialize(svgNode){
+
+function svgSerialize(svgHtml){//Node){
+//   if(styles){
+//     //svg.select('defs').select('style').text('<![CDATA['+styles+']]>')
+
+//     var header ='<svg width="'+ww+'" height="'+hh+'" version="1.1" xmlns="http://www.w3.org/2000/svg">';
+//     header +='<defs>';
+//     //inline arrowhead marker style
+//     header += d3.select('#graph-defs').select('defs').html();
+//     //inline css styles
+//     header += '<style type="text/css"> <![CDATA['+styles+']]> </style>';
+//     header += '</defs>';
+//     header +=svgNode.innerHTML;
+//     header +='</svg>';
+
+//    return 'data:image/svg+xml;utf8,'+header;
+//   }
+
+
+
   //use jquery to get the svg xml, doesnt work with d3.
   //var svgContainer = that.tab.find('.svgContainer');//.clone();
   //var svg = svgContainer.find(".graphCanvas");
 //   d3.select(this).attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
   //var svgHtml = svgContainer.html();
 
-  var svgHtml = (new XMLSerializer()).serializeToString(svgNode);//svgOrigin.node()
+  //var svgHtml = (new XMLSerializer()).serializeToString(svgNode);//svgOrigin.node()
   //var seed = 50 + Math.floor(Math.random()*1000000); //lower 50 ones are reserved for my own use
 
   //svgHtml = svgHtml.replace(/arrowhead2/g,"arrowhead"+seed);
@@ -60,7 +95,7 @@ function svgSerialize(svgNode){
 
 //http://spin.atomicobject.com/2014/01/21/convert-svg-to-png/
 //http://techslides.com/save-svg-as-an-image
-function svgSerializeAndCrop(svgNode){
+function svgSerializeAndCrop(svgNode,styles){
   var sel=d3.select(svgNode);
   var algo = GraphAlgos.get(sel.attr("id"));
 
@@ -78,25 +113,45 @@ function svgSerializeAndCrop(svgNode){
     var height = yR[1]-yR[0]+algo.margin.top+algo.margin.bottom;
 
     //use d3 to select transform, doesnt work with jqyery since it selects all g's, not just the top level one;
-    var oldTra = algo.svgOrigin.select("g").attr("transform");
-    var oldWidth = algo.svgOrigin.attr("width");
-    var oldHeight = algo.svgOrigin.attr("height");
+    var oldTra = sel.select("g").attr("transform");
+    var oldWidth = sel.attr("width");
+    var oldHeight = sel.attr("height");
 
-    algo.svgOrigin.select("g").attr("transform",oldTra+","+transl);//.each("end",function(){
-    algo.svgOrigin.attr("width",width);
-    algo.svgOrigin.attr("height",height);
-    algo.svgOrigin.attr("viewBox","0 0 "+width+" "+height);//http://stackoverflow.com/questions/19484707/how-can-i-make-an-svg-scale-with-its-parent-container
+    sel.select("g").attr("transform",oldTra+","+transl);//.each("end",function(){
+    sel.attr("width",width);
+    sel.attr("height",height);
+    sel.attr("viewBox","0 0 "+width+" "+height);//http://stackoverflow.com/questions/19484707/how-can-i-make-an-svg-scale-with-its-parent-container
   }
 
-  var href = svgSerialize(svgNode);
+    //inline arrowhead marker style
+  var header = d3.select('#graph-defs').select('defs').html()+'\n';
+  var defs = sel.insert('defs',"g").html(header);
+
+      //inline css style
+  var styles = styles.replace(/(\r\n|\n|\r)/gm," ");
+
+  //var header2 = '<style type="text/css"> <![CDATA['+styles+']]> </style>';
+
+  var styleSel = defs.append("style").attr("type","text/css");
+  styleSel.text('<![CDATA['+styles+"]]>");
+
+ // var svgHtmlinner = sel.html();
+
+  var svgHtml = sel.node().outerHTML;
+  svgHtml = svgHtml.replace("&lt;","<").replace("&gt;",">");
+
+  var href = svgSerialize(svgHtml);
 
   if(algo){
     //move back
-    algo.svgOrigin.attr("viewBox",null);
-    algo.svgOrigin.attr("width",oldWidth);
-    algo.svgOrigin.attr("height",oldHeight);
-    algo.svgOrigin.select("g").attr("transform",oldTra);
+    sel.attr("viewBox",null);
+    sel.attr("width",oldWidth);
+    sel.attr("height",oldHeight);
+    sel.select("g").attr("transform",oldTra);
   }
+
+  defs.remove();
+
 
   return href;
 }
@@ -106,12 +161,15 @@ function svgGraphCanvasDownloadable(){
    //contains a svg and an a
    var links = container.selectAll('a');
    var svgOrigins = container.selectAll('svg');
+   var styles;
+   //async query styles from css file
+   d3.text(d3.select("#graph-style").attr("href"),function(s){styles = s});
 
 
    links.on('mousedown',function(a,b,c){
      var node = svgOrigins[c][0];
 
-     var href = svgSerializeAndCrop(node);
+     var href = svgSerializeAndCrop(node,styles);
 
      var ahref = d3.select(this);
      ahref.property("href-lang","image/svg+xml");
