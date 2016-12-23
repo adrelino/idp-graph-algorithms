@@ -22,14 +22,16 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     GraphDrawer.call(this,svgSelection);
 
     /**
-     * closure for this class
+     * closure variables for this class
      * @type GoldbergTarjanPushRelabelAlgorithm
      */
     var that = this;
     var algo = that;
     
+    /** 
+     * debug states for replay steps to console
+     */
     var debugConsole = false;
-    
     
     /**
      * the logger instance
@@ -48,12 +50,16 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      */
     var s = null;
 
+    /**
+     * getter for status variable
+     */
     this.getState = function(){
       return s;
     }
-    
-    var colormap = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#ffffbf", "#d9ef8b", "#a6d96a", "#66bd63", "#1a9850", "#006837"].reverse();
-    
+
+    /**
+     * thickness of edges depending on flow going through
+     */
     function flowWidth(val,s) {
         var s=s || 25;
         var maxCap = d3.max(Graph.instance.getEdges(), function(d) {
@@ -61,9 +67,12 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         });
         return s * (val / maxCap);
     }
-
     this.flowWidth = flowWidth;
     
+    /**
+     * The text to appear inside the nodes 
+     * @override
+     */
     this.nodeLabel = function(d) {
         if (d.id == s.sourceId)
             return "s";
@@ -73,19 +82,27 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             return d.id;
     }
 
+    /**
+     * The text to appear on top of the nodes 
+     * @override
+     */
 //     this.nodeText = function(d){
 //       return "[" + d.state.height +","+d.state.excess+"]";
 //     }
     
     /**
+     * The text to appear halfway along the edge
      * display current flow along edge together with the maximum capacity of the edge
+     * @override
      */
     this.edgeText = function(d) {
         return d.state.flow + "/" + d.resources[0];
     }
     
     /**
+     * called for each newly added node
      * attach onClick listeners so we can select start/target node
+     * @override
      */
     this.onNodesEntered = function(selection) {
         //select source and target nodes
@@ -98,7 +115,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
     
     /**
+     * called after each call to update()
      * fill start/target, current and active nodes in green, red and yellow
+     * @override
      */
     this.onNodesUpdated = function(selection) {
       selection
@@ -119,7 +138,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
     
     /**
+     * called for each newly added edge
      * Add gray capacity and blue flow lines behind the line with arrow from GraphDrawer
+     * @override
      */
     this.onEdgesEntered = function(selection) {
          selection.append("line")
@@ -131,8 +152,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
     
     /**
-     * Update the current flow width of an edge;
+     * called after each call to update()
+     * Update the current flow width of an edge. 
      * Highlight edges e in G along which we push / use for relabeling a node
+     * @override
      */
     this.onEdgesUpdated = function(selection) {
         selection.selectAll("line.flow")
@@ -159,7 +182,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 
 
     /**
-     * Replay Stack, speichert alle Schritte des Ablaufs für Zurück Button
+     * Replay stack, saves all states of the algorithm for rewinding.
      * @type {Array}
      */
     var replayHistory = new Array();
@@ -167,7 +190,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     var fastforwardOptions = {label: $("#ta_button_text_fastforward").text(), icons: {primary: "ui-icon-seek-next"}};
 
     /**
-     * Initialisiert das Zeichenfeld
+     * Init the graph network visualization as well as the secondary visualizaiton layer
      * @method
      */
     this.init = function() {
@@ -186,7 +209,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     };
 
     /**
-     * clear all states
+     * Clear all states
+     * @method
      */
     this.reset = function(){
         s = {
@@ -196,6 +220,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             activeNodeIds: [],
             sourceId: -1,
             targetId: -1,
+            mainLoopIt: 0,
             e_dash:null,
             e_star:null,
             e_dashes_forward_star_map:null //maps each edge id to outgoing residual edge from currentNodeId used in HeightfunctionDrawer.js
@@ -218,14 +243,14 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
                 edge.state.flow = 0;
             })
 
-          //debug: no need to click on source and target
+          //debug: no need to click on source and target initially
           this.nextStepChoice(Graph.instance.nodes.get(0),true);
           this.nextStepChoice(Graph.instance.nodes.get(Graph.instance.nodeIds-1),true);
         }
     }
 
     /**
-     * Makes the view consistent with the state
+     * make the view consistent with the state
      * @method
      */
     this.update = function(){
@@ -241,7 +266,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
 
     /**
-     * When Tab comes into view
+     * tab comes into view
      * @method
      */
     this.activate = function() {
@@ -257,7 +282,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     this.deactivate = function() {
         this.stopFastForward();
         this.replayHistory = [];
-    //         this.deregisterEventHandlers();
     };
     
     
@@ -284,9 +308,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             "loggerState": logger.getState()
         });
         
-        if (debugConsole)
-            console.log("Current History Step: ", replayHistory[replayHistory.length - 1]);
-    
+        if (debugConsole) console.log("Current History Step: ", replayHistory[replayHistory.length - 1]);
     };
 
     /**
@@ -296,8 +318,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     this.previousStepChoice = function() {
         
         var oldState = replayHistory.pop();
-        if (debugConsole)
-            console.log("Replay Step", oldState);
+        if (debugConsole) console.log("Replay Step", oldState);
         
         Graph.instance.setState(oldState["graphState"]);
         s = JSON.parse(oldState["s"]);
@@ -362,12 +383,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             this.setDisabledForward(false);
             this.setDisabledBackward(false);
         }
-
 //         $("#ta_button_1Schritt").button("option", "disabled", true);
 //         $("#ta_button_Zurueck").button("option", "disabled", true);
 //         $("#ta_button_rewind").button("option", "disabled", true);
-
-
     };
 
     function setStatus(newStatus,oldStatus){
@@ -385,18 +403,17 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      */
     this.nextStepChoice = function(d,noGuiUpdate) {
         
-        if (debugConsole)
-            console.log("Current State: " + s.id);
+        if (debugConsole) console.log("Current State: " + s.id);
 
         // Speichere aktuellen Schritt im Stack
         this.addReplayStep();
         
         switch (s.id) {
             case STATUS_SELECTSOURCE:
-                this.selectSource(d);
+                selectSource(d);
                 break;
             case STATUS_SELECTTARGET:
-                this.selectTarget(d);
+                selectTarget(d);
                 break;
             case STATUS_START: //TODO: is never called
                 logger.log("Now the algorithm can start");
@@ -439,9 +456,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     /**
      * select the source node
      */
-    this.selectSource = function(d) {
+    function selectSource(d) {
         s.sourceId = d.id;
-        this.setDisabledBackward(false);
+        that.setDisabledBackward(false);
         setStatus(STATUS_SELECTTARGET,STATUS_SELECTTARGET); //so that idPrev == id so that we see "select target" after we clicked on source node
         logger.log("selected node <span style='color:rgb(51, 204, 51)'>" + d.id + " as source s</span>");
     };
@@ -449,9 +466,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     /**
      * select the target node
      */
-    this.selectTarget = function(d) {
+    function selectTarget(d) {
         s.targetId = d.id;
-        this.setDisabledForward(false);
+        that.setDisabledForward(false);
         setStatus(STATUS_INITPREFLOW,STATUS_START); //so that after selecting the target, we jump from display before click (on nodes) to display after click (on next button)
         logger.log("selected node <span style='color:rgb(51, 204, 51)'>" + d.id + " as target t</span>");
     };
@@ -461,8 +478,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     //following is push relabel algo //corman page 741, ahuja page 227
 
     /**
- * initialize the preflow
- */
+     * initialize the preflow
+     */
     function initPreflow() {
         var source = Graph.instance.nodes.get(s.sourceId);
         var forwardStar = source.getOutEdges();
@@ -494,8 +511,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
 
     /**
- * initialize the distance function
- */
+     * initialize the distance function
+     */
     function initDistanceFunction() {
         var source = Graph.instance.nodes.get(s.sourceId);
         var target = Graph.instance.nodes.get(s.targetId);
@@ -529,12 +546,14 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         logger.log("Init height: h(t)=0,"+text+"h(s)=" + source.state.height);
     }
     
-    var mainLoopIt = 0;
-
+    /**
+     * playback the last step from stack, deserialize stateful data
+     */
     function updateResidualEdgesForwardStar(id){
+      s.e_dashes_forward_star_map={};
+      if(id==null) return;
       var v = Graph.instance.nodes.get(id);
       e_dashes = v.getAllOutgoingResidualEdges(true);
-      s.e_dashes_forward_star_map={};
       for(var i=0; i<e_dashes.length; i++){
         s.e_dashes_forward_star_map[e_dashes[i].id]=e_dashes[i];
       }
@@ -549,7 +568,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             setStatus(STATUS_FINISHED,STATUS_FINISHED); //so that we display finished, not mainloop when done
             s.currentNodeId=-1;
             var finalflow = Graph.instance.nodes.get(s.targetId).state.excess;
-            //updateResidualEdgesForwardStar(s.sourceId);
+            updateResidualEdgesForwardStar(null);
             that.stopFastForward();
             d3.select("#finalflow").text(finalflow);
             logger.log("Finished with a max flow of "+finalflow);
@@ -560,48 +579,14 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         updateResidualEdgesForwardStar(s.currentNodeId);
 
 
-        logger.log("Main loop #" + (mainLoopIt++) + ": pop <span style='color:red'>node v=" + s.currentNodeId + "</span> from Q");
+        logger.log("Main loop #" + (s.mainLoopIt++) + ": pop <span style='color:red'>node v=" + s.currentNodeId + "</span> from Q");
         
         setStatus(STATUS_ADMISSIBLEPUSH);
-    //   if(active.length>0){
-    //    var currentNode = active.shift();
-    //    logger2("selected node "+currentNode.id+":");
-    //    var legalNeighbour;
-    //    while((legalNeighbour=getLegalEdgeInResidualNetwork(currentNode)) && currentNode.excess >0){
-    //      push(currentNode,legalNeighbour,source,target,active);
-    //    }
-
-    //    if(node.excess > 0 && legalNeighbour==null){
-    //     relabel(currentNode,active);
-    //    }
-    //   }else{
-    //     stepNum++
-    //   }
-    // }
-
-    // function mainLoopStepped(){
-    //   if(currentNode){
-    //     var legalNeighbour=getLegalEdgeInResidualNetwork(currentNode);
-    //     if(legalNeighbour && currentNode.excess >0){
-    //       var nonsat = push(currentNode,legalNeighbour,source,target,active);
-    //       if(currentNode.excess==0 || nonsat) currentNode=null;
-    //     }else if(currentNode.excess >0){
-    //       relabel(currentNode,active);
-    //       currentNode=null;
-    //     }else{
-    //       currentNode=null;
-    //     }
-    //   }else if(active.length>0){
-    //    currentNode = active.shift();
-    //    logger2("selected node "+currentNode.id+":");
-    //   }else{
-    //     stepNum++;
-    //   }
     }
 
     /**
- * checks if we can apply a push operation. Together with push() mimics the inner WHILE loop
- */
+     * checks if we can apply a push operation. Together with push() mimics the inner WHILE loop
+     */
     function admissiblePush() {
       s.e_dash=null;
         var v = Graph.instance.nodes.get(s.currentNodeId);
@@ -620,8 +605,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
 
     /**
- * apply a push operation on the current node
- */
+     * apply a push operation on the current node
+     */
     function push() {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         var e_dash = new Graph.ResidualEdge(s.e_dash); //e' G'
@@ -645,8 +630,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
 
     /**
- * checks if we can apply a relabel operation. This mimics and IF, since relabel() returns to outer while loop
- */
+     * checks if we can apply a relabel operation. This mimics and IF, since relabel() returns to outer while loop
+     */
     function admissibleRelabel() {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         if (v.state.excess > 0 && (s.e_dash = v.getLegalResidualEdge()) == null) { //todo: check if e_dash can ever be not null here, since we pushed till we saturated all edges beforehand anyways
@@ -659,8 +644,8 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     }
 
     /**
- * apply a relabel operation on the current node
- */
+     * apply a relabel operation on the current node
+     */
     function relabel() {
         var node = Graph.instance.nodes.get(s.currentNodeId);
         
