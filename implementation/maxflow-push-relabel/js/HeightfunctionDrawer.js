@@ -1,6 +1,9 @@
 var HeightfunctionDrawer = function(svgOrigin,algo){
-    var leftMargin = 20;
+    var leftMargin = 10;
     GraphDrawer.call(this,svgOrigin,{left:leftMargin});
+
+    GraphAlgos.remove(svgOrigin.attr("id"),this);
+
 
     this.x.domain([0,10]);
     this.y.domain([0,10]);
@@ -190,7 +193,9 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     this.setXFunName = function(name,noUpdate){
       xFunName=name;
       selectBox.property("value",xFunName); //does not trigger 'change' event
-      xAxisText.text(xFunName);
+      var yx = xFunName.split("/");
+      xAxisText.text(yx[1]);
+      yAxisText.text(yx[0]);
       if(!noUpdate) that.update();
     }
 
@@ -216,18 +221,20 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     var xAxis = d3.svg.axis().scale(this.x).orient("bottom").tickFormat(tickForm);
     var yAxis = d3.svg.axis().scale(this.y).orient("left").tickFormat(tickForm);
 
+    var yx = xFunName.split("/");
+
     var xAxisText = this.svg.append("g")
           .attr("class", "x axis")
-          .attr("transform", "translate(0," + this.height + ")")
+          .attr("transform", "translate(0," + (this.height-10) + ")")
           .call(xAxis)
         .append("text")
           .attr("class", "label")
           .attr("x", this.width)
           .attr("y", 15)
           .style("text-anchor", "end")
-          .text(xFunName);//id
+          .text(yx[1]);//id
 
-    this.svg.append("g")
+    var yAxisText = this.svg.append("g")
           .attr("class", "y axis")
           .attr("transform", "translate("+leftMargin+",0)")
           .call(yAxis)
@@ -238,7 +245,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
           //.attr("y", -3)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
-          .text("height")
+          .text(yx[0])
      
     /////////////////
     //PRIVILEDGED

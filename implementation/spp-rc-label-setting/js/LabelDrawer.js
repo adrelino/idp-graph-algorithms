@@ -9,7 +9,7 @@ var LabelDrawer = function(svgOrigin,algo){
     var xRange = +svgOrigin.attr("width") || 400;
         yRange = +svgOrigin.attr("height") || 300;
     var wS = global_NodeLayout['borderWidth'];
-    var margin = {top: global_KnotenRadius+wS, right: global_KnotenRadius+wS, bottom: global_KnotenRadius+wS, left: global_KnotenRadius+wS+leftMargin},
+    var margin = {top: global_KnotenRadius+wS, right: global_KnotenRadius+wS, bottom: global_KnotenRadius+2*wS, left: global_KnotenRadius+leftMargin},
         width = xRange - margin.left - margin.right,
         height = yRange - margin.top - margin.bottom;
 

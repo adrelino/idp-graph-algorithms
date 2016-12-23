@@ -2,17 +2,31 @@ var graphEditorTab = null, algorithmTab = null;
 
 function svgHack(){
 //add arrowhead
-    d3.select("body").append("svg")
+    var defs = d3.select("body").append("svg")
         .attr("id","graph-defs")
-        .append("defs").append("marker")
+        .append("defs")
+
+     defs.append("marker")
         .attr("id", "arrowhead2")
-        .attr("refX",12) /*must be smarter way to calculate shift*/
-        .attr("refY",2)
-        .attr("markerWidth", 12)
-        .attr("markerHeight", 4)
+        .attr("refX",24) /*must be smarter way to calculate shift*/
+        .attr("refY",4)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerWidth", 24)
+        .attr("markerHeight", 8)
         .attr("orient", "auto")
         .append("path")
-        .attr("d", "M 0,0 V 4 L6,2 Z"); //this is actual shape for arrowhead
+        .attr("d", "M 0,0 V 8 L12,4 Z"); //this is actual shape for arrowhead
+
+     defs.append("marker")
+        .attr("id", "arrowhead3")
+        .attr("refX",24) /*must be smarter way to calculate shift*/
+        .attr("refY",4)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerWidth", 24)
+        .attr("markerHeight", 8)
+        .attr("orient", "auto-start-reverse")
+        .append("path")
+        .attr("d", "M 0,0 V 8 L12,4 Z"); //this is actual shape for arrowhead
 
 
 
@@ -95,11 +109,16 @@ function svgSerialize(svgHtml){//Node){
 
 //http://spin.atomicobject.com/2014/01/21/convert-svg-to-png/
 //http://techslides.com/save-svg-as-an-image
-function svgSerializeAndCrop(svgNode,styles){
+function svgSerializeAndCrop(svgNode,styles,crop){
   var sel=d3.select(svgNode);
   var algo = GraphAlgos.get(sel.attr("id"));
 
-  if(algo){
+  var oldId = sel.attr("id");
+  var oldClass = sel.attr("class");
+  sel.attr("id",null);
+  sel.attr("class",null);
+
+  if(algo && crop){
     var nodes = Graph.instance.getNodes();
 
     var screenCoords = nodes.map(algo.nodePos.bind(algo));
@@ -109,13 +128,13 @@ function svgSerializeAndCrop(svgNode,styles){
 
     var transl = "translate(-"+xR[0]+",-"+yR[0]+")";
 
+    var oldWidth = sel.attr("width");
+    var oldHeight = sel.attr("height");
     var width = xR[1]-xR[0]+algo.margin.left+algo.margin.right;
     var height = yR[1]-yR[0]+algo.margin.top+algo.margin.bottom;
 
     //use d3 to select transform, doesnt work with jqyery since it selects all g's, not just the top level one;
     var oldTra = sel.select("g").attr("transform");
-    var oldWidth = sel.attr("width");
-    var oldHeight = sel.attr("height");
 
     sel.select("g").attr("transform",oldTra+","+transl);//.each("end",function(){
     sel.attr("width",width);
@@ -142,13 +161,16 @@ function svgSerializeAndCrop(svgNode,styles){
 
   var href = svgSerialize(svgHtml);
 
-  if(algo){
+  if(algo && crop){
     //move back
     sel.attr("viewBox",null);
     sel.attr("width",oldWidth);
     sel.attr("height",oldHeight);
     sel.select("g").attr("transform",oldTra);
   }
+
+  sel.attr("id",oldId);
+  sel.attr("class",oldClass);
 
   defs.remove();
 

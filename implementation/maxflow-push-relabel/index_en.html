@@ -54,7 +54,7 @@
     <script src="../library-d3-svg/js/GraphEditorTab.js"></script>
     <script src="../library-d3-svg/js/siteAnimation.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/graph-style.css" />
+    <link id="graph-style" rel="stylesheet" type="text/css" href="../library-d3-svg/css/graph-style.css" />
     <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/style.css" />
 
 <!--     Files used only for this applet -->
@@ -267,6 +267,17 @@
             <div>
                 <div class="canvasWrapper">
                    <table>
+                   <tr>
+                   <td>Graph G</td>
+                   <td>Residual Graph G' with axis:
+                        <select id="heightFunctionXAxis">
+                            <option value="y/x">y/x</option><!--graph-->
+                            <option value="height/excess">height/excess</option><!--excess-->
+                            <option value="height/id">height/id</option><!--id-->
+                        </select>
+                        <label><input type="checkbox" id="heightFunctionXAxisKeepFixed"> fixed</label>
+                        </td>
+                   </tr>
                     <tr>
                       <td class="svgContainer">
                         <svg class="graphCanvas" id="ta_canvas_graph" width="350" height="500"></svg>
@@ -274,14 +285,6 @@
                       </td>
                       <td class="svgContainer">
                         <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="500"></svg>
-                        axis:
-                        <select id="heightFunctionXAxis">
-                            <option value="y/x">y/x</option><!--graph-->
-                            <option value="height/excess">height/excess</option><!--excess-->
-                            <option value="height/id">height/id</option><!--id-->
-                        </select>
-                        <label><input type="checkbox" id="heightFunctionXAxisKeepFixed"> fixed</label>
-                        <br>
                         <a class="svgDownloader" download="maxflow-graph-algorithm-height.svg" href="data:text/plain,test">maxflow-graph-algorithm-height.svg</a>
                       </td>
                     </tr>
