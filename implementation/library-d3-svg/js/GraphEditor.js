@@ -1,15 +1,3 @@
-// function SpaceShip(scene, x, y) {
-//   Actor.call(this, scene, x, y);
-//   this.points = 0;
-// }
-// Calling the Actor constructor first ensures that all the instance properties created by Actor are added to the new object. After that, SpaceShip can define its own instance properties such as the ship’s current points count.
-// In order for SpaceShip to be a proper subclass of Actor, its prototype must inherit from Actor.prototype. The best way to do the extension is with ES5’s Object.create:
-// SpaceShip.prototype = Object.create(Actor.prototype);
-
-// Things to Remember
-// - Call the superclass constructor explicitly from subclass construc- tors, passing this as the explicit receiver.
-// - Use Object.create to construct the subclass prototype object to avoid calling the superclass constructor.
-
 var GraphEditor = function(svgOrigin){
   GraphDrawer.call(this,svgOrigin,null,0);
 
@@ -21,20 +9,7 @@ var GraphEditor = function(svgOrigin){
     .on("mousedown",mousedown)
     .on("contextmenu", function(d){d3.event.stopPropagation();d3.event.preventDefault()});
 
-//TODO::maybe we can add defs here so that they are only defined once per page so that they show in firefox. So far, we have to copy defs to each index_html
-//   this.svgOrigin
-//         .append("defs").append("marker")
-//         .attr("id", "arrowhead2")
-//         .attr("refX",12) /*must be smarter way to calculate shift*/
-//         .attr("refY",2)
-//         .attr("markerWidth", 12)
-//         .attr("markerHeight", 4)
-//         .attr("orient", "auto")
-//         .append("path")
-//         .attr("d", "M 0,0 V 4 L6,2 Z"); //this is actual shape for arrowhead
-
   this.onNodesEntered = function(selection) {
-//     console.log("onNodesEntered in GraphEditor");
     
     selection
       .on("mousedown", mousedownNode)
@@ -43,7 +18,6 @@ var GraphEditor = function(svgOrigin){
       .on("dblclick",dblclickResource);
 //       .style("cursor","move") //crosshair pointer move
 
-//     GraphDrawer.prototype.onNodesEntered.call(this,selection);
   }
 
   this.onNodesUpdated = function(selection){
@@ -284,15 +258,26 @@ function contextmenuEdge(d){
   that.updateEdges();
 }
 
-
 function addNode(pos){
   var xy = that.screenPosToNodePos(pos);
   Graph.instance.addNode(xy.x, xy.y);
   that.update();
 //   return point;
 }
-
-
 }
+
+//inheritance
 GraphEditor.prototype = Object.create(GraphDrawer.prototype);
 GraphEditor.prototype.constructor = GraphEditor;
+
+// function SpaceShip(scene, x, y) {
+//   Actor.call(this, scene, x, y);
+//   this.points = 0;
+// }
+// Calling the Actor constructor first ensures that all the instance properties created by Actor are added to the new object. After that, SpaceShip can define its own instance properties such as the ship’s current points count.
+// In order for SpaceShip to be a proper subclass of Actor, its prototype must inherit from Actor.prototype. The best way to do the extension is with ES5’s Object.create:
+// SpaceShip.prototype = Object.create(Actor.prototype);
+
+// Things to Remember
+// - Call the superclass constructor explicitly from subclass construc- tors, passing this as the explicit receiver.
+// - Use Object.create to construct the subclass prototype object to avoid calling the superclass constructor.

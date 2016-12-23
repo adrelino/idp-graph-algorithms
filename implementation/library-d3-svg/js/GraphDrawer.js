@@ -3,18 +3,19 @@
  * Aus dem TUM Styleguide.
  * @type Object 
  */
-var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
-                    NodeBorder:             "#0065BD",  // Pantone 300, 100%, "TUM-Blau"
-                    NodeBorderHighlight:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    NodeFillingHighlight:   "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
-                    NodeFillingLight:       "#00c532",  // Dunkelgrün 55 % aus TUM Styleguide
-                    NodeFillingQuestion:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    EdgeHighlight1:         "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    EdgeHighlight2:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
-                    EdgeHighlight3:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
-                    EdgeHighlight4:         "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
-                    RedText:                "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-                    GreenText:              "#007C30",   // Dunkelgrün 100 % aus TUM Styleguide
+var const_Colors = {
+    NodeFilling:            "#98C6EA",  // Pantone 283, 100%
+    NodeBorder:             "#0065BD",  // Pantone 300, 100%, "TUM-Blau"
+    NodeBorderHighlight:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    NodeFillingHighlight:   "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+    NodeFillingLight:       "#00c532",  // Dunkelgrün 55 % aus TUM Styleguide
+    NodeFillingQuestion:    "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    EdgeHighlight1:         "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    EdgeHighlight2:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+    EdgeHighlight3:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
+    EdgeHighlight4:         "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
+    RedText:                "#C4071B",  // Helles Rot 100% aus TUM Styleguide
+    GreenText:              "#007C30",   // Dunkelgrün 100 % aus TUM Styleguide
     PQColor : "#FFFF70", // Helles Gelb
     StartNodeColor : "#33CC33", // Dunklgrün
     CurrentNodeColor : "#C4071B", // Helles Rot
@@ -22,49 +23,62 @@ var const_Colors = {NodeFilling:            "#98C6EA",  // Pantone 283, 100%
     ShortestPathColor : "#73B78D", // Wie EdgeHighlight2
     UnusedEdgeColor : "#0065BD", // Wie NodeBorder
     NormalEdgeColor : "#000000" // Schwarz
-                    };
+};
 
 /**
  * Standardgröße eines Knotens
  * @type Number
  */
-var global_KnotenRadius = 15;                           // Radius der Knoten
+var global_KnotenRadius = 15;
+
 /**
  * Standardaussehen einer Kante.
  * @type Object
  */
-var global_Edgelayout = {'arrowAngle' : Math.PI/8,	         // Winkel des Pfeilkopfs relativ zum Pfeilkörper
-			             'arrowHeadLength' : 15,             // Länge des Pfeilkopfs
-                         'lineColor' : "black",		         // Farbe des Pfeils
-			             'lineWidth' : 2,		             // Dicke des Pfeils
-                         'font'	: 'Arial',		             // Schrifart 
-                         'fontSize' : 14,		             // Schriftgrösse in Pixeln
-                         'isHighlighted': false,             // Ob die Kante eine besondere Markierung haben soll
-                         'progressArrow': false,             // Zusätzlicher Animationspfeil 
-                         'progressArrowPosition': 0.0,       // Position des Animationspfeils
-                         'progressArrowSource': null,        // Animationspfeil Source Knoten
-                         'progressArrowTarget': null         // Animationspfeil Target Knoten
-			};
+var global_Edgelayout = {
+    'arrowAngle' : Math.PI/8,	         // Winkel des Pfeilkopfs relativ zum Pfeilkörper
+    'arrowHeadLength' : 15,             // Länge des Pfeilkopfs
+    'lineColor' : "black",		         // Farbe des Pfeils
+    'lineWidth' : 2,		             // Dicke des Pfeils
+    'font'	: 'Arial',		             // Schrifart 
+    'fontSize' : 14,		             // Schriftgrösse in Pixeln
+    'isHighlighted': false,             // Ob die Kante eine besondere Markierung haben soll
+    'progressArrow': false,             // Zusätzlicher Animationspfeil 
+    'progressArrowPosition': 0.0,       // Position des Animationspfeils
+    'progressArrowSource': null,        // Animationspfeil Source Knoten
+    'progressArrowTarget': null         // Animationspfeil Target Knoten
+};
                         
 /**
  * Standardaussehen eines Knotens.
  * @type Object
  */
-var global_NodeLayout = {'fillStyle' : const_Colors.NodeFilling,    // Farbe der Füllung
-                         'nodeRadius' : 15,                         // Radius der Kreises
-                         'borderColor' : const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
-                         'borderWidth' : 2,                         // Breite des Rands
-                         'fontColor' : 'black',                     // Farbe der Schrift
-                         'font' : 'bold',                           // Schriftart
-                         'fontSize' : 14                            // Schriftgrösse in Pixeln
-                        };
+var global_NodeLayout = {
+    'fillStyle' : const_Colors.NodeFilling,    // Farbe der Füllung
+    'nodeRadius' : 15,                         // Radius der Kreises
+    'borderColor' : const_Colors.NodeBorder,   // Farbe des Rands (ohne Markierung)
+    'borderWidth' : 2,                         // Breite des Rands
+    'fontColor' : 'black',                     // Farbe der Schrift
+    'font' : 'bold',                           // Schriftart
+    'fontSize' : 14                            // Schriftgrösse in Pixeln
+};
 
+/**
+ * Helper function to return a string representaiton of SVG's translate tranform
+ */
 function translate(x,y){
     return "translate("+x+","+y+")";
 }
 
+/**
+ * Global map where we save the GraphDrawer instances. Used when saving svg to disc.
+ */
 GraphAlgos = d3.map();
 
+/**
+ * The base class of a Network visualization of a graph. Based on D3 and SVG.
+ * Graph Editors and Graph Algorithms should inherit from this class.
+ */
 GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
     /////////////////
@@ -81,13 +95,14 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
     var wS = global_NodeLayout['borderWidth'];
     
     var margin = {
-            top: global_KnotenRadius+wS+ (extraMargin.top || 10),
-            right: global_KnotenRadius+wS,
-            bottom: global_KnotenRadius+wS,
-            left: global_KnotenRadius+wS +(extraMargin.left || 0)}
+        top: global_KnotenRadius+wS+ (extraMargin.top || 10),
+        right: global_KnotenRadius+wS,
+        bottom: global_KnotenRadius+wS,
+        left: global_KnotenRadius+wS +(extraMargin.left || 0)
+    }
 
-        width = xRange - margin.left - margin.right,
-        height = yRange - margin.top - margin.bottom;
+    var width = xRange - margin.left - margin.right,
+    var height = yRange - margin.top - margin.bottom;
 
     this.height = height;
     this.width = width;
@@ -119,9 +134,10 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
     var transform = function(d){
         return translate(this.x(this.nodeX(d)),this.y(this.nodeY(d)));
-    }
-    transform = transform.bind(this);
+    }; transform = transform.bind(this);
 
+    //fit the graph extend in a smaller window. needed for algorithm tab 
+    //since there the network graph is only half as wide as in the graph editor tab.
     NOSQUEEZE=false;
     this.squeeze = function(){
         if(NOSQUEEZE) return; //define flag for debug
@@ -133,19 +149,14 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         }
     }
 
-    //somehow we get old copies of nodes in d where the state is outdated
-    //-> workaround: get the correct node from the Graph instance using its id
     var xfun = function(d){
         return this.x(this.nodeX(Graph.instance.nodes.get(d.id) || d));
-    }
+    }; xfun = xfun.bind(this);
+
 
     var yfun = function(d){
         return this.y(this.nodeY(Graph.instance.nodes.get(d.id) || d));
-    }
-
-    xfun = xfun.bind(this);
-
-    yfun = yfun.bind(this);
+    }; yfun = yfun.bind(this);
 
     function lineAttribs(d){
         var attr = { x1:xfun(d.start), y1:yfun(d.start), x2:xfun(d.end), y2:yfun(d.end)};
@@ -159,9 +170,10 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         else d3.select(this).attr(attr);
     };
 
+
+
     /////////////////
     //PRIVILEDGED
-
 
     this.clear = function(){
         svg_nodes.selectAll("g").remove();
@@ -182,6 +194,9 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         return "translate(" + (pos[0]-margin.left) + "," + (pos[1]-margin.top) + ")";
     }
 
+    /**
+     * D3's Data Join of node data with their visualization (circles)
+     */
     this.updateNodes = function(){
 
         // DATA JOIN
@@ -252,7 +267,9 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
     } //end updateNodes()
 
 
-
+    /**
+     * D3's Data Join of edge data with their visualization (lines)
+     */
     this.updateEdges = function(){
 
         var selection = svg_links.selectAll(".edge")
@@ -322,7 +339,6 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
     }
 
-
     //initialize //TODO: is called twice when we init both tabs at the same time
     if(Graph.instance==null){
         //calls registered event listeners when loaded;
@@ -332,31 +348,28 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
            console.log("error loading graph instance "+error + " from " + filename +" text: "+text);
        }); 
     }
-
 } //end constructor GraphDrawer
 
-
+/**
+ * The main function which triggers updates to node and edge selections. 
+ */
 GraphDrawer.prototype.update= function(){
   this.updateNodes();
   this.updateEdges();
 }
 
-GraphDrawer.prototype.getType= function(){
-    console.log(this.type);
-}
-
+/**
+ * Callback functions to be overwritten to style the graph
+ */
 GraphDrawer.prototype.onNodesEntered = function(selection) {
 //     console.log(selection[0].length + " nodes entered")
 }
-
 GraphDrawer.prototype.onNodesUpdated = function(selection) {
 //     console.log(selection[0].length + " nodes updated")
 }
-
 GraphDrawer.prototype.onEdgesEntered = function(selection) {
 //     console.log(selection[0].length + " edges entered")
 }
-
 GraphDrawer.prototype.onEdgesUpdated = function(selection) {
 //     console.log(selection[0].length + " edges entered")
 }
@@ -382,17 +395,15 @@ GraphDrawer.prototype.nodeLabel = function(d){
     return d.id;
 }
 
+/**
+ * Position of node
+ */
 GraphDrawer.prototype.nodeX = function(d){
-    if(!d){
-        console.log(d);
-    }
     return d.x;
 };
-
 GraphDrawer.prototype.nodeY = function(d){
     return d.y;
 };
-
 GraphDrawer.prototype.nodePos = function(d){
     var obj = {};
     obj.x = this.x(this.nodeX(d));
