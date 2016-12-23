@@ -1,16 +1,3 @@
-%==================================================
-% abstract.tex
-% Beispieldatei für tumthesis.cls und thesis.tex
-% Michael Ritter, 2012
-% Lizenz: 
-% This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3
-% of this license or (at your option) any later version.
-% The latest version of this license is in
-% http://www.latex-project.org/lppl.txt
-% and version 1.3 or later is part of all distributions of LaTeX
-% version 2005/12/01 or later.
-%==================================================
 \cleardoublepage
 
 \selectlanguage{english}
@@ -19,6 +6,13 @@ This interdisciplinary project deals with the vivid visualization of advanced gr
 
 
 Both algorithms carry a lot of state variables and are thus not easy to understand intuitively. An additional visualization layer with an intuitive representation of all state variables and state transitions during algorithm execution was developed. It displays the height function of each node in case of the \pushRelabel{} or the pareto frontier of all labels resident in a certain node in case of the \labelSetting{}. To achieve the goal of a high interactivity, we replaced the previous Canvas based graph visualization code with a new implementation based on SVG, using D3.js, a JavaScript library for producing dynamic, interactive data visualizations in web browsers.
+
+%
+%This interdisciplinary project deals with the vivid visualization of advanced graph algorithms. In particular, algorithms to solve two distinctive problems in discrete math are considered. For efficiency reasons, one often employs advanced graph algorithms to solve above problems. Both algorithms carry a lot of state variables and are thus not easy to understand intuitively. An additional visualization layer with an intuitive representation of all state variables and state transitions during algorithm execution was developed.
+%
+%The \maxflow{} is solved using the efficient \pushRelabel{}. It displays the height function of each node. To solve the \spprc{}, we employ a generic \labelSetting{} which follows the dynamic programming principle. The pareto frontier of all labels resident in a certain node is displayed.
+% 
+%To achieve the goal of a high interactivity, we replaced the previous Canvas based graph visualization code with a new implementation based on SVG, using D3.js, a JavaScript library for producing dynamic, interactive data visualizations in web browsers.
 
 
 %This IDP aims at extending the previous HTML5 framework that was developed at the chair to support advanced graph algorithms:
@@ -48,8 +42,3 @@ Beide Algorithmen führen eine Menge an Statusvariablen mit sich und sind deshal
 %Das interdisziplinäre Projekt hat das Ziel, die erwähnten Problemstellungen mit einfachen Worten zu erklären und durch Beispiele zu motivieren sowie die verwendeten Lösungsverfahren graphisch zu veranschaulichen. Die Darstellung wird hierbei in Form einer separaten Web-Applikation für jede Problemstellung erfolgen, welche aus Gründen der einheitlichen Darstellung und der der leichteren Wartbarkeit auf ein gemeinsames, bereits existierendes Framework aufbauen wird.
 
 \selectlanguage{english}
-
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-master: "thesis"
-%%% End: 

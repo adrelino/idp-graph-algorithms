@@ -8,6 +8,10 @@ Problems defined on networks arise in many real-life applications. A network can
 \newcommand{\ein}{{e_{\text{in}}}}
 \newcommand{\eout}{{e_{\text{out}}}}
 
+%for algorithms
+%\newcommand{\setfont}[1]{\mathcal{#1}}
+\newcommand{\setfont}[1]{#1}
+
 \begin{definition}[directed graph]
 A graph is an ordered pair $G = (V, E)$ consisting of a vertex (or node) set $V$ and an edge (or arc) set $E$. In a \textit{directed graph (digraph)}, $E$ is a set of ordered pairs of vertices, a subset of the cartesian product of vertices, that is $E \subseteq V \times V$. Thus, each edge $e \in E$ can be uniquely identified by a pair of vertices from $V$, that is $e=(v,w)$ with $v,w \in V$ and $v \neq w$, where $v$ is the start vertex and $w$ is the end vertex of the directed edge or arc $e$ \cite{jungnickel2013graphs}[1.6]. For problems or algorithms defined on digraphs, it is often convenient to define the sets of edges coming into a vertex $v$ or leaving it.
 \begin{align}
@@ -64,6 +68,26 @@ For a flow $f$ in $G=(V,E)$, we can construct the \textit{residual graph} $G' = 
 \end{figure}
 
 
+\section{\pushRelabel{}}
+\input{pseudocode/pseudocode-maxflow}
+
+
+\section{concept}
+\begin{figure}
+\centering
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/maxflow-graph-algorithm-graph}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/maxflow-graph-algorithm-height}
+\end{subfigure}
+\caption{maxflow concept}
+\label{fig:maxflow}
+\end{figure}
+
+
+
+
 
 \section{The \spprc{}}
 Another basic problem defined on networks is how to traverse a network to get from one point to another one as cheaply as possible. For this problem we wish to find a shortest path between two points.
@@ -86,5 +110,25 @@ The accumulated consumptions of the resource \textit{time} along a path are cons
 \end{example}
 
 $[t_{arrival},t_{departure}] \forall v \in V$
+
+
+\section{\labelSetting{}}
+\input{pseudocode/pseudocode-spprc}
+
+
+\section{concept}
+
+\begin{figure}
+\centering
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/spp-rc-graph-algorithm-graph}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/spp-rc-graph-algorithm-labels}
+\end{subfigure}
+\caption{spprc concept}
+\label{fig:spprc}
+\end{figure}
+
 
 
