@@ -421,31 +421,31 @@
     var STATUS_DOMINANCE = id++;
     var STATUS_DOMINANCE_NODE = id++;
     var STATUS_FINISHED = id;-->
-<div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
-    <div><p>s &larr; pick(v)</p></div>
-    <div><p>BEGIN</p></div>
-    <div><p>(* Initialize *)</p>
-         <p>U &larr; {(&epsilon;,s)}, P &larr; &empty;</p></div>
-    <div><p>(* Main Loop *)</p>
-         <p>WHILE &exist; l=(~,v) &in; U</p></div>
-<!--                                  <p>WHILE U &ne; &empty; DO</p>
+<!--     <p>WHILE U &ne; &empty; DO</p>
          <p>   l=(~,v) &larr; U.pop()</p></div> -->
-    <div><p>   (* Path extension step *)</p>
-         <p>   FORALL e=(v,w) &isin; E</p>
-         <p>      l'=(l,w) &larr; EXTEND(l,e)</p></div>
-    <div><p>      IF l' &isin; FEASIBLE(w)</p> 
-         <p>         U &larr; U &cup; {l'}</p></div>
-    <div><p>      ELSE</p> 
-         <p>         throw away l'</p></div>
-    <div><p>   P &larr; P &cup; {l}</p></div>
-    <div><p>   (* Dominance step *)</p>
-         <p>   FORALL v &isin; V\{s}</p></div>
-    <div><p>     U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
-    <div><p>END</p>
-         <p>t &larr; pick(v)</p>
-         <p>(* Filtering step *)</p>
-         <p>solution &larr; l=(~,t) &in; P : </p>
-         <p>cost(l) = min(cost(l)) &forall; l=(~,t) &in; P </p></div>
+<div class="PseudocodeWrapper" id="ta_div_statusPseudocode">
+<div><p>s &larr; pick(v)</p></div>
+<div><p>BEGIN</p></div>
+<div><p>(* Initialize *)</p>
+     <p>U &larr; {(&epsilon;,s)} and P &larr; &empty;</p></div>
+<div><p>(* Main Loop *)</p>
+     <p>WHILE &exist; l=(~,v) &in; U</p>
+     <p>  U &larr; U \ {l}</p></div>
+<div><p>  (* Path extension step *)</p>
+     <p>  FORALL e=(v,w) &isin; E</p>
+     <p>    l'=(l,w) &larr; EXTEND(l,e)</p></div>
+<div><p>    IF l' &isin; FEASIBLE(w)</p> 
+     <p>      U &larr; U &cup; {l'}</p></div>
+<div><p>    ELSE</p> 
+     <p>      throw away l'</p></div>
+<div><p>  P &larr; P &cup; {l}</p></div>
+<div><p>  (* Dominance step *)</p>
+     <p>  FORALL v &isin; V\{s}</p></div>
+<div><p>    U,P &larr; REMOVE-DOMINATED(U,P)</p></div>
+<div><p>END</p>
+     <p>(* Filtering step *)</p>
+     <p>t &larr; pick(v)</p>
+     <p>l* &in; P | cost(l*) == min({cost(l=(~,t)&in;P)}) </p></div>
 </div>
 <!--                     </div> -->
                     <h3>Variable status</h3>
@@ -560,14 +560,17 @@ If one wants to allow negative cycles, a label which has once been fully extende
 <h3>What is the pseudocode of the algorithm?</h3>
 <div>
 <pre><code>
-Input:  Weighted, undirected graph G=(V,E) with weight function l.
-Output: A list {d(v[j]) : j = 1,..,n} containing the distances dist(v[1],v[j]) = d(v[j]),
-         if there are no negative circles reachable from v[1]. 
-         The message "Negative Circle" is shown, if a negative circle can be reached from v[1].
+Input:  directed graph G=(V,E) with 
+        start node s and end node t
+        resource windows for all nodes
+        resource vectors for all edges
+Output: feasible, pareto-optimal s-t path l* with minimal cost
 </code></pre>
 <hr>
-<pre><code id=tw_div_statusPseudocode>
-</code></pre>
+<!-- <pre><code id=tw_div_statusPseudocode>
+</code></pre> -->
+<div id=tw_div_statusPseudocode>
+</div>
 </div>
 <h3>How fast is the algorithm?</h3>
 <div>

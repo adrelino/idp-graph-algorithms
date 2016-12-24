@@ -6,34 +6,30 @@
 
 \begin{algorithm}[h!]
 \DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
-\KwIn{directed Graph $G=(V,E)$ with
-\begin{itemize}
-	\setlength\itemsep{0pt}
-	\setlength{\parskip}{0pt}
-	\item $\forall$ nodes $v \in V$: [arrive, depart] time window resource constraint
-	\item $\forall$ edges $e \in E$: (time,cost) 2-dimensional resource consumptions
-	\item start Node $s$, end Node $t$
-\end{itemize}}
-\KwOut{feasible, pareto-optimal $s \rightarrow t$ paths} \vspace{0.2cm}
+\KwIn{digraph $G=(V,E)$ with start node $s \in V$, target node $t \in V$, resource windows for all nodes %$[t_a, t_d] \, \forall v \in V$ 
+and resource vectors for all edges} %$(t,c) \, \forall e \in E$}
+\KwOut{feasible, pareto-optimal $s$-$t$ path $l^*$ with minimal cost} \vspace{0.2cm}
 (* Initialize *) \;
-SET $\setfont{U} = \{(s)\}$ and $\setfont{P} = \emptyset$ \;
-\While{$\setfont{U} \neq \emptyset$}{
+$U \gets \{(\epsilon,s)\}$ and $P \gets \emptyset$ \;
+(* Main Loop *) \;
+\While{$\exists l=(\sim,v) \in U$}{
+	$U \gets U \setminus \{l\}$\;
 	(* Path extension step *)\;
-	CHOOSE a path $\setfont{Q} \in \setfont{U}$ and REMOVE $\setfont{Q}$ from $\setfont{U}$\;
-	\ForAll{arcs $(v(\setfont{Q}), w) \in A$ of the forward star of $v(\setfont{Q})$}{
-		\If{$(\setfont{Q},w) \in \setfont{F}(s,w) \cap \setfont{G}$}{
-			ADD $(\setfont{Q},w)$ to $\setfont{U}$
+	\ForAll{$e=(v,w) \in E$}{
+		$l'=(l,w) \gets$ EXTEND$(l,e)$\;
+		\If{$l' \in \mathrm{FEASIBLE}(w)$}{
+			$U \gets U \cup \{l'\}$\;
 		}
 	}
-	ADD $\setfont{Q}$ to $\setfont{P}$\;
+	$P \gets P \cup \{l\}$\;
 	(* Dominance step *)\;
-	\If{(* any condition *)}{
-		APPLY dominance algorithm to paths from $\setfont{U} \cup \setfont{P}$ ending at some node $v$\;
+	\ForAll{$v \in V\setminus\{s\}$}{
+		$U,P \gets$ REMOVE-DOMINATED$(U,P)$\;
 	}
 }
-(* Filtering step *)\;
-FILTER $\setfont{P}$, i.e., identify a solution $\setfont{S} \subseteq \setfont{P}$\;
-\caption{Generic Dynamic Programming SPPRC Algorithm}
+((* Filtering step *))\;
+$l^* \in P \; | \; cost(l^*) ==\min( \{ cost(l=(\sim,t)\in P) \} )$\;
+\caption{Generic Dynamic Programming SPPTW Label Setting Algorithm}
 \end{algorithm}
 
 

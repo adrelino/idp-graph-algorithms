@@ -416,27 +416,25 @@
 <div><p>s &larr; pick(v)</p></div>
 <div><p>t &larr; pick(v)</p></div>
 <div><p>BEGIN</p></div>
-<div><p>(* Initializing the preflow *)</p>
-   <p> FORALL e=(u,w) &isin; E</p>
-   <p>    IF u == s THEN f(e) &larr; c(e)</p>
-   <p>    ELSE f(e) &larr; 0</p>
-   <p>    IF u == s AND w &ne; t THEN Q.add(w)</p></div>
-<div><p>(* Initializing the height function *)</p>
-   <p> h(s) = |V|</p>
-   <p> FORALL v &isin; V\{s}</p>
-   <p>    h(v) &larr; #arcs on directed v-t path</p></div>
+<div><p>(* Initialize the preflow *)</p>
+     <p>FORALL e=(u,w) &isin; E</p>
+     <p>  f(e) &larr; (u == s) ? c(e) : 0</p>
+     <p>  IF u == s AND w &ne; t THEN Q.add(w)</p></div>
+<div><p>(* Initialize the height function *)</p>
+     <p>h(s) &larr; |V|</p>
+     <p>FORALL v &isin; V\{s}</p>
+     <p>  h(v) &larr; #arcs on shortest v-t path</p></div>
 <div><p>(* Main Loop *)</p>
-   <p> WHILE Q &ne; &empty;</p>
-   <p>    v &larr; Q.pop()</p></div>
-<div><p>    WHILE e(v)>0 </p>
-   <p>    AND &exist; e'=(v,w)&isin;E'|h(v)==h(w)+1</p></div>
-<div><p>       (* PUSH *)</p>
-   <p>       push min{e(v),c'(e')} flow from v to w</p>
-   <p>       IF w != s,t AND w &notin; Q THEN Q.add(w)</p></div>
-<div><p>     IF e(v)>0 AND &#8708; e'=(v,w)&isin;E'|h(v)==h(w)+1</p></div>
-<div><p>       (* RELABEL *)</p>
-   <p>       h(v) &larr; 1+min{h(w)|e*=(v,w)&isin;E'}</p>
-   <p>       Q.add(v)</p></div>
+     <p>WHILE Q &ne; &empty;</p>
+     <p>  v &larr; Q.pop()</p></div>
+<div><p>  WHILE e(v)>0 AND &exist; e'=(v,w)&isin;E'|h(v)==h(w)+1</p></div>
+<div><p>    (* PUSH *)</p>
+     <p>    push min(e(v),c'(e')) flow from v to w</p>
+     <p>    IF w &ne; s,t AND w &notin; Q THEN Q.add(w)</p></div>
+<div><p>  IF e(v)>0</p></div>
+<div><p>     (* RELABEL *)</p>
+     <p>     h(v) &larr; 1+min({h(w)|e*=(v,w)&isin;E'})</p>
+     <p>     Q.add(v)</p></div>
 <div><p>END</p></div>
 </div>
                 <!--    </div> -->
@@ -544,8 +542,10 @@ Output: A feasible maximum s-t flow f(e) satisfying:
         The flow value of f(e) is maximized along all feasible flows
 </code></pre><!-- , which fulfills the capacity constraints f(e) leq c(e) for all edges, flow conservation at all inner nodes and maximises the flow value over all feasible flows. -->
 <hr>
-<pre><code id=tw_div_statusPseudocode>
-</code></pre>
+<!-- <pre><code id=tw_div_statusPseudocode>
+</code></pre> -->
+<div id=tw_div_statusPseudocode>
+</div>
 </div>
 <h3>How fast is the algorithm?</h3>
 <div>

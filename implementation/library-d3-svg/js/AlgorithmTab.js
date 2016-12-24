@@ -88,7 +88,7 @@ function AlgorithmTab(algo,p_tab) {
             return "pseudocode";
         });
 
-        d3.select("#tw_div_statusPseudocode").text(pseudocode.text())
+        d3.select("#tw_div_statusPseudocode").html(pseudocode.html())
 
         Tab.prototype.init.call(this);
 

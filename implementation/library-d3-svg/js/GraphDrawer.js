@@ -101,7 +101,7 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         left: global_KnotenRadius+wS +(extraMargin.left || 0)
     }
 
-    var width = xRange - margin.left - margin.right,
+    var width = xRange - margin.left - margin.right;
     var height = yRange - margin.top - margin.bottom;
 
     this.height = height;

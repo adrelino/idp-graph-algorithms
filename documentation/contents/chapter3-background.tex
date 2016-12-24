@@ -69,6 +69,19 @@ For a flow $f$ in $G=(V,E)$, we can construct the \textit{residual graph} $G' = 
 
 
 \section{\pushRelabel{}}
+The push-relabel algorithm operates locally and does not, in contrast to the less efficient globally operating maximum flow algorithms based on augmenting paths, maintain a feasible flow during the algorithm execution. Instead, it maintains a preflow. The capacity constraints of the edges are still maintainted, but the flow conservation at the nodes is not:
+
+\begin{definition}[preflow]
+	The preflow $\tilde f$ is a generalization of the flow $f$, the equality sign $=$ in the flow conservation is replaced with $\geq$. This means that more flow can enter an inner node than leaving it, e.g. we allow leaks in our pipe system.
+\end{definition}
+
+Another important concept in in the push-relabel algorithm is the height function, which is an approximation of the distance of a node towards the sink. The local \textit{push} operations try to move \textit{excess} at inner nodes 'downwards' towards the sink. If the current node is at a local minimum and still has excess, we \textit{relabel} the node by increasing its \textit{height} so that subsequent push operations can remove the excess.
+\begin{definition}[valid edge with respect to the height function]
+	An edge $e'=(v,w)$ of the \textbf{residual graph} is valid with respect to the current height function, if $h(v)==h(w)+1$, meaning that the current node is one level above the one to where we wish to push excess to.
+\end{definition}
+
+The important property of the push-relabel algorithm is that when the algorithm terminates, the computed preflow is actually a flow!
+
 \input{pseudocode/pseudocode-maxflow}
 
 
@@ -106,10 +119,9 @@ In the shortest path problem with resource constraints (SPPRC), each edge additi
 \begin{example}[SPPTW]
 An illustrative example is the two-resource SPPRC, the shortest path problem with time windows (SPPTW). In addition to the \textit{cost} $c$, each edge additionally bears the resource \textit{time} $t$. Thus each edge is associated with the two-dimensional resource vector $(t,c) \forall e \in E$. The secondary resource \textit{time} is constrained, while the primary resource \textit{cost} is unconstrained, but seeks to be minimized.
 
-The accumulated consumptions of the resource \textit{time} along a path are constrained at the intermediate vertices along that path by lower and upper limits, that is the earliest arrival time $t_a$ and the latest departure time $t_b$ and called the \textit{resource window}, denoted as a tuple $[t_a,t_b] \forall v \in V$.
+The accumulated consumptions of the resource \textit{time} along a path are constrained at the intermediate vertices along that path by lower and upper limits, that is the earliest arrival time $t_a$ and the latest departure time $t_b$ and called the \textit{resource window}, denoted as tuples $[t_a,t_b] \, \forall v \in V$.
 \end{example}
 
-$[t_{arrival},t_{departure}] \forall v \in V$
 
 
 \section{\labelSetting{}}
