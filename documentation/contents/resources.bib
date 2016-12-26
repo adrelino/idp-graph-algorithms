@@ -23,6 +23,40 @@
 %%%%%%%%%%%%%%%%%
 %MAXFLOW
 
+%previous start
+@article{ford1956maximal,
+  title={Maximal flow through a network},
+  author={Ford, Lester R and Fulkerson, Delbert R},
+  journal={Canadian journal of Mathematics},
+  volume={8},
+  number={3},
+  pages={399--404},
+  year={1956}
+}
+
+@article{dinic1970algorithm,
+    author = {Dinic, E. A.},
+    journal = {Soviet Math Doklady},
+    pages = {1277--1280},
+    title = {Algorithm for solution of a problem of maximum flow in a network with power estimation},
+    volume = {11},
+    year = {1970}
+}
+
+@article{edmonds1972theoretical,
+  title={Theoretical improvements in algorithmic efficiency for network flow problems},
+  author={Edmonds, Jack and Karp, Richard M},
+  journal={Journal of the ACM (JACM)},
+  volume={19},
+  number={2},
+  pages={248--264},
+  year={1972},
+  publisher={ACM}
+}
+%previous end
+
+
+
 %primary
 @article{goldberg1988new,
   title={A new approach to the maximum-flow problem},
@@ -36,6 +70,7 @@
   doi={10.1145/48014.61051}
 }
 
+%secondary start
 @article{goldberg2014efficient,
  author = {Goldberg, Andrew V. and Tarjan, Robert E.},
  title = {Efficient Maximum Flow Algorithms},
@@ -71,7 +106,12 @@
   year={2009},
   publisher={MIT press}
 }
+%secondary end
 
+
+%web resources
+
+%lecture slides info
 @misc{mayer2013prakt,
   author={Mayr, Ernst W},
   howpublished = {Lecture notes. Technische Universität München},
@@ -82,11 +122,96 @@
   url={http://wwwmayr.in.tum.de/lehre/2013WS/algoprak/uebung/tutorial6.english.pdf}
 }
 
+%lecture slides math
+@misc{matuschke2016network,
+  author={Matuschke, Jannik},
+  howpublished = {Lecture notes. Technische Universität München},
+  title={Network Flows (MA5518), Lecture 2},
+  year=2016,
+  month=apr,
+  day=26,
+  url={https://www-m9.ma.tum.de/foswiki/pub/SS2016/NetworkFlows/nf160426.pdf}
+}
 
+%lecture slides math2
+@misc{mehlhorn2000maximum,
+  author={Mehlhorn, Kurt},
+  howpublished = {Lecture notes. Max Planck Institut Informatik},
+  title={The Maximum Flow Problem},
+  year=2000,
+  month=nov,
+  day=20,
+  url={http://people.mpi-inf.mpg.de/~mehlhorn/DatAlg/Maxflow.pdf}
+}
+
+%tech docu
+@misc{boost2002push,
+  author={Siek, Jeremy},
+  howpublished = {The boost C++ library documentation, version 1.62},
+  title={push_relabel_max_flow},
+  year=2001,
+  url={http://www.boost.org/doc/libs/1_62_0/libs/graph/doc/push_relabel_max_flow.html}
+}
 
 
 %%%%%%%%%%%%%%%%
 %SHORTEST PATH
+
+%previous start
+
+%dijkstra SSPP label-setting
+@article{dijkstra1959note,
+  title={A note on two problems in connexion with graphs},
+  author={Dijkstra, Edsger W},
+  journal={Numerische Mathematik},
+  volume={1},
+  number={1},
+  pages={269--271},
+  year={1959},
+  publisher={Springer}
+}
+
+% Bellman-Ford SSPP with negative cycles label-correcting
+@article{bellman1958routing,
+  title={On a routing problem},
+  author={Bellman, Richard},
+  journal={Quarterly of applied mathematics},
+  pages={87--90},
+  year={1958},
+  publisher={JSTOR}
+}
+@article{ford1962flows,
+  title={Flows in Networks},
+  author={Ford, Lestor R and Fulkerson, DR},
+  year={1962},
+  publisher={Princeton University Press}
+}
+
+% Floyd-Warshall ASPP with negative cycles label-correcting
+@article{floyd1962algorithm,
+  title={Algorithm 97: shortest path},
+  author={Floyd, Robert W},
+  journal={Communications of the ACM},
+  volume={5},
+  number={6},
+  pages={345},
+  year={1962},
+  publisher={ACM}
+}
+@article{warshall1962theorem,
+  title={A theorem on boolean matrices},
+  author={Warshall, Stephen},
+  journal={Journal of the ACM (JACM)},
+  volume={9},
+  number={1},
+  pages={11--12},
+  year={1962},
+  publisher={ACM}
+}
+%previous end
+
+
+
 
 %primary
 @incollection{irnich2005shortest,
@@ -100,18 +225,27 @@
   doi={10.1007/0-387-25486-2_2}
 }
 
+%secondary start
+@mastersthesis{schlechte2003,
+  author      = {Thomas Schlechte},
+  type        = {Diplomarbeit},
+  title       = {Das Resource-Constrained-Shortest-Path-Problem und seine Anwendung in der ÖPNV-Dienstplanung},
+  institution = {Technische Universität Berlin},
+  year        = {2003},
+}
+
 @phdthesis{ziegelmann2001constrained,
   title={Constrained shortest paths and related problems},
   author={Ziegelmann, Mark},
   year={2001},
-  school={Universit{\"a}tsbibliothek}
+  school={Universität des Saarlandes}
 }
 
-@book{garcia2009resource,
+@phdthesis{garcia2009resource,
   title={Resource constrained shortest paths and extensions},
   author={Garcia, Renan},
   year={2009},
-  publisher={ProQuest}
+  school={Georgia Institute of Technology}
 }
 
 @article{feillet2004exact,
@@ -130,45 +264,71 @@
   author={Solomon, Marius Mihai},
   year={1984}
 }
+%secondary end
+
+
+%web resources
+
+%lecture slides 
+@misc{petersen2006label,
+  author={Petersen, Bjørn},
+  howpublished = {Lecture notes for lecture 3, DIKU, University of Copenhagen},
+  title={Label-Setting Algorithm for Shortest Path Problems, Recent Research Results},
+  year=2006,
+  month=nov,
+  day=21,
+  url={http://www.diku.dk/OLD/undervisning/2006-2007/2006-2007_b2_426/slides3.pdf}
+}
+
+%tech docu
+@misc{boost2006rc,
+  author={Drexl, Michael},
+  howpublished = {The boost C++ library documentation, version 1.62},
+  title={r_c_shortest_paths},
+  year=2006,
+  url={http://www.boost.org/doc/libs/1_62_0/libs/graph/doc/r_c_shortest_paths.html}
+}
+
+%blog
+@misc{networking2013vehicle,
+  author={Networking and Emerging Optimization Research Group},
+  howpublished = {Website, Universidad de Malaga, Spain},
+  title={Vehicle Routing Problem with Time Windows (VRPTW)},
+  year=2013,
+  month=jan,
+  day=7,
+  url={http://neo.lcc.uma.es/vrp/vrp-flavors/vrp-with-time-windows/}
+}
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%
-% previous work
-% http://www-m9.ma.tum.de/Allgemeines/WolfgangRiedl?sortcol=2;table=8;up=1#sorted_table
-
+%%%%%%%%%%%%%%%%%
+%% IDP's previous work
+%% http://www-m9.ma.tum.de/Allgemeines/WolfgangRiedl?sortcol=2;table=8;up=1#sorted_table
+%
 @MastersThesis{feil2016idp,
   type = {Interdisciplinary Project},
   author = {Johannes Feil},
   title = {Visualisierung fortgeschrittener Graphalgorithmen mit D3.js am Beispiel des Blossom Algorithmus},
   school = {Technische Universität München},
   year = {2016},
-  month = nov
+  month = nov,
+  note = {\textit{Edmonds' Blossom Algorithm}},
+  url = {https://www-m9.ma.tum.de/graph-algorithms/matchings-blossom-algorithm/}
 }
 
 %Darstellung von Flussalgorithmen in einer Web-Applikation
 @MastersThesis{fischer2016idp,
   type = {Interdisciplinary Project},
   author = {Quirin Fischer},
-  title = {Visualisierung von Flussalgorithmen},  %
+  title = {Visualisierung von Flussalgorithmen},
   school = {Technische Universität München},
   year = {2016},
-  month = sep
+  month = sep,
+  note = {\textit{Ford-Fulkerson Algorithm (IDP Flow Algorithms)}},
+  url = {https://github.com/fischerq/idp-flow-algorithms}
 }
 
 
@@ -187,17 +347,21 @@
   title = {Adaption eines didaktischen Konzepts zur Darstellung weiterführender Graphalgorithmen in einer Web-Applikation},
   school = {Technische Universität München},
   year = {2015},
-  month = jun
+  month = jun,
+  note = {\textit{The Floyd-Warshall Algorithm}},
+  url = {https://www-m9.ma.tum.de/graph-algorithms/spp-floyd-warshall/}
 }
 
-%Darstellung von Spannbaum-Algorithmen in HTML5
+Darstellung von Spannbaum-Algorithmen in HTML5
 @MastersThesis{sefidgar2015idp,
   type = {Interdisciplinary Project},
   author = {Seyed Reza Sefidgar},
-  title = {Enhancement and Adaption of a didactic Concept to the Presentation of Spanning Tree Algorithms in a Web Applicationg},
+  title = {Enhancement and Adaption of a didactic Concept to the Presentation of Spanning Tree Algorithms in a Web Application},
   school = {Technische Universität München},
   year = {2015},
-  month = apr
+  month = apr,
+  note = {\textit{Prim's Algorithm}},
+  url={https://www-m9.ma.tum.de/graph-algorithms/mst-prim/}
 }
 
 
@@ -207,7 +371,9 @@
   title = {Entwicklung und Implementierung eines didaktischen Konzepts für die Wissenskontrolle zu verschiedenen Graphenalgorithmen zum Einsatz in der gymnasialen Oberstufe},
   school = {Technische Universität München},
   year = {2014},
-  month = may
+  month = may,
+  note = {\textit{Der Dijkstra - Algorithmus}},
+  url = {https://www-m9.ma.tum.de/graph-algorithms/spp-dijkstra/}
 }
 
 @MastersThesis{storz2013idp,
@@ -216,5 +382,7 @@
   title = {Entwicklung und Implementierung eines didaktischen Konzepts zur Veranschaulichung verschiedener Graphalgorithmen zum Einsatz in der gymnasialen Oberstufe},
   school = {Technische Universität München},
   year = {2013},
-  month = apr
+  month = apr,
+  note = {\textit{The Bellman-Ford Algorithm}},
+  url = {https://www-m9.ma.tum.de/graph-algorithms/spp-bellman-ford/}
 }

@@ -14,11 +14,20 @@ Problems defined on networks arise in many real-life applications. A network can
 
 \begin{definition}[directed graph]
 A graph is an ordered pair $G = (V, E)$ consisting of a vertex (or node) set $V$ and an edge (or arc) set $E$. In a \textit{directed graph (digraph)}, $E$ is a set of ordered pairs of vertices, a subset of the cartesian product of vertices, that is $E \subseteq V \times V$. Thus, each edge $e \in E$ can be uniquely identified by a pair of vertices from $V$, that is $e=(v,w)$ with $v,w \in V$ and $v \neq w$, where $v$ is the start vertex and $w$ is the end vertex of the directed edge or arc $e$ \cite{jungnickel2013graphs}[1.6]. For problems or algorithms defined on digraphs, it is often convenient to define the sets of edges coming into a vertex $v$ or leaving it.
+ E.g. for vertex $v=2$ in \refFigure{fig:graph}, $\Ein{2}=\{(0,2),(1,2)\}, \Eout{2}=\{(2,3)\}$
 \begin{align}
 \text{incoming edges} \quad \quad \Ein{v}  &: \{ e=(u,v) \in E \; | \; u,v \in V \}  \\
 \text{outgoing edges} \quad \quad \Eout{v} &: \{ e=(v,w) \in E \; | \; v,w \in V \}
 \end{align}
 \end{definition}
+
+\begin{figure}
+\centering
+	\includegraphics{fig/graph-editor}
+	\caption{a digraph with $V=\{0,1,2,3\}$, $E=\{(0,1),(0,2),(1,2),(1,3),(2,3)\}$}
+	\label{fig:graph}
+\end{figure}
+
 
 
 \section{The \maxflow{}}
@@ -69,11 +78,24 @@ For a flow $f$ in $G=(V,E)$, we can construct the \textit{residual graph} $G' = 
 
 
 \section{\pushRelabel{}}
-The push-relabel algorithm operates locally and does not, in contrast to the less efficient globally operating maximum flow algorithms based on augmenting paths, maintain a feasible flow during the algorithm execution. Instead, it maintains a preflow. The capacity constraints of the edges are still maintainted, but the flow conservation at the nodes is not:
+An early way to compute a maximum flow on a directed graph was called the augmenting path method by Ford-Fulkerson \cite{ford1956maximal}. A path with available capacity is an augmenting path, an s-t path in the residual graph. As long as such paths exist, one can increase the flow globally on these paths. If the method terminates, it computed a maximum flow. It is called a method and not an algorithm because the way to find augmenting paths in the residual graph is not fully specified. Furthermore, there is no guarantee on termination and runtime.
 
+About 15 years later, two algorithms based on the augmenting path method were developed. They ensure a polynomial time bound by augmenting flow along the shortest path first. The algorithm of Edmonds-Karp \cite{edmonds1972theoretical} ensures a runtime of $O(|V|\dot|E|^2)$ while the one of Dinic \cite{dinic1970algorithm} improves on that with a runtime of $O(|V|^2\dot|E|)$. This class of algorithms based on the augmenting path method has been visualized in a previous interdisciplinary project \cite{fischer2016idp}.
+
+Still about another 15 years later, an alternative and more efficient method that uses local operations that increase the flow locally was published, the push-relabel algorithm of Goldberg-Tarjan \cite{goldberg1988new}. In contrast to the previous, less efficient algorithms based on augmenting paths, it only changes the flow locally and only needs to construct the residual graph locally. The increased efficiency comes at the cost of not maintaining a \textit{feasible flow} during algorithm execution. Instead, a \textit{preflow} is maintained:
 \begin{definition}[preflow]
-	The preflow $\tilde f$ is a generalization of the flow $f$, the equality sign $=$ in the flow conservation is replaced with $\geq$. This means that more flow can enter an inner node than leaving it, e.g. we allow leaks in our pipe system.
+	The \textit{preflow} $\tilde f$ is a generalization of the flow $f$. The \Eqref{eq:cap} of the edges is still maintained, but the \Eqref{eq:conserv} at the vertices is not: The equality sign $=$ is replaced with $\geq$. This means that more flow can enter an inner node than leaving it, e.g. we allow leaks in our pipe system.
 \end{definition}
+
+One allows flow excesses, that is, some vertices can have more incoming than outgoing flow at the intermediate stages of the algorithm \cite{goldberg2014efficient}.
+
+\begin{definition}[excess]
+	The \textit{excess} flow at a node $v$ due to the preflow is defined as 
+	\begin{align}
+		e(v) = \sum_{e \in \Eout{v}} f(e) - \sum_{e \in \Ein{v}} f(e)
+	\end{align}
+\end{definition}
+
 
 Another important concept in in the push-relabel algorithm is the height function, which is an approximation of the distance of a node towards the sink. The local \textit{push} operations try to move \textit{excess} at inner nodes 'downwards' towards the sink. If the current node is at a local minimum and still has excess, we \textit{relabel} the node by increasing its \textit{height} so that subsequent push operations can remove the excess.
 \begin{definition}[valid edge with respect to the height function]
@@ -99,6 +121,7 @@ The important property of the push-relabel algorithm is that when the algorithm 
 \end{figure}
 
 
+The crucial requirement is the third one, namely d(v) = d(w) + 1. Thus we are only allowed to push along residual edges vw for which d(v) is exactly one unit larger than d(w), that is, for which d(v) takes its maximum permissible value; see (5) above. We may visualize this rule by thinking of water cascading down a series of terraces of different height, with the height corresponding to the labels. Obviously, water will flow down, and condition (5) has the effect of restricting the layout of the terraces so that the water may flow down only one level in each step. \cite{jungnickel2013graphs,6.6}
 
 
 
@@ -141,6 +164,5 @@ The accumulated consumptions of the resource \textit{time} along a path are cons
 \caption{spprc concept}
 \label{fig:spprc}
 \end{figure}
-
 
 
