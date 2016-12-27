@@ -1,4 +1,61 @@
 \chapter{Shortest paths}\label{ch:4}
 
+\section{The \spprc{}}
+Another basic problem defined on networks is how to traverse a network to get from one point to another one as cheaply as possible. For this problem we wish to find a shortest path between two points.
+
+\begin{definition}[path]
+A \textit{path} $P = (e_1, e_2, ... e_p)$ is a finite sequence of arcs (some arcs may occur more than once) where the end vertex of $e_i \in E$ is identical to the start vertex of $e_{i+1} \in E$ for all $i=1,\dots,p-1$. For simple graphs, a path can be also be written as $P = (v_0,v_1,\dots,v_p)$ since the edges can be uniquely idetified by start and end vertex $e_i=(v_{i-1},v_i)$. The length of a path is $p$ \cite{irnich2005shortest}.
+\end{definition}
+
+
+\begin{definition}[SPP]
+The ordinary shortest path problem (SPP) is perhaps the simplest of all network problems. It seeks an (unconstrained) $s$-$t$ path of minimal cost (or length) between two points. A real-valued cost function $c : E \rightarrow \mathbb{R}$ is defined on all edges of the graph. The cost or length of a path is defined as the sum of the costs of all the edges along the path, that is $c(P)=\sum_{i=1}^p c(e_i)$. The problem can further be split depending if one is interested to know shortest paths from a single source (SSSPP) or between all pairs (APSPP) of vertices.
+\end{definition}
+
+\begin{definition}[SPPRC]
+In the shortest path problem with resource constraints (SPPRC), each edge additionally carries a secondary (possibly higher-dimensional) resource vector or function $r$. A path $P$ is now constrained at the intermediate vertices $v_i$ with lower and upper bounds on the accumulated resource consumptions along the (partial) paths.
+\end{definition}
+
+\begin{definition}[SPPTW]
+An illustrative example is the two-resource SPPRC, the shortest path problem with time windows (SPPTW). In addition to the \textit{cost} $c$, each edge additionally bears the resource \textit{time} $t$. Thus each edge is associated with the two-dimensional resource vector $(t,c) \, \forall e \in E$. The secondary resource \textit{time} is constrained, while the primary resource \textit{cost} is unconstrained, but seeks to be minimized. The accumulated consumptions of the resource \textit{time} along a path are constrained at the intermediate vertices along that path by lower and upper limits, that is the earliest arrival time $t_a$ and the latest departure time $t_b$ and called the \textit{resource window}, denoted as tuples $[t_a,t_b] \, \forall v \in V$.
+\end{definition}
+
+
+
+\section{\labelSetting{}}
+We start with the distinction between label-setting \cite[ch. 4]{ahuja1993network} and label-correcting \cite[ch. 5]{ahuja1993network} shortest-path algorithms.
+
+The first label-setting algorithm was suggested by Dijkstra \cite{dijkstra1959note}\footnote{secondary sources \cite[sec. 4.5]{ahuja1993network},\cite[sec. 24.3]{cormen2009introduction},\cite[sec. 3.7, p. 83]{jungnickel2013graphs}}. It solves the SSSPP with non-negative edge weights and is visualized in \cite{velden2014idp}. Its runtime is $O(|V|^2)$ which can further be improved to $O(|E| + |V| \log |V|)$ when using a Fibonacci heap for the queue of active nodes. After a node has been processed, the distance label of the path ending in that node is permanent and will thus not change in subsequent iterations. The algorithm is a greedy method and is thus very efficient.
+
+On the other hand, label-correcting algorithms allow negative edge weights and can detect negative cycles. An example which solves the SSSPP with negative-edge weights is the Bellman-Ford algorithm \cite{bellman1958routing,ford1962flows}\footnote{secondary sources \cite[sec. 5.4]{ahuja1993network},\cite[sec. 24.1]{cormen2009introduction},\cite[sec. 3.7, p. 87]{jungnickel2013graphs}}. It is visualized in \cite{storz2013idp}. An example which solves the APSPP is the Floyd-Warshall algorithm \cite{floyd1962algorithm,warshall1962theorem}\footnote{secondary sources \cite[sec. 5.6]{ahuja1993network},\cite[sec. 25.2]{cormen2009introduction},\cite[sec. 3.9]{jungnickel2013graphs}} as visualized in \cite{becker2015idp}. These two algorithms are dynamic programming approaches.
+
+
+The recent survey \cite{irnich2005shortest} gives an overview of the wide area of shortest path problems with resource constraints (SPPRC), which are either label setting or label correcting algorithms. They provide a generic SPPRC algorithm based on dynamic programming. Depending on the path selection strategy, the generic algorithm results in a label setting or label correcting algorithm. We choose the simplest variant of the SPPRC, the shortest path problem with time windows (SPPTW), sometimes also called the vehicle routing problem with time windows (VRPTW). The underlying network must either be acyclic or the resource consumptions for at least one resource must be strictly positive along a path to allow for a label-setting algorithm. 
+
+An optimal solution of the full problem consists of optimal solutions of partial problems, that is, the shortest s-t path with time window constrains contains optimal shortest partial paths s-v for all v on the shortest s-t path. This optimality principle of Bellman \cite{bellman1957dynamic} can be written as a dynamic programming recursion for time-windows $[t_a,t_b] \, \forall v \in V$ and resource vectors $(t,c) \, \forall e \in E$:
+\begin{align*}
+	T(P_0) &= t_a^0 \\
+	T(P_i) &= \max\{t_a^i, T(P_{i-1}) + t_i\}
+\end{align*}
+Here, $T$ stands for the accumulated consumption of the resource time $t$ along the edges of a path $P$. In the recursion case, we take the maximum of earliest arrival time $t_a$ and accumulated time consumption of the prefix path $P_{i-1}$ extended along the current edge $e$, $T(P_{i-1}) + t_i$, because waiting at a node is allowed.
+
+Fortunately, not all of the dynamic programming partial results are kept. First of all, it can be the case that $T(P_{i-1}) + t_i > t_b^i$. This means that the time window at the node is exceeded. The path or label obtained from above extension is \textit{infeasible} and thus discarded.
+
+Secondly, path or labels who are feasible, but equal or worse in both time and cost than other feasible labels can be discarded. A label \textit{dominates} all labels in its right upper cone in the chart of cost/time. The set of all such labels is \textit{pareto-optimal}. Even though we will finally be interested in feasible, minimum cost labels ending in t, we cannot discard any of them at intermediate nodes since extensions of one label with lower cost but higher time might have unfeasible extensions at subsequent vertices along the paths while others with higher cost and lower time don't. 
+
+
+\input{pseudocode/pseudocode-spprc}
+In our visualization concept \refFigure{fig:spprc}, we wanted to show how paths are extended and discarded. The primary visualization layer displays the graph network, the 2-dimensional resource-vector of an edge and the time-window at the vertices. Paths can be highlighted. The secondary visualization layer displays the corresponding labels in a 2-dimensional chart, where the axis is cost/time. It also displays the time window of the current node as a rectangle. The labels to be displayed can be filtered by their resident nodes by clicking on it, which allows to view the pareto-frontier of a node. By clicking on a label, the corresponding path is highlighted. Meaningful default filters are implemented depending on the state of the algorithm execution.
+\begin{figure}
+\centering
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/spp-rc-graph-algorithm-graph}
+\end{subfigure}
+\begin{subfigure}[t]{0.45\textwidth}
+\includegraphics[width=\textwidth]{fig/spp-rc-graph-algorithm-labels}
+\end{subfigure}
+\caption{spprc concept}
+\label{fig:spprc}
+\end{figure}
 
 

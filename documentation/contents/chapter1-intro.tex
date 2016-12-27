@@ -7,7 +7,25 @@ For advanced graph algorithms \cite{goldberg1988new,irnich2005shortest}, which a
 The ideas of these visualizations have long existed in a static form in textbooks describing the theory behind these algorithms with specific examples. Nevertheless, we are unaware of a dynamic visualization of these additional state variables.
 
 \section{Related work}
+The primary sources of the algorithms of this work are \cite{goldberg1988new,irnich2005shortest}. Secondary source for the first algorithm is the review article \cite{goldberg2014efficient} and for the second one three phd theses, a diploma thesis and a journal article \cite{solomon1983vehicle,ziegelmann2001constrained,schlechte2003resource,feillet2004exact,garcia2009resource}.
+A deeper understanding of the problems at hand and a broader view of related algorithms was acquired using standard university textbooks \cite{ahuja1993network,cormen2009introduction,jungnickel2013graphs}, where the last one comes from the math domain, the middle one from the computer science domain, while the first one lies somewhere in between. These allow to grasp the connection between \textit{problem} and \textit{algorithm}.
+Another important source of inspiration are the web resources such as lecture slides regarding maxflow \cite{mayer2013prakt,mehlhorn2000maximum,williamson2007network,matuschke2016network} and spprc \cite{petersen2006label}. The boost C++ library's documentation is a valuable source of information for both algorithms \cite{boost2002push,boost2006rc}. The VRPTW is additionally handled in a nice website \cite{networking2013vehicle}.
+
+The implementation part of this interdisciplinary project is a large-scale refactoring of previous projects \cite{storz2013idp,velden2014idp,sefidgar2015idp,becker2015idp,zoennchen2015idp} over the duration of two years. The most drastical change is the usage of SVG and D3.js instead of a Canvas based visualizations. A beta version of this project already forms the basis of the latest two interdisciplinary projects \cite{fischer2016idp,feil2016idp}.
+The needed JavaScript knowledge was acquired in part with the help of \cite{flanagan2011javascript,crockford2008javascript,haverbeke2015eloquent,resig2013secrets,herman2012effective,stefanov2010javascript}. The first one is the definitive reference for javascript, the second one an advanced book about language features to use or to leave out, the third and fourth one a good introduction for beginners. The last two books cover important language aspects and design patterns, in particular scope and closure, prototypal-based inheritance, statics, singletons and code-reuse patterns.
+Concerning D3.js \cite{bostock2011d3}, the crucial part one needs to understand is the data join and the enter, update and exit selection, which are nicely explained in two blog posts \cite{bostock2012join,bostock2016general}. The introductory books \cite{murray2013interactive,zhu2013data,meeks2015d3} also give details on how to implement charts as used for the secondary visualization layer .
+
+
 \section{Contributions}
-In addition to the two applications of advanced graph algorithms related to m
+The contributions of this work are the following:
+\begin{itemize}
+	\item Two applications to visualize different problems of discrete math, the maximum flow and the shortest path problem with resource constraints. New concepts for secondary visualization layers are developed and implemented.
+	\item A complete and very generic rewrite of the basic graph data structure Graph using hashmaps of Grap.Node and Graph.Edge together. Methods to serialize to file and deserialize to load from file are implemented.
+	\item A complete rewrite of the graph visualization code using D3.js and SVG instead of Canvas. This is the GraphDrawer class, which should be used as a base class. Customization is easily possible by overwriting methods that will be called from inside of D3.js data join. Any visualization can be saved to disk in png or svg format, for which styles and marker definitions are automatically inlined.
+	\item A new Graph Editor with support for modyfing graphs with arbitrary resources easily. An arbitrary number of resources or constraints can be defined on edges or nodes.
+	\item A new way to save stateful data of the graph using JSON.stringify, which makes implementing the reverse functionality much easier.
+	\item A Logger utility which allows to log algorithm executution messages with up to 3 indentation levels. This is very useful for development, but also for the final algorithm so people can trace the algorithm execution.
+	\item A new way to synchronize between the algorithm state (in the sense of a finite state machine), pseudocode lines, and their description using d3.
+\end{itemize}
 
 \section{Overview}
