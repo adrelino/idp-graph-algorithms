@@ -51,22 +51,34 @@ For a flow $f$ in $G=(V,E)$, we can construct the \textit{residual graph} $G' = 
 An early way to compute a maximum flow on a directed graph was called the augmenting path method by Ford-Fulkerson \cite{ford1956maximal}\footnote{secondary sources \cite[sec. 6.4]{ahuja1993network}, \cite[sec. 26.2, p.724]{cormen2009introduction}, \cite[sec. 6.1]{jungnickel2013graphs}}. A path with available capacity is an augmenting path, an s-t path in the residual graph. As long as such paths exist, one can increase the flow globally on these paths. If the method terminates, it computed a maximum flow. It is called a method and not an algorithm because the way to find augmenting paths in the residual graph is not fully specified. Furthermore, there is no guarantee on termination and runtime. About 15 years later, two algorithms based on the augmenting path method were developed. They ensure a polynomial time bound by augmenting flow along the shortest path first. The algorithm of Edmonds-Karp \cite{edmonds1972theoretical}\footnote{secondary sources \cite[sec. 26.2, p. 727]{cormen2009introduction}, \cite[sec. 6.2]{jungnickel2013graphs}} ensures a runtime of $O(|V|\dot|E|^2)$ while the one of Dinic \cite{dinic1970algorithm}\footnote{secondary sources \cite[sec. 7.4]{ahuja1993network}, \cite[sec. 26.2]{cormen2009introduction}, \cite[sec. 6.4]{jungnickel2013graphs}} improves on that with a runtime of $O(|V|^2\dot|E|)$. This class of algorithms based on the Ford-Fulkerson method of augmenting paths has been visualized in a previous interdisciplinary project \cite{fischer2016idp}.
 
 Still about another 15 years later, an alternative and more efficient method which uses local operations based on the concept of a preflow and a height function was published: The push-relabel algorithm of Goldberg-Tarjan \cite{goldberg1988new}. In contrast to the previous, less efficient algorithms based on augmenting paths, it changes the flow locally and only needs to construct the residual graph locally. The increased efficiency comes at the cost of not maintaining a \textit{feasible flow} during algorithm execution. Instead, a \textit{preflow} is maintained:
-\begin{definition}[excess, preflow and active nodes]
+\begin{definition}[excess and preflow]
 	The \textit{preflow} $\tilde f$ is a generalization of the flow $f$. The \Eqref{eq:cap} of the edges is still maintained, but the \Eqref{eq:conserv} at the vertices is not: The equality sign $=$ is replaced with $\geq$: $\sum_{e \in \Ein{v}} f(e) \geq \sum_{e \in \Eout{v}} f(e) \forall v \in V \setminus \{s\}$.
 %This means that more flow can enter an inner node than leaving it, e.g. we allow leaks in our pipe system.
-One allows flow \textit{excess}, that is, some vertices can have more incoming than outgoing flow at the intermediate stages of the algorithm \cite{goldberg2014efficient}. As long as a vertex has positive (non-null) excess, it is called an \textit{active node}. The excess flow at a node $v$ due to the preflow is non-negative for all nodes except for the start node and defined as:
+One allows flow \textit{excess}, that is, some vertices can have more incoming than outgoing flow at the intermediate stages of the algorithm \cite{goldberg2014efficient}.  The excess flow at a node $v$ due to the preflow is non-negative for all nodes except for the start node and defined as:
 	\begin{align}
-		e(v) = \sum_{e \in \Ein{v}} f(e) - \sum_{e \in \Eout{v}} f(e) \geq 0 \quad \forall v \in V \setminus \{s\} \eqname*[eq:nonneq]{excess} \\ \nonumber
+		e(v) = \sum_{e \in \Ein{v}} f(e) - \sum_{e \in \Eout{v}} f(e) \geq 0 \quad \forall v \in V \setminus \{s\} \eqname*[eq:excess]{excess} \\ \nonumber
 	\end{align}
 \end{definition}
+
+\begin{definition}[active node]
+As long as a vertex has positive (non-null) excess, it is called an \textit{active node}.
+\end{definition}
+
 
 \begin{remark}
 An s-t preflow without active nodes is an s-t flow \cite{matuschke2016network}.	
 \end{remark}
 
 Intuitively, we should try to push the excess at a node towards the sink, but what does that mean? Another important concept in in the push-relabel algorithm is the height function, which is an approximation of the distance of a node towards the sink. The local \textit{push} operations try to move \textit{excess} at inner nodes 'downwards' towards the sink. If the current node is at a local minimum and still has excess, we \textit{relabel} the node by increasing its \textit{height} so that subsequent push operations can remove the excess.
-\begin{definition}[height, valid labeling and eligible edges]
-A \textit{height} function $h(v) \geq \forall v \in V$ (also called distance labeling or level function) is defined for all vertices of the graph. A \textit{valid labeling} satisfies $h(t)=0$, $h(s)=|V|$ and $h(v)\leq h(w)+1 \, \forall e'=(v,w) \in E'$. An edge $e'=(v,w) \in E'$ of the \textbf{residual graph} is \textit{eligible} or valid with respect to the current height function, if $h(v)=h(w)+1$, meaning that the current node is one level above the one to where we wish to push excess to.
+\begin{definition}[height, valid labeling]
+A \textit{height} function\footnote{also called distance labeling or level function} $h(v) \geq 0 \quad \forall v \in V$ is defined for all vertices of the graph. It is a valid \textit{valid labeling} of the nodes if it satisfies 
+\begin{align}
+h(t)=0, h(s)=|V|, \text{and} \; h(v)\leq h(w)+1 \, \forall e'=(v,w) \in E' \eqname*[eq:height]{height} \\ \nonumber	
+\end{align}
+\end{definition}
+
+\begin{definition}[eligible edge] %or valid with respect to the current height function, 
+An edge $e'=(v,w) \in E'$ of the residual graph $G'$ is \textit{eligible} if $h(v)=h(w)+1$, meaning that the current node is one level above the one to where we wish to push excess to.
 \end{definition}
 
 The important property of the push-relabel algorithm is that when the algorithm terminates, the computed preflow is actually a flow. \textit{This is because there can be no augmenting path from s to t in the residual graph since any such path must contain a steep edge (since s is on level $|V|$, $t$ is on level $0$)} \cite{mehlhorn2000maximum}.

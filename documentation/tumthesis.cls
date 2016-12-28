@@ -81,6 +81,7 @@
 
 % ------------------------------------------------------------------------------
 % graphics and colors
+\usepackage[dvipsnames]{xcolor}
 \RequirePackage{graphicx}
 \RequirePackage{subcaption}
 \RequirePackage{tikz}
