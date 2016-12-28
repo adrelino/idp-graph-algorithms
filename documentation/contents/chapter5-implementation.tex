@@ -43,20 +43,16 @@ The implementation is an evolution of previous web applications for the visualiz
 %	\item Reuse classes or methods
 %\end{itemize}
 
-These improvements make it easier to reuse and extend the code in other projects. Thus, an early prototype of our implementation already served as base for concurrent interdisciplinary projects \cite{fischer2016idp,feil2016idp}. These described some details of our implementation and its benefits over previous approaches. Here, we want to describe the overall concept and all improvements made in a unified manner to serve as a good starting point for future project. The chapter is organized into sections according to the MVC principle. The contributions are
-\begin{itemize}
-	\item[Model] A major refactoring of the basic graph model Graph using hashmaps of Grap.Node and Graph.Edge together. Methods to serialize to file and deserialize to load from file are implemented.
-	\item[View] A complete rewrite of the graph visualization code using D3.js and SVG instead of Canvas. This is the GraphDrawer class, which should be used as a base class. Customization is easily possible by overwriting methods that will be called from inside of D3.js data join. Any visualization can be saved to disk in png or svg format, for which styles and marker definitions are automatically inlined. A new Graph Editor with support for modifying graphs with arbitrary resources easily. An arbitrary number of resources or constraints can be defined on edges or nodes.
-	\item[Controller] A new way to save stateful data of the graph using JSON.stringify, which makes implementing the reverse functionality much easier. A Logger utility which allows to log algorithm execution messages with up to 3 indentation levels. This is very useful for development, but also for the final algorithm so people can trace the algorithm execution. A new way to synchronize between the algorithm state (in the sense of a finite state machine), pseudocode lines, and their description using d3.
-\end{itemize}
-
+These improvements make it easier to reuse and extend the code in other projects. Thus, an early prototype of our implementation already served as base for concurrent interdisciplinary projects \cite{fischer2016idp,feil2016idp}. These described some details of our implementation and its benefits over previous approaches. Here, we want to describe the overall concept and all improvements made in a unified manner to serve as a good starting point for future project. The chapter is organized into sections according to the MVC principle.
 
 \section{Model}
-The graph Model of the previous work was not very clean because it contained code concerning the naming, colouring and layout of nodes and edges, draw methods to paint a node or an edge to Canvas and contains methods for coordinate comparisons in order to detect clicks on nodes or edges. Furthermore, a method to paint double edges was added at some point. However, the Model should be oblivious to the actual graph drawing and interactions, since these belong to the View. Moreover, the previous graph Model only allowed for a single scalar weight to be defined on edges. We extended it so that an arbitrary number of resources can be defined on both the edges and the nodes. This was especially needed for the SPPTW. Furthermore we add an associative array to nodes and edges to store the changing algorithm state, easing the replay functionality.
+%\item[Model] A major refactoring of the basic Graph class with the extension to arbitrary resources, easier algorithm state handling and new upload/download functionalities.
+The graph Model of the previous work was not very clean and thus substantially refactored and simplified while new features were added. It contained code concerning the naming, colouring and layout of nodes and edges and methods to draw them on Canvas and to detect clicks using coordinate comparisons. However, the Model should be oblivious to the actual graph drawing and interactions, since these belong to the View or the Controller. Moreover, the previous graph Model only allowed for a single scalar weight to be defined on edges. We extended it so that an arbitrary number of resources can be defined on both the edges and the nodes. This was especially needed for the SPPTW. Furthermore we add an associative array to nodes and edges to store the changing algorithm state, easing the replay functionality.
 
-The new Graph class achieves very high cohesion as can be seen from the highly interconnected UML diagram \refFigure{fig:model}. The static serialization and deserialization methods \underline{parse} and \underline{stringify} were extended to support arbitrary resource vectors. In previous work, the serialization capabilities were unaccessible to the end user. We provide a link to download a graph in its textual representation, which is backwards compatible to the previous work. Additionally, a user can now locally upload a previously saved graph right from the browser using HTML5's FileReader capabilities. The previous raw ajax calls to load a saved sample graph from a server are now nicely wrapped in d3.text calls.
+The new Graph class, composed by its subclasses GraphNode and GraphEdge, achieves high cohesion as can be seen in the UML diagram \refFigure{fig:model}. The static serialization and deserialization methods \underline{parse} and \underline{stringify} were extended to support arbitrary resource vectors. In previous work, the serialization capabilities were unaccessible to the end user. We provide a link to download a graph in its textual representation, which is backwards compatible to the previous work. Additionally, a user can now locally upload a previously saved graph right from the browser using HTML5's FileReader capabilities. The previous raw ajax calls to load a saved sample graph from a server are now nicely wrapped in d3.text calls.
 
-The loading of a graph, either from a local file or a remote server, is an asynchronous operation. According to \textit{MVC} \refFigure{fig:mvc}, the Model should update the View after any modifications to it, e.g. when another sample graph was selected or uploaded. We achieve \textit{low coupling} \refFigure{fig:coh} between the different components through the use of a static callback function registration method \underline{addChangeListener} \refFigure{fig:model}. All functions (of the View) that have been registered will be called after the graph has been loaded asynchronically without errors. To synchronize the current graph between GraphEditor and Algorithm, we employ a singleton pattern using the static Graph.\underline{instance}. 
+The loading of a graph, either from a local file or a remote server, is an asynchronous operation. According to \textit{MVC} \refFigure{fig:mvc}, the Model should update the View after any modifications to it, e.g. when another sample graph was selected or uploaded. We achieve \textit{low coupling} \refFigure{fig:coh} between the different components through the use of a static callback function registration method \underline{addChangeListener} \refFigure{fig:model}. All functions (of the View) that have been registered will be called after the graph has been loaded asynchronically without errors. To synchronize the current graph between GraphEditor and Algorithm, we employ a singleton pattern using the static Graph \underline{instance}.
+
 
 \renewcommand{\umldrawcolor}{black}
 
@@ -118,6 +114,10 @@ The loading of a graph, either from a local file or a remote server, is an async
 
 
 \section{View}
+%\item[View] A complete rewrite of the abstract GraphDrawer class for network visualization using D3.js and SVG instead of Canvas with the possibility to download it in vector format at any time. A Logger utility which allows to log algorithm execution messages with up to 3 indentation levels.
+ A complete rewrite of the graph visualization code using D3.js and SVG instead of Canvas. This is the GraphDrawer class, which should be used as a base class. Customization is easily possible by overwriting methods that will be called from inside of D3.js data join. Any visualization can be saved to disk in png or svg format, for which styles and marker definitions are automatically inlined. A Logger utility which allows to log algorithm execution messages with up to 3 indentation levels. This is very useful for development, but also for the final algorithm so people can trace the algorithm execution.
+
+
 \colorlet{lightgreen}{Akzent-Gruen!50}%tumblue3!40!lightyellow} %default color
 %accentuating green} %SpringGreen}
 
@@ -145,8 +145,6 @@ The loading of a graph, either from a local file or a remote server, is an async
   \begin{class}[text width=5cm]{ResidualGraphDrawer}{3.5,-6}
   	\inherit{GraphDrawer}
   \end{class}
-  
-
   
 
   \begin{class}[text width=2cm]{Logger}{-1,-6}
@@ -193,7 +191,11 @@ The loading of a graph, either from a local file or a remote server, is an async
   \unidirectionalAssociation{GraphEditor}{}{}{GraphEditorTab}
 
 
-
 \end{tikzpicture}
 \caption{UML class diagram for View (blue) and Controller (green). The multiplicities are all 1:1 and thus not drawn. The abstract base class GraphDrawer of the View forms the basis for all graph-based visualizations. The Logger and the secondary visualization layers LabelDrawer and ResidualGraphDrawer are part of the View, but only the latter one displays a graph (with the possibility to change the axes) and thus extends the GraphDrawer. The abstract base class Tab of the Controller is extended to form a GraphEditorTab and an AlgorithmTab. Finally, the actual GraphEditor and the two implemented Algorithms are associated with a Tab while inheriting from the GraphDrawer. Each Algorithm has a secondary visualization layer, we model this relationship with an aggregation.}
 \end{figure}
+
+
+\section{Controller}
+%\item[Controller] A new GraphEditor with support for modifying graphs with an arbitrary number of resources on nodes and edges easily. A small refactoring improved future code reusability and simplified the reverse functionality and the synchronization between algorithm state and pseudocode lines.
+	A new way to save stateful data of the graph using JSON.stringify, which makes implementing the reverse functionality much easier. A new way to synchronize between the algorithm state (in the sense of a finite state machine), pseudocode lines, and their description using d3.

@@ -1,10 +1,10 @@
 \chapter{Introduction}\label{ch:1}
 
-Most previous visualizations of graph algorithms \cite{storz2013idp,velden2014idp,sefidgar2015idp,becker2015idp,zoennchen2015idp,fischer2016idp,feil2016idp} are based on displaying the state of the algorithm on top of a network visualization of a graph, e.g. by annotating vertices or edges with additional information.
+All previous interdisciplinary projects \cite{storz2013idp,velden2014idp,sefidgar2015idp,becker2015idp,zoennchen2015idp,fischer2016idp,feil2016idp} display the state of graph algorithms on top of a network visualization, e.g. by annotating vertices or edges with additional information.
 
 For advanced graph algorithms \cite{goldberg1988new,irnich2005shortest}, which are often employed for efficiency reasons, the state size to visualize may become quite large. It may be thus advantageous to visualize the state of such algorithms in an additional visualization layer. 
 
-The ideas of these visualizations have long existed in a static form in textbooks describing the theory behind these algorithms with specific examples. Nevertheless, we are unaware of a dynamic visualization of these additional state variables.
+Sketches of these visualizations exist in static form in textbooks \cite{ahuja1993network,cormen2009introduction,jungnickel2013graphs} trying to illustrate the idea of the algorithm. The interesting part is however the change of the state variable during algorithm execution, which is hard to print to paper. The motivation of this project was thus to develop two web applications with a highly dynamic and interactive visualization of these additional state variables. Since this interdisciplinary project report is limited in the same way as the textbooks, we encourage the readers to try out the web applications live.\footnote{web applications hosted at: \url{http://www.adrian-haarbach.de/idp-graph-algorithms}} All the code developed is made available as open source and can be used as basis for future projects.\footnote{source code is available at: \url{https://github.com/adrelino/idp-graph-algorithms}}
 
 \section{Related work}
 The primary sources of the algorithms of this work are \cite{goldberg1988new,irnich2005shortest}. Secondary source for the first algorithm is the review article \cite{goldberg2014efficient} and for the second one three phd theses, a diploma thesis and a journal article \cite{solomon1983vehicle,ziegelmann2001constrained,schlechte2003resource,feillet2004exact,garcia2009resource}.
@@ -13,19 +13,25 @@ Another important source of inspiration are the web resources such as lecture sl
 
 The implementation part of this interdisciplinary project is a large-scale refactoring of previous projects \cite{storz2013idp,velden2014idp,sefidgar2015idp,becker2015idp,zoennchen2015idp} over the duration of two years. The most drastical change is the usage of SVG and D3.js instead of a Canvas based visualizations. A beta version of this project already forms the basis of the latest two interdisciplinary projects \cite{fischer2016idp,feil2016idp}.
 The needed JavaScript knowledge was acquired in part with the help of \cite{flanagan2011javascript,crockford2008javascript,haverbeke2015eloquent,resig2013secrets,herman2012effective,stefanov2010javascript}. The first one is the definitive reference for javascript, the second one an advanced book about language features to use or to leave out, the third and fourth one a good introduction for beginners. The last two books cover important language aspects and design patterns, in particular scope and closure, prototypal-based inheritance, statics, singletons and code-reuse patterns.
-Concerning D3.js \cite{bostock2011d3}, the crucial part one needs to understand is the data join and the enter, update and exit selection, which are nicely explained in two blog posts \cite{bostock2012join,bostock2016general}. The introductory books \cite{murray2013interactive,zhu2013data,meeks2015d3} also give details on how to implement charts as used for the secondary visualization layer .
-
+Concerning D3.js \cite{bostock2011d3}, the crucial part one needs to understand is the data join and the enter, update and exit selection, which are nicely explained in two blog posts \cite{bostock2012join,bostock2016general}. The introductory books \cite{murray2013interactive,zhu2013data,meeks2015d3} also give details on how to implement charts as used for the secondary visualization layer.
 
 \section{Contributions}
-The contributions of this work are the following:
+The main contributions of this work are the following:
 \begin{itemize}
-	\item Two applications to visualize different problems of discrete math, the maximum flow and the shortest path problem with resource constraints. New concepts for secondary visualization layers are developed and implemented.
-	\item A complete and very generic rewrite of the basic graph data structure Graph using hashmaps of Grap.Node and Graph.Edge together. Methods to serialize to file and deserialize to load from file are implemented.
-	\item A complete rewrite of the graph visualization code using D3.js and SVG instead of Canvas. This is the GraphDrawer class, which should be used as a base class. Customization is easily possible by overwriting methods that will be called from inside of D3.js data join. Any visualization can be saved to disk in png or svg format, for which styles and marker definitions are automatically inlined.
-	\item A new Graph Editor with support for modyfing graphs with arbitrary resources easily. An arbitrary number of resources or constraints can be defined on edges or nodes.
-	\item A new way to save stateful data of the graph using JSON.stringify, which makes implementing the reverse functionality much easier.
-	\item A Logger utility which allows to log algorithm executution messages with up to 3 indentation levels. This is very useful for development, but also for the final algorithm so people can trace the algorithm execution.
-	\item A new way to synchronize between the algorithm state (in the sense of a finite state machine), pseudocode lines, and their description using d3.
+	\item New concepts for secondary visualization layers.
+	\item Web apps implementing a push-relabel algorithm and a label-setting algorithm.
+	%\item Two applications explaining different problems of discrete math and interactively visualizing the algorithms for their solution.
+	%, the maximum flow and the shortest path problem with resource constraints.
+	%\item A web application explaining the maximum flow problem and interactively visualizing a push-relabel algorithm.
+	%\item A web application explaining the shortest path problem with resource constraints and interactively visualizing a label-setting algorithm.
+\end{itemize}
+The contributions that will benefit future projects most directly are our improvements of the underlying implementation, structured according to MVC:
+\begin{itemize}
+	\item[Model] A major refactoring of the basic Graph class with the extension to arbitrary resources, easier algorithm state handling and new upload/download functionalities.
+	\item[View] A complete rewrite of the abstract GraphDrawer class for network visualization using D3.js and SVG instead of Canvas with the possibility to download it in vector format at any time. A Logger utility which allows to log algorithm execution messages with up to 3 indentation levels.
+	\item[Controller] A new GraphEditor with support for modifying graphs with an arbitrary number of resources on nodes and edges easily. A small refactoring improved future code reusability and simplified the reverse functionality and the synchronization between algorithm state and pseudocode lines.
 \end{itemize}
 
+
 \section{Overview}
+The remaining chapters of this report are organized as follows: In \refSec{ch:2}, we provide the necessary background knowledge from discrete math and algorithmic programming principles. In \refSec{ch:3}, we introduce the maximum flow problem before discussing  previous work and providing important definitions, pseudocode and a visualization concept for the push-relabel algorithm that solves it. The next chapter \refSec{ch:4} follows the same structure for the shortest path problem with resource constraints and the label-setting algorithm that solves it. In \refSec{ch:5}, we give an overview of our implementation with the help of UML diagrams and discuss our code contributions in a structured way according to the MVC design pattern. We finally \refSec{ch:6} summarize this work and give hints for future work.
