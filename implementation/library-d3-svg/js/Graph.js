@@ -1,16 +1,25 @@
 /**
+ * @fileOverview
+ * This file contains just our basic graph model, 
+ * together with methods to parse and sequentialize the graph.
+ *
  * @author Adrian Haarbach
- * This file contains just our basic graph represantation, together with methods to parse and sequentialize the graph.
- * @requires d3.map
+ *
+ * @requires d3.map, an associative array similar to new Object() / {}
  */
 
 /**
- * Represents a graph
+ * @classdesc
+ * Represents a graph.
+ * Also acts as namespace for Graph.Node, Graph.Edge as well as static variables and functions.
  * @constructor
  */
-var Graph = function(){
+function Graph(){
+  //unique id counter for nodes and edges,
+  //increased whenever a node or edge is added to the graph.
   this.nodeIds=0;
   this.edgeIds=0;
+  //associative arrays of nodes and edges
   this.nodes=d3.map();
   this.edges=d3.map();
 }
@@ -18,38 +27,54 @@ var Graph = function(){
 /**
  * Represents a graph node
  * @constructor
+ * @param {number} x - the horizontal position
+ * @param {number} y - the vertical position
+ * @param {number} id - a unique id
  */
 Graph.Node = function(x,y,id){
   this.x=x;
   this.y=y;
   this.id=id;
-  this.resources = [];
-  
-  this.outEdges = d3.map();
-  this.inEdges = d3.map();
 
-  this.state={};//changes during algorithm runtime
+  //arbitrary number of resources or constraints, fixed during runtime
+  this.resources=[];
+  
+  //outgoing and incoming edges are saved to facilitate handling of vertices in algorithms
+  this.outEdges=d3.map();
+  this.inEdges=d3.map();
+
+  //The state changes during algorithm runtime
+  //Should not contain cyclic object dependencies
+  //since we call JSON.stringify on this object in order
+  //to implement the replay functionality.
+  this.state={};
 }
 
+/**
+ * Incoming edges of the node.
+ * @return [Graph.Edge]
+ */
 Graph.Node.prototype.getInEdges = function(){
   return this.inEdges.values();
 }
 
+/**
+ * Outgoing edges of the node.
+ * @return [Graph.Edge]
+ */
 Graph.Node.prototype.getOutEdges = function(){
   return this.outEdges.values();
 }
 
-function styleResources(resources,left,right,f){
-  var f = f || function(d){return d};
-  var str = resources.map(f).join(",");
-  if(resources.length>1) str = left + str + right;
-  return str;
-}
-
+/**
+ * Returns a string representation of this node together with its resources
+ * @param {boolean} full - wheater to include the id
+ * @param {function} [f] - optional resource accessor function
+ */
 Graph.Node.prototype.toString = function(full,f){
   var str="";
   if(full) str += this.id+" ";
-  str +=styleResources(this.resources,"[","]",f);
+  str +=Graph.styleResources(this.resources,"[","]",f);
   return str;
 }
 
@@ -66,10 +91,14 @@ Graph.Edge = function(s,t,id){
   this.state={}; //changes during algorithm runtime
 }
 
+/**
+ * Returns a string representation of this edge together with its resources
+ * @param {boolean} full wheater to include the start and end node ids in the form start->end
+ */
 Graph.Edge.prototype.toString = function(full,f){
   var str="";
   if(full) str += this.start.id+"->"+this.end.id+" ";
-  str += styleResources(this.resources,"(",")",f);
+  str += Graph.styleResources(this.resources,"(",")",f);
   return str;
 }
 
@@ -101,7 +130,7 @@ Graph.prototype.addNodeDirectly = function(node){
 }
 
 /**
- * add an edge to the graph
+ * Add an edge to the graph
  * @param {Number|String} id of start node
  * @param {Number|String} id of end node
  */
@@ -144,34 +173,16 @@ Graph.prototype.removeEdge = function(id){
 }
 
 Graph.prototype.getNodes = function(){
-//   return this.__nodesArr || (this.__nodesArr = this.nodes.values());  //TODO just for testing update pattern
   return this.nodes.values();
 }
 
 Graph.prototype.getEdges = function(){
-//   return this.__edgesArr || (this.__edgesArr = this.edges.values());
   return this.edges.values();
 }
 
-Graph.prototype.toString = function(){
-  var lines = []; //text.split("\n");
-
-  lines.push("% Graph saved at "+new Date());
-
-  this.nodes.forEach(function(key,node){
-      var line = "n " + node.x + " " + node.y;
-      if(node.resources.length>0) line +=" "+node.resources.join(" ");
-      lines.push(line);
-  });
-  this.edges.forEach(function(key,edge){
-      var line = "e " + edge.start.id + " " + edge.end.id;
-      if(edge.resources.length>0) line +=" "+edge.resources.join(" ");
-      lines.push(line);
-  });
-
-  return lines.join("\n");
-}
-
+/**
+ * We allow arbitrary size of resources for each node.
+ */
 Graph.prototype.getNodeResourcesSize = function(){
   var max=0;
   this.nodes.forEach(function(key,node){
@@ -219,9 +230,50 @@ Graph.prototype.setState = function(savedState){
 //STATICS
 
 /**
- * Graph Parser factory method
+ * Style node or edge resources
  * @static
- * @method
+ * @param {[]} resources - sequentialized Graph
+ * @return {Graph} - parsed Graph object
+ */
+Graph.styleResources = function(resources,left,right,f){
+  var f = f || function(d){return d};
+  var str = resources.map(f).join(",");
+  if(resources.length>1) str = left + str + right;
+  return str;
+}
+
+/**
+ * Graph serializer static method
+ * Serialize a graph with all resources to string, used when downloading a graph.
+ * @static
+ * @param {Graph} [graph] - Graph object. If not given the current Graph.instance is used
+ * @return {String} text - sequentialized Graph
+ */
+Graph.stringify = function(graph){
+  var graph = graph || Graph.instance;
+  var lines = []; //text.split("\n");
+
+  lines.push("% Graph saved at "+new Date());
+
+  graph.nodes.forEach(function(key,node){
+      var line = "n " + node.x + " " + node.y;
+      if(node.resources.length>0) line +=" "+node.resources.join(" ");
+      lines.push(line);
+  });
+  graph.edges.forEach(function(key,edge){
+      var line = "e " + edge.start.id + " " + edge.end.id;
+      if(edge.resources.length>0) line +=" "+edge.resources.join(" ");
+      lines.push(line);
+  });
+
+  var text = lines.join("\n");
+  return text;
+}
+
+/**
+ * Graph parser static factory method
+ * constructs a Graph object from a textuatl representation of the graph.
+ * @static
  * @param {String} text - sequentialized Graph
  * @return {Graph} - parsed Graph object
  */
@@ -262,13 +314,23 @@ Graph.parse = function(text){
   return graph;
 }
 
-Graph.load = function(filename, callbackFp){
-  d3.text(filename, function(error,text){
-    var graph = Graph.parse(text);
-    callbackFp(graph);
-  });
-}
+/**
+ * Singleton to have just one Graph instance per app.
+ */
+Graph.instance = null;
 
+/**
+ * Add callback functions to be executed after a graph was loaded asynchronically, e.g. to initialize the application
+ */
+Graph.addChangeListener = function(callbackFp){
+  Graph.onLoadedCbFP.push(callbackFp);
+}
+Graph.onLoadedCbFP = [];
+
+/**
+ * Replace the current graph singleton instance and call the defined callback functions.
+ * This function is both called asyncronically from within ajax loading of graphs from servers and from local file uploads.
+ */
 Graph.setInstance = function(error,text,filename,exceptionFp){
     if(error != null){
       exceptionFp ? exceptionFp(error,text,filename) : console.log(error,text,filename);
@@ -285,20 +347,22 @@ Graph.setInstance = function(error,text,filename,exceptionFp){
     if(noErrors) Graph.onLoadedCbFP.forEach(function(fp){fp()});
 }
 
+/**
+ * Ajax graph file loading from a server
+ * using d3.text instead of raw ajax calls
+ * calls setInstance async.
+ */
 Graph.loadInstance = function(filename,exceptionFp){
   d3.text(filename, function(error,text){
     Graph.setInstance(error,text,filename,exceptionFp)
   });
 }
 
-Graph.instance = null;
-
-Graph.onLoadedCbFP = [];
-
-Graph.addChangeListener = function(callbackFp){
-  Graph.onLoadedCbFP.push(callbackFp);
-}
-
+/**
+ * Upload graph file from a local computer
+ * using HTML5 FileReader feature
+ * calls setInstance async.
+ */
 Graph.handleFileSelect = function(evt,exceptionFp) {
     var files = evt.target.files; // FileList object
 

@@ -19,16 +19,15 @@ function GraphEditorTab(algo,p_tab) {
         });
         $("#tg_select_GraphSelector").on("change.GraphDrawer",that.setGraphHandler);     // Beispielgraph auswählen
         
+        //add function to be called after a new graph has been loaded.
         Graph.addChangeListener(function(){
-//             that.reset();
             algo.clear();
             algo.update();
         });
-//         this.setGraphHandler(); //triggers loading of first graph
 
         $('#fileDownloader').on('click',function(foo){
             var ahref = $(this);
-            var text = Graph.instance.toString();
+            var text = Graph.stringify();
             text = "data:text/plain,"+encodeURIComponent(text);
             ahref.prop("href",text);
         });
@@ -52,8 +51,9 @@ function GraphEditorTab(algo,p_tab) {
                     $('#ta_div_parseErrorDescription').text(errDescription);
             })
         });
-
-       Tab.prototype.init.call(this);
+        
+        //inheritance
+        Tab.prototype.init.call(this);
     };
     
     /**
@@ -73,13 +73,11 @@ function GraphEditorTab(algo,p_tab) {
     this.setGraphHandler = function() {
         var selection = $("#tg_select_GraphSelector>option:selected").val();
         var filename = selection + ".txt";
-        console.log(filename);
+        //console.log(filename);
 
-        Graph.loadInstance("graphs-new/"+filename); //calls registered event listeners when loaded;
-
-//         Graph.load("graphs-new/"+filename, function(graphLoaded){
-//             that.setGraph(graphLoaded);
-//         });
+        //load graph as singleton
+        //calls registered event listeners when loaded
+        Graph.loadInstance("graphs-new/"+filename);
     };
 }
 
