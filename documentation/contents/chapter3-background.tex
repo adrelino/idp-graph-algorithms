@@ -83,9 +83,9 @@ An edge $e'=(v,w) \in E'$ of the residual graph $G'$ is \textit{eligible} if $h(
 
 The important property of the push-relabel algorithm is that when the algorithm terminates, the computed preflow is actually a flow. \textit{This is because there can be no augmenting path from s to t in the residual graph since any such path must contain a steep edge (since s is on level $|V|$, $t$ is on level $0$)} \cite{mehlhorn2000maximum}.
 
-The proof of the runtime involves counting the number of possible saturating and nonsaturation push operations as well as relabel operations. Depending on the way the vertices are selected we get different runtimes, proof sketches in \cite{mehlhorn2000maximum,williamson2007network,matuschke2016network}:
+The proof of the runtime involves counting the number of possible saturating and nonsaturating push operations as well as relabel operations. Depending on the way the vertices are selected we get different runtimes, proof sketches in \cite{mehlhorn2000maximum,williamson2007network,matuschke2016network}:
 \begin{itemize}
-	\item Generic (arbitrary selection) with runtime $O(|V|^2E)$ explained and proved in \cite[sec. 7.6]{ahuja1993network}, \cite[sec. 26.4]{cormen2009introduction}, \cite[alg. 6.6.1]{jungnickel2013graphs}. 
+	\item Generic (arbitrary selection rule) with runtime $O(|V|^2E)$ explained and proved in \cite[sec. 7.6]{ahuja1993network}, \cite[sec. 26.4]{cormen2009introduction}, \cite[alg. 6.6.1]{jungnickel2013graphs}. 
 	\item Relabel-To-Front (FIFO selection rule) with runtime $O(|V|^3)$ explained and proved in \cite[sec. 7.7]{ahuja1993network},\cite[sec. 26.5]{cormen2009introduction}, \cite[alg. 6.6.14]{jungnickel2013graphs}.
 	\item Highest label selection rule with runtime $O(|V|^2\sqrt{|E|})$ explained and proved in \cite[sec. 7.8]{ahuja1993network} \cite[alg. 6.6.16]{jungnickel2013graphs}.
 \end{itemize}
@@ -95,7 +95,7 @@ We implemented the Relabel-To-Front variant with the first-in-first-out (FIFO) s
 
 \textit{The crucial requirement is [...] $h(v) = h(w) + 1$. Thus we are only allowed to push along [eligible] residual edges $e'=(v,w)$ for which $h(v)$ is exactly one unit larger than $h(w)$ [...]. We may visualize this rule by thinking of water cascading down a series of terraces of different height, with the height corresponding to the labels. Obviously, water will flow down, and [the eligible edge] condition has the effect of restricting the layout of the terraces so that the water may flow down only one level in each step} \cite[sec. 6.6]{jungnickel2013graphs}.
 
-In our visualization concept \refFigure{fig:maxflow}, we wanted to show how excess flow $e(v)$ is pushed downwards the terraces of different height $h(v)$. The primary visualization layer displays the graph network, the capacity of an edge and its current flow value. The secondary visualizaiton layer allows to arrange the graph nodes in a 2-dimensional chart, where the axis can be chosen to be y/x (the usual graph), height/id (so that no nodes overlap) or height/excess. The algorithm switches between the different axes depending on the current state\footnote{The axes can also be kept fixed based on a user request from TU Ilmenau \url{https://github.com/adrelino/idp-graph-algorithms/commit/4f145861dfba5f8305a24c0f9cc4263cf2b17dcf}}.
+In our visualization concept \refFigure{fig:maxflow}, we show how excess flow $e(v)$ is pushed downwards the terraces of different height $h(v)$. The primary visualization layer displays the graph network, the capacity of an edge and its current flow value. The secondary visualizaiton layer allows to arrange the graph nodes in a 2-dimensional chart, where the axis can be chosen to be y/x (the usual graph), height/id (so that no nodes overlap) or height/excess. The algorithm switches between the different axes depending on the current state\footnote{The axes can also be kept fixed based on a user request from TU Ilmenau \url{https://github.com/adrelino/idp-graph-algorithms/commit/4f145861dfba5f8305a24c0f9cc4263cf2b17dcf}}.
 
 \begin{figure}
 \centering
