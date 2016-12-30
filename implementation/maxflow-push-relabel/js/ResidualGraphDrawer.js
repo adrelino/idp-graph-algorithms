@@ -1,4 +1,4 @@
-var HeightfunctionDrawer = function(svgOrigin,algo){
+var ResidualGraphDrawer = function(svgOrigin,algo){
     var leftMargin = 10;
     GraphDrawer.call(this,svgOrigin,{left:leftMargin});
 
@@ -250,7 +250,7 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
     /////////////////
     //PRIVILEDGED
 
-    this.type="HeightfunctionDrawer";
+    this.type="ResidualGraphDrawer";
 
     var that = this;
 
@@ -292,9 +292,9 @@ var HeightfunctionDrawer = function(svgOrigin,algo){
         t.select("g.y.axis").call(yAxis).style("visibility",vis);
         t.select("g.x.axis").call(xAxis).style("visibility",vis);
 
-        HeightfunctionDrawer.prototype.update.call(this);
+        ResidualGraphDrawer.prototype.update.call(this);
     }
 
 } //end constructor GraphDrawer
-HeightfunctionDrawer.prototype = Object.create(GraphDrawer.prototype);
-HeightfunctionDrawer.prototype.constructor = HeightfunctionDrawer;
+ResidualGraphDrawer.prototype = Object.create(GraphDrawer.prototype);
+ResidualGraphDrawer.prototype.constructor = ResidualGraphDrawer;

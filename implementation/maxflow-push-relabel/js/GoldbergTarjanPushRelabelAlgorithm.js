@@ -40,9 +40,9 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     var logger = new Logger(d3.select("#logger"),d3.select("#loggerLastEntry"));
 
     /**
-     * The canvas to draw the heigh function
+     * The canvas to draw the residual graph with height and excess axes
      */
-    var heightfunctionDrawer = new HeightfunctionDrawer(svgSelection2,this);
+    var residualGraphDrawer = new ResidualGraphDrawer(svgSelection2,this);
 
     /**
      * status variables
@@ -205,7 +205,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         this.reset();
         this.update();
 
-        heightfunctionDrawer.init();
+        residualGraphDrawer.init();
     };
 
     /**
@@ -223,7 +223,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             mainLoopIt: 0,
             e_dash:null,
             e_star:null,
-            e_dashes_forward_star_map:null //maps each edge id to outgoing residual edge from currentNodeId used in HeightfunctionDrawer.js
+            e_dashes_forward_star_map:null //maps each edge id to outgoing residual edge from currentNodeId used in ResidualGraphDrawer.js
         };
 
         setStatus(STATUS_SELECTSOURCE)
@@ -260,7 +260,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 
 
         if(Graph.instance){
-             heightfunctionDrawer.update(s);
+             residualGraphDrawer.update(s);
              GoldbergTarjanPushRelabelAlgorithm.prototype.update.call(this); //updates the graph
         }
     }
