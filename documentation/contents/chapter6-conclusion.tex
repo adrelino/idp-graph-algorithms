@@ -1,12 +1,16 @@
 \chapter{Conclusion}\label{ch:6}
-%This report summarizes the achievements of the interdisciplinary project. 
+This report first summarized the related work and the background needed for the graph problems and algorithms visualized in this project.
+We provided mathematical definitions for the maxflow and the SPPRC problems. Important concepts of the push-relabel and the label-setting algorithms were presented and their pseudocode provided.
 We motivated the need for a secondary visualization layer concept and implemented it.
-We developed two interactive web applications for advanced graph algorithms that can be accessed freely and furthermore made the source code available as open source to ease further extensions. 
-New technologies such as D3.js and SVG have been introduced to achieve high interactivity. In the process, we refactored or reimplemented large parts of the core code basis resulting in an improved software design. The new design is documented in this report to serve as a reference for future web applications building upon our implementation.
+Two interactive web applications for advanced graph algorithms were developed.
+These can be accessed freely and the source code is made available as open source to ease further extensions. 
+New technologies such as D3.js and SVG have been introduced to achieve high interactivity. 
+In the process, we refactored or reimplemented large parts of the core code basis resulting in an improved software design, which is thoroughly documented to serve as a reference for future web applications building upon our implementation.
 
-\section{Future work}
+\subsubsection{Future work}
+The following are possible directions for further extensions:
 \begin{itemize}
-	\item Over the years, a lot of web applications have been developed independently by different students. A lot of code was copied and partially modified, which resulted in a huge amount of duplication. The duplication of JavaScript files was minimized through the improved software design of this project. However, the static HTML files are still copied and adapted for each new project, even though some parts don't change at all. To overcome this issue, one could generate the HTML sites dynamically on a server using PHP, which is unattractive because our apps are client-side only. The nicest solution would be the W3C working draft of \textit{HTML Imports}, which would allow to split HTML into parts and load the parts just like CSS or JavaScript. However, it is only implemented in Chrome so far.\footnote{\url{https://www.w3.org/TR/html-imports/} and \url{http://caniuse.com/\#search=imports}} The most practical way in my opinion is to split up the HTML file into parts and then use the JavaScript ecosystem to concatenate several pieces before deployment to make it a full HTML page.
 	\item Implement the highest-label selection rule for the push-relabel algorithm so it can be compared to the current FIFO selection rule.
 	\item Allow edges of negative weight in the SPPRC and extend our label-setting algorithm into a label-correcting algorithm that solves this problem.
+	\item Over the years, a lot of web applications have been developed independently by different students. A lot of code was copied and partially modified, which resulted in a huge amount of duplication. The duplication of JavaScript files was minimized through the improved software design of this project. However, the static HTML files are still copied and adapted for each new project, even though some parts don't change at all. To overcome this issue, one could generate the HTML sites dynamically on a server using PHP, which is unattractive because our apps are client-side only. The nicest solution would be the W3C working draft of \textit{HTML Imports}, which would allow to split HTML into parts and load the parts just like CSS or JavaScript. However, it is only implemented in Chrome so far.\footnote{\url{https://www.w3.org/TR/html-imports/} and \url{http://caniuse.com/\#search=imports}} The most practical way in my opinion is to split up the HTML file into parts and then use the JavaScript ecosystem to concatenate the pieces to turn it into a complete HTML page before deployment.
 \end{itemize}

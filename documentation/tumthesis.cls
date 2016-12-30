@@ -55,8 +55,8 @@
     headsepline, %separating line for header
     chapterprefix, % produce "Chapter ..."
     numbers=noenddot, % no full-stop after last number
-    listof=totoc, %Entry in table of contents for list of figures/tables
-    index=totoc, %Entry in table of contents for index
+    %listof=totoc, %Entry in table of contents for list of figures/tables
+    %index=totoc, %Entry in table of contents for index
     bibliography=totoc, %Entry in table of contents for bibliography
     BCOR=10mm, %Binding correction, ensures sufficient space for binding
     DIV=12

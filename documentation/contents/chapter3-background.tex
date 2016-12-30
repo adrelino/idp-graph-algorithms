@@ -46,11 +46,14 @@ For a flow $f$ in $G=(V,E)$, we can construct the \textit{residual graph} $G' = 
 \label{fig:residual}
 \end{figure}
 
-
+\clearpage
 \section{The \pushRelabel{}}
-An early way to compute a maximum flow on a directed graph was called the augmenting path method by Ford-Fulkerson \cite{ford1956maximal}\footnote{secondary sources \cite[sec. 6.4]{ahuja1993network}, \cite[sec. 26.2, p.724]{cormen2009introduction}, \cite[sec. 6.1]{jungnickel2013graphs}}. A path with available capacity is an augmenting path, an s-t path in the residual graph. As long as such paths exist, one can increase the flow globally on these paths. If the method terminates, it computes a maximum flow. It is called a method and not an algorithm because the way to find augmenting paths in the residual graph is not fully specified. Furthermore, there is no guarantee on termination and runtime. About 15 years later, two algorithms based on the augmenting path method were developed. They ensure a polynomial time bound by augmenting flow along the shortest path first. The algorithm of Edmonds-Karp \cite{edmonds1972theoretical}\footnote{secondary sources \cite[sec. 26.2, p. 727]{cormen2009introduction}, \cite[sec. 6.2]{jungnickel2013graphs}} ensures a runtime of $O(|V|\dot|E|^2)$ while the one of Dinic \cite{dinic1970algorithm}\footnote{secondary sources \cite[sec. 7.4]{ahuja1993network}, \cite[sec. 26.2]{cormen2009introduction}, \cite[sec. 6.4]{jungnickel2013graphs}} improves on that with a runtime of $O(|V|^2\dot|E|)$. This class of algorithms based on the Ford-Fulkerson method of augmenting paths has been visualized in a previous interdisciplinary project \cite{fischer2016idp}.
+An early way to compute a maximum flow on a directed graph was called the augmenting path method by Ford-Fulkerson \cite{ford1956maximal}.\footnote{explained in textbooks \cite[sec. 6.4]{ahuja1993network}, \cite[sec. 26.2, p.724]{cormen2009introduction}, \cite[sec. 6.1]{jungnickel2013graphs}} A path with available capacity is an augmenting path, an s-t path in the residual graph. As long as such paths exist, one can increase the flow globally on these paths. If the method terminates, it computes a maximum flow. It is called a method and not an algorithm because the way to find augmenting paths in the residual graph is not fully specified. Furthermore, there is no guarantee on termination and runtime. About 15 years later, two algorithms based on the augmenting path method were developed. They ensure a polynomial time bound by augmenting flow along the shortest path first. The algorithm of Edmonds-Karp \cite{edmonds1972theoretical}\footnote{explained in textbooks \cite[sec. 26.2, p. 727]{cormen2009introduction}, \cite[sec. 6.2]{jungnickel2013graphs}} ensures a runtime of $O(|V|\cdot|E|^2)$ while the one of Dinic \cite{dinic1970algorithm}\footnote{explained in textbooks \cite[sec. 7.4]{ahuja1993network}, \cite[sec. 26.2]{cormen2009introduction}, \cite[sec. 6.4]{jungnickel2013graphs}} improves on that with a runtime of $O(|V|^2\cdot|E|)$. This class of algorithms based on the Ford-Fulkerson method of augmenting paths has been visualized in a previous interdisciplinary project \cite{fischer2016idp}.
 
-Still about another 15 years later, an alternative and more efficient method which uses local operations based on the concept of a preflow and a height function was published: The push-relabel algorithm of Goldberg-Tarjan \cite{goldberg1988new}. In contrast to the previous, less efficient algorithms based on augmenting paths, it changes the flow locally and only needs to construct the residual graph locally. The increased efficiency comes at the cost of not maintaining a \textit{feasible flow} during algorithm execution. Instead, a \textit{preflow} is maintained:
+Still about another 15 years later, an alternative and more efficient method which uses local operations based on the concept of a preflow and a height function was published: The push-relabel algorithm of Goldberg-Tarjan \cite{goldberg1988new}. In contrast to the previous, less efficient algorithms based on augmenting paths, it changes the flow locally and only needs to construct the residual graph locally. 
+
+\subsection{Excess and height}
+The increased efficiency comes at the cost of not maintaining a \textit{feasible flow} during algorithm execution. Instead, a \textit{preflow} is maintained:
 \begin{definition}[excess and preflow]
 	The \textit{preflow} $\tilde f$ is a generalization of the flow $f$. The \Eqref{eq:cap} of the edges is still maintained, but the \Eqref{eq:conserv} at the vertices is not: The equality sign $=$ is replaced with $\geq$: $\sum_{e \in \Ein{v}} f(e) \geq \sum_{e \in \Eout{v}} f(e) \forall v \in V \setminus \{s\}$.
 %This means that more flow can enter an inner node than leaving it, e.g. we allow leaks in our pipe system.
@@ -81,21 +84,29 @@ h(t)=0, h(s)=|V| \quad \text{and} \quad h(v)\leq h(w)+1 \, \forall e'=(v,w) \in 
 An edge $e'=(v,w) \in E'$ of the residual graph $G'$ is \textit{eligible} if $h(v)=h(w)+1$, meaning that the current node is one level above the one to where we wish to push excess to.
 \end{definition}
 
+\subsection{Termination and runtime}
 The important property of the push-relabel algorithm is that when the algorithm terminates, the computed preflow is actually a flow. \textit{This is because there can be no augmenting path from s to t in the residual graph since any such path must contain a steep edge (since s is on level $|V|$, $t$ is on level $0$)} \cite{mehlhorn2000maximum}.
 
 The proof of the runtime involves counting the number of possible saturating and nonsaturating push operations as well as relabel operations. Depending on the way the vertices are selected we get different runtimes, proof sketches in \cite{mehlhorn2000maximum,williamson2007network,matuschke2016network}:
 \begin{itemize}
-	\item Generic (arbitrary selection rule) with runtime $O(|V|^2E)$ explained and proved in \cite[sec. 7.6]{ahuja1993network}, \cite[sec. 26.4]{cormen2009introduction}, \cite[alg. 6.6.1]{jungnickel2013graphs}. 
+	\item Generic (arbitrary selection rule) with runtime $O(|V|^2 \cdot |E|)$ explained and proved in \cite[sec. 7.6]{ahuja1993network}, \cite[sec. 26.4]{cormen2009introduction}, \cite[alg. 6.6.1]{jungnickel2013graphs}. 
 	\item Relabel-To-Front (FIFO selection rule) with runtime $O(|V|^3)$ explained and proved in \cite[sec. 7.7]{ahuja1993network},\cite[sec. 26.5]{cormen2009introduction}, \cite[alg. 6.6.14]{jungnickel2013graphs}.
 	\item Highest label selection rule with runtime $O(|V|^2\sqrt{|E|})$ explained and proved in \cite[sec. 7.8]{ahuja1993network} \cite[alg. 6.6.16]{jungnickel2013graphs}.
 \end{itemize}
 
 We implemented the Relabel-To-Front variant with the first-in-first-out (FIFO) selection rule. In this variant, a node with excess flow stays active either until a non-saturating push or a relabel occurred. 
-\input{pseudocode/pseudocode-maxflow}
 
+\clearpage
+\subsection{Pseudocode}
+\input{pseudocode/pseudocode-maxflow}
+The pseudocode is split into blocks each consisting of a few lines to form different states of the algorithm that can be visualized. This basically transforms the algorithm into a finite state machine, which was first observed in another recent interdisciplinary project \cite{feil2016idp}. The different states are: 1. INITPREFLOW (lines 1-5), 2. INITHEIGHT (lines 6-9), 3. MAINLOOP (lines 10-12), 4. ADMISSIBLEPUSH (line 13), 5. PUSH (lines 14-14), 6. ADMISSIBLERELABEL (line 18) and 7. RELABEL (lines 19-21). For the detailed description of these states we refer to our web application.
+
+ 
+\clearpage
+\subsection{Visualization concept}
 \textit{The crucial requirement is [...] $h(v) = h(w) + 1$. Thus we are only allowed to push along [eligible] residual edges $e'=(v,w)$ for which $h(v)$ is exactly one unit larger than $h(w)$ [...]. We may visualize this rule by thinking of water cascading down a series of terraces of different height, with the height corresponding to the labels. Obviously, water will flow down, and [the eligible edge] condition has the effect of restricting the layout of the terraces so that the water may flow down only one level in each step} \cite[sec. 6.6]{jungnickel2013graphs}.
 
-In our visualization concept \refFigure{fig:maxflow}, we show how excess flow $e(v)$ is pushed downwards the terraces of different height $h(v)$. The primary visualization layer displays the graph network, the capacity of an edge and its current flow value. The secondary visualizaiton layer allows to arrange the graph nodes in a 2-dimensional chart, where the axis can be chosen to be y/x (the usual graph), height/id (so that no nodes overlap) or height/excess. The algorithm switches between the different axes depending on the current state\footnote{The axes can also be kept fixed based on a user request from TU Ilmenau \url{https://github.com/adrelino/idp-graph-algorithms/commit/4f145861dfba5f8305a24c0f9cc4263cf2b17dcf}}.
+In our visualization concept \refFigure{fig:maxflow}, we show how excess flow $e(v)$ is pushed downwards the terraces of different height $h(v)$. The primary visualization layer displays the graph network, the capacity of an edge and its current flow value. The secondary visualizaiton layer allows to arrange the graph nodes in a 2-dimensional chart, where the axis can be chosen to be y/x (the usual graph), height/id (so that no nodes overlap) or height/excess. The algorithm switches between the different axes depending on the current state.\footnote{The axes can also be kept fixed based on a user request from TU Ilmenau \url{https://github.com/adrelino/idp-graph-algorithms/commit/4f145861dfba5f8305a24c0f9cc4263cf2b17dcf}}
 
 \begin{figure}
 \centering
@@ -105,7 +116,7 @@ In our visualization concept \refFigure{fig:maxflow}, we show how excess flow $e
 \begin{subfigure}[t]{0.45\textwidth}
 \includegraphics[width=\textwidth]{fig/maxflow-graph-algorithm-height}
 \end{subfigure}
-\caption{maxflow concept}
+\caption{Maxflow concept : The primary visualization layer (left) shows the graph network, with vertices as circles and edges as lines connecting them. Source and target node are coloured in green, the current node in red. The labels of the edges denote the current flow and the maximum capacity in the form flow/cap. The capacity is furthermore drawn as a thick gray line with a width corresponding to its capacity, and the flow is drawn on top of it as a thick blue line. The secondary visualization layer (right) shows the outgoing edges $e'$ of the current node in the residual graph with dashed lines. The nodes are currently arranged according to the height/excess coordinate system axes.}
 \label{fig:maxflow}
 \end{figure}
 
