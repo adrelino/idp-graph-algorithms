@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: library-d3-svg/js/siteAnimation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: library-d3-svg/js/siteAnimation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var graphEditorTab = null, algorithmTab = null;
+
+function svgHack(){
+//add arrowhead
+    var defs = d3.select("body").append("svg")
+        .attr("id","graph-defs")
+        .append("defs")
+
+     defs.append("marker")
+        .attr("id", "arrowhead2")
+        .attr("refX",24) /*must be smarter way to calculate shift*/
+        .attr("refY",4)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerWidth", 24)
+        .attr("markerHeight", 8)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M 0,0 V 8 L12,4 Z"); //this is actual shape for arrowhead
+
+     defs.append("marker")
+        .attr("id", "arrowhead3")
+        .attr("refX",24) /*must be smarter way to calculate shift*/
+        .attr("refY",4)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerWidth", 24)
+        .attr("markerHeight", 8)
+        .attr("orient", "auto-start-reverse")
+        .append("path")
+        .attr("d", "M 0,0 V 8 L12,4 Z"); //this is actual shape for arrowhead
+
+
+
+//replace img with svg
+
+//     //http://www.mediaevent.de/svg-in-html-seiten/
+    var imgs = d3.selectAll("img");
+
+// //    var sources = imgs[0].map(function(d){return d.src});
+
+   imgs.attr("src",function(a,b,c){
+       var src = this.src;
+       var selection = d3.select(this);
+       if(src.indexOf(".svg")==src.length-4){
+           d3.text(src, function(error,text){
+//             console.log(selection.html());
+//             d3.select("#svgtest").html(text);
+            var parent = d3.select(selection.node().parentNode)
+                
+//                 parent.append("p").text("test");
+                parent.insert("span","img").html(text);
+                var newSVGElem = parent.select("span").select("svg");
+
+                newSVGElem.attr("class","svgText");
+
+               selection.remove();
+
+//             var foo = selection.node().parentNode.innerHtml; //).append("div").html(text);
+        });
+       }
+       return src;
+   })
+}
+
+
+function svgSerialize(svgHtml){//Node){
+//   if(styles){
+//     //svg.select('defs').select('style').text('&lt;![CDATA['+styles+']]>')
+
+//     var header ='&lt;svg width="'+ww+'" height="'+hh+'" version="1.1" xmlns="http://www.w3.org/2000/svg">';
+//     header +='&lt;defs>';
+//     //inline arrowhead marker style
+//     header += d3.select('#graph-defs').select('defs').html();
+//     //inline css styles
+//     header += '&lt;style type="text/css"> &lt;![CDATA['+styles+']]> &lt;/style>';
+//     header += '&lt;/defs>';
+//     header +=svgNode.innerHTML;
+//     header +='&lt;/svg>';
+
+//    return 'data:image/svg+xml;utf8,'+header;
+//   }
+
+
+
+  //use jquery to get the svg xml, doesnt work with d3.
+  //var svgContainer = that.tab.find('.svgContainer');//.clone();
+  //var svg = svgContainer.find(".graphCanvas");
+//   d3.select(this).attr({ version: '1.1' , xmlns:"http://www.w3.org/2000/svg"});
+  //var svgHtml = svgContainer.html();
+
+  //var svgHtml = (new XMLSerializer()).serializeToString(svgNode);//svgOrigin.node()
+  //var seed = 50 + Math.floor(Math.random()*1000000); //lower 50 ones are reserved for my own use
+
+  //svgHtml = svgHtml.replace(/arrowhead2/g,"arrowhead"+seed);
+
+  //                 svgHtml = '&lt;?xml-stylesheet type="text/css" href="href="../library-d3-svg/css/graph-style.css" ?>' + svgHtml;
+
+  var b64 = btoa(svgHtml); // or use btoa if supported
+
+  // Works in recent Webkit(Chrome)
+  //      $("body").append($("&lt;img src='data:image/svg+xml;base64,\n"+b64+"' alt='file.svg'/>"));
+
+  // Works in Firefox 3.6 and Webit and possibly any browser which supports the data-uri
+  //      $("body").append($("&lt;a href-lang='image/svg+xml' href='data:image/svg+xml;base64,\n"+b64+"' title='file.svg'>Download&lt;/a>"));
+
+
+  var href = "data:image/svg+xml;base64,\n"+b64;
+  return href;
+}
+
+//http://spin.atomicobject.com/2014/01/21/convert-svg-to-png/
+//http://techslides.com/save-svg-as-an-image
+function svgSerializeAndCrop(svgNode,styles,crop){
+  var sel=d3.select(svgNode);
+  var algo = GraphAlgos.get(sel.attr("id"));
+
+  var oldId = sel.attr("id");
+  var oldClass = sel.attr("class");
+  sel.attr("id",null);
+  sel.attr("class",null);
+
+  if(algo &amp;&amp; crop){
+    var nodes = Graph.instance.getNodes();
+
+    var screenCoords = nodes.map(algo.nodePos.bind(algo));
+
+    var xR = d3.extent(screenCoords,function(d){return d.x});
+    var yR = d3.extent(screenCoords,function(d){return d.y});
+
+    var transl = "translate(-"+xR[0]+",-"+yR[0]+")";
+
+    var oldWidth = sel.attr("width");
+    var oldHeight = sel.attr("height");
+    var width = xR[1]-xR[0]+algo.margin.left+algo.margin.right;
+    var height = yR[1]-yR[0]+algo.margin.top+algo.margin.bottom;
+
+    //use d3 to select transform, doesnt work with jqyery since it selects all g's, not just the top level one;
+    var oldTra = sel.select("g").attr("transform");
+
+    sel.select("g").attr("transform",oldTra+","+transl);//.each("end",function(){
+    sel.attr("width",width);
+    sel.attr("height",height);
+    sel.attr("viewBox","0 0 "+width+" "+height);//http://stackoverflow.com/questions/19484707/how-can-i-make-an-svg-scale-with-its-parent-container
+  }
+
+    //inline arrowhead marker style
+  var header = d3.select('#graph-defs').select('defs').html()+'\n';
+  var defs = sel.insert('defs',"g").html(header);
+
+      //inline css style
+  var styles = styles.replace(/(\r\n|\n|\r)/gm," ");
+
+  //var header2 = '&lt;style type="text/css"> &lt;![CDATA['+styles+']]> &lt;/style>';
+
+  var styleSel = defs.append("style").attr("type","text/css");
+  styleSel.text('&lt;![CDATA['+styles+"]]>");
+
+ // var svgHtmlinner = sel.html();
+
+  var svgHtml = sel.node().outerHTML;
+  svgHtml = svgHtml.replace("&amp;lt;","&lt;").replace("&amp;gt;",">");
+
+  var href = svgSerialize(svgHtml);
+
+  if(algo &amp;&amp; crop){
+    //move back
+    sel.attr("viewBox",null);
+    sel.attr("width",oldWidth);
+    sel.attr("height",oldHeight);
+    sel.select("g").attr("transform",oldTra);
+  }
+
+  sel.attr("id",oldId);
+  sel.attr("class",oldClass);
+
+  defs.remove();
+
+
+  return href;
+}
+
+function svgGraphCanvasDownloadable(){
+   var container = d3.selectAll(".svgContainer");
+   //contains a svg and an a
+   var links = container.selectAll('a');
+   var svgOrigins = container.selectAll('svg');
+   var styles;
+   //async query styles from css file
+   d3.text(d3.select("#graph-style").attr("href"),function(s){styles = s});
+
+
+   links.on('mousedown',function(a,b,c){
+     var node = svgOrigins[c][0];
+
+     var href = svgSerializeAndCrop(node,styles);
+
+     var ahref = d3.select(this);
+     ahref.property("href-lang","image/svg+xml");
+     ahref.property("href",href);
+//      window.location=data;
+   })
+}
+
+
+/**
+ * Initializes the page layout of all interactive tabs
+ * @author Adrian Haarbach
+ * @global
+ * @function
+ */
+function initializeSiteLayout(GraphAlgorithmConstructor) {
+
+    $("button").button();
+    $("#te_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
+    $("#te_button_gotoIdee").click(function() { $("#tabs").tabs("option", "active", 3);});
+    $("#ti_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
+    $("#ti_button_gotoAlgorithm").click(function() { $("#tabs").tabs("option", "active", 2);});
+    $("#tw_Accordion").accordion({heightStyle: "content"});
+    
+    graphEditorTab = new GraphEditorTab(new GraphEditor(d3.select("#tg_canvas_graph")),$("#tab_tg"));
+    graphEditorTab.init();
+    
+    algorithmTab = new AlgorithmTab(new GraphAlgorithmConstructor(d3.select("#ta_canvas_graph"),d3.select("#ta_canvas_graph2")),$("#tab_ta"));
+    algorithmTab.init();
+  
+    $("#tabs").tabs({
+        beforeActivate: function(event, ui) {
+            var id = ui.oldPanel[0].id;
+            if(id == "tab_tg") { /** graph editor tab */
+                graphEditorTab.deactivate();
+            }else if(id == "tab_ta") { /** graph algorithm tab */
+                algorithmTab.deactivate();
+            }
+        },
+        activate: function(event, ui) {
+            var id = ui.newPanel[0].id;
+            if(id == "tab_tg") {
+                graphEditorTab.activate();
+            } else if(id == "tab_ta") {
+                algorithmTab.activate();
+            }
+        }
+    });
+
+   svgHack();
+   svgGraphCanvasDownloadable();
+}
+
+
+//http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.search.replace(/[?&amp;]+([^=&amp;]+)=([^&amp;]*)/gi,    
+    function(m,key,value) {
+      vars[key] = value;
+    });
+    return vars;
+  }
+
+function getUrlHash() {
+  return window.location.hash;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AlgorithmTab.html">AlgorithmTab</a></li><li><a href="GoldbergTarjanPushRelabelAlgorithm.html">GoldbergTarjanPushRelabelAlgorithm</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.Edge.html">Edge</a></li><li><a href="Graph.Label.html">Label</a></li><li><a href="Graph.Node.html">Node</a></li><li><a href="Graph.ResidualEdge.html">ResidualEdge</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphEditorTab.html">GraphEditorTab</a></li><li><a href="LabelDrawer.html">LabelDrawer</a></li><li><a href="Logger.html">Logger</a></li><li><a href="ResidualGraphDrawer.html">ResidualGraphDrawer</a></li><li><a href="SPPRCLabelSettingAlgorithm.html">SPPRCLabelSettingAlgorithm</a></li><li><a href="Tab.html">Tab</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#GraphAlgos">GraphAlgos</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#translate">translate</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Dec 30 2016 16:31:49 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

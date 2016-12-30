@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: library-d3-svg/js/AlgorithmTab.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: library-d3-svg/js/AlgorithmTab.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Tab for an algorithm
+ * initializes the buttons, callbacks, the logger and fast forward funcitonality
+ * @author Adrian Haarbach
+ * @augments AlgorithmTab
+ * @class
+ */
+function AlgorithmTab(algo,p_tab) {
+    Tab.call(this, algo, p_tab);
+
+    /**
+     * ID of the fast forward interval
+     * @type Number
+     */
+    algo.fastForwardIntervalID = null;
+
+    var that = this;
+
+    /**
+     * Timeout speed in milliseconds for fast forward
+     * @type Number
+     */
+    var fastForwardSpeed = 5;
+
+    /**
+     * the logger instance
+     * @type Logger
+     */
+    var logger = new Logger(d3.select("#logger"));
+
+
+    var fastforwardOptions = {label: $("#ta_button_text_fastforward").text(), icons: {primary: "ui-icon-seek-next"}};
+
+    /**
+     * Initialisiert das Zeichenfeld
+     * @method
+     */
+    this.init = function() {
+
+        var pauseOptions = {label: $("#ta_button_text_pause").text(), icons: {primary: "ui-icon-pause"}};
+
+        if(algo.rewindStart &amp;&amp; algo.rewindStop){
+        var rewindOptions = {label: $("#ta_button_text_rewind").text(), icons: {primary: "ui-icon-seek-prev"}};
+            $("#ta_button_rewind")
+            .button(rewindOptions)
+            .click(function() {
+                $(this).button("option",this.checked ? pauseOptions : rewindOptions);
+                this.checked ? algo.rewindStart() : algo.rewindStop();
+            })
+        }else{
+            $("#ta_button_rewind").hide();
+            $("#ta_button_text_rewind").hide();
+        }
+        
+        $("#ta_button_Zurueck")
+            .button({icons: {primary: "ui-icon-seek-start"}})
+            .click(function() {
+                algo.previousStepChoice();
+            });
+        
+        $("#ta_button_1Schritt")
+            .button({icons: {primary: "ui-icon-seek-end"}})
+            .click(function() {
+                algo.nextStepChoice();
+            });
+
+        $("#ta_button_vorspulen")
+            .button(fastforwardOptions)
+            .click(function() {
+                $(this).button("option",this.checked ? pauseOptions : fastforwardOptions);
+                this.checked ? that.fastForwardAlgorithm() : that.stopFastForward();
+            });
+
+        $("#ta_vorspulen_speed").on("input",function(){
+            fastForwardSpeed=+this.value;  
+        });
+
+
+
+        $("#ta_div_statusTabs").tabs();
+        $("#ta_div_statusTabs").tabs("option", "active", 2);
+
+        $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
+        
+        var pseudocode = d3.select("#ta_div_statusPseudocode")
+        var sel = pseudocode.selectAll("div").selectAll("p")
+        sel.attr("class", function(a, pInDivCounter, divCounter) {
+            return "pseudocode";
+        });
+
+        d3.select("#tw_div_statusPseudocode").html(pseudocode.html())
+
+        Tab.prototype.init.call(this);
+
+    };
+
+    /**
+     * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
+     * @method
+     */
+    this.fastForwardAlgorithm = function() {
+//         $("#ta_button_1Schritt").button("option", "disabled", true);
+//         $("#ta_button_Zurueck").button("option", "disabled", true);
+//         $("#ta_button_rewind").button("option", "disabled", true);
+//         var geschwindigkeit = 5; // Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
+        
+        algo.fastForwardIntervalID = window.setInterval(function() {
+            algo.nextStepChoice();
+        }, fastForwardSpeed);
+
+        algo.update();
+    };
+
+    /**
+     * Stoppt das automatische Abspielen des Algorithmus
+     * @method
+     */
+    this.stopFastForward = function() {
+//         $("#ta_button_1Schritt").button("option", "disabled", false);
+//         $("#ta_button_Zurueck").button("option", "disabled", false);
+//         $("#ta_button_rewind").button("option", "disabled", false);
+        window.clearInterval(algo.fastForwardIntervalID);
+        algo.fastForwardIntervalID = null;
+        d3.select("#ta_button_vorspulen").property("checked",false);
+        $("#ta_button_vorspulen").button("option",fastforwardOptions);
+        //algo.update();
+    };
+    
+    
+//     this.setDisabledBackward = function(disabled) {
+//         $("#ta_button_Zurueck").button("option", "disabled", disabled);
+//     };
+    
+//     this.setDisabledForward = function(disabled, disabledSpulen) {
+//         var disabledSpulen = (disabledSpulen!==undefined) ? disabledSpulen : disabled;
+//         $("#ta_button_1Schritt").button("option", "disabled", disabled);
+//         $("#ta_button_vorspulen").button("option", "disabled", disabledSpulen);
+//     };
+
+    algo.stopFastForward = this.stopFastForward;
+}
+
+// Vererbung realisieren
+AlgorithmTab.prototype = Object.create(Tab.prototype);
+AlgorithmTab.prototype.constructor = AlgorithmTab;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AlgorithmTab.html">AlgorithmTab</a></li><li><a href="GoldbergTarjanPushRelabelAlgorithm.html">GoldbergTarjanPushRelabelAlgorithm</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Graph.Edge.html">Edge</a></li><li><a href="Graph.Label.html">Label</a></li><li><a href="Graph.Node.html">Node</a></li><li><a href="Graph.ResidualEdge.html">ResidualEdge</a></li><li><a href="GraphDrawer.html">GraphDrawer</a></li><li><a href="GraphEditorTab.html">GraphEditorTab</a></li><li><a href="LabelDrawer.html">LabelDrawer</a></li><li><a href="Logger.html">Logger</a></li><li><a href="ResidualGraphDrawer.html">ResidualGraphDrawer</a></li><li><a href="SPPRCLabelSettingAlgorithm.html">SPPRCLabelSettingAlgorithm</a></li><li><a href="Tab.html">Tab</a></li></ul><h3>Global</h3><ul><li><a href="global.html#const_Colors">const_Colors</a></li><li><a href="global.html#global_Edgelayout">global_Edgelayout</a></li><li><a href="global.html#global_KnotenRadius">global_KnotenRadius</a></li><li><a href="global.html#global_NodeLayout">global_NodeLayout</a></li><li><a href="global.html#GraphAlgos">GraphAlgos</a></li><li><a href="global.html#initializeSiteLayout">initializeSiteLayout</a></li><li><a href="global.html#translate">translate</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Dec 30 2016 16:31:49 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
