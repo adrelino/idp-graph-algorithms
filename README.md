@@ -1,13 +1,13 @@
-# Visualizaion of advanced graph algorithms
-#### push-relabel algorithm
-#### to solve the maximum flow problem
-#### label-setting algorithm
-#### to solve the shortest path problem with resource constraints
+# Visualization of advanced graph algorithms
+push-relabel algorithm  
+to solve the maximum flow problem  
+label-setting algorithm  
+to solve the shortest path problem with resource constraints  
 
 An interdisciplinary project by Adrian Haarbach
 
 ## Development
-Open index.html in Firefox or Safari, or run Google Chrome from the command line with the flag:
+Open index.html in Firefox or Safari, or run Google Chrome from the command line with the flag
 `
 --allow-file-access-from-files
 `
