@@ -14,9 +14,9 @@ Open index.html in Firefox or Safari, or run Google Chrome from the command line
 
 Alternatively, install Node.js and run
 `
-npm init && npm install && grunt serve
+npm install && grunt serve
 `
-which will start a local webserver and open index.html in the default browser.
+which will install all needed packages using npm, start a local webserver using Grunt, and open index.html in the default browser.
 
 All needed library files except for MathJax are already included. 
 Since the MathJax library consists of a lot of individual files, we did not want to include it into the repository. Instead we implemented a fallback mechanism, meaning that if you do not copy a MathJax installation into the library folder, we fallback to a Content Delivery Network (CDN) to load the required files needed to render LaTeX math equations.
