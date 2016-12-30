@@ -6,6 +6,8 @@ to solve the shortest path problem with resource constraints
 
 An interdisciplinary project by Adrian Haarbach
 
+[Live Demo](http://www.adrian-haarbach.de/idp-graph-algorithms/)
+
 ## Development
 Open index.html in Firefox or Safari, or run Google Chrome from the command line with the flag
 `
