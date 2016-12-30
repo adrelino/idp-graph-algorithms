@@ -1,5 +1,5 @@
 \chapter{Background}\label{ch:2}
-Problems defined on networks arise in many real-life applications. A network can mathematically be represented by a graph. 
+Problems defined on networks arise in many real-life applications, such as finding the fastest route between two cities or computing the maximum bandwidth of an internet connection. A network can mathematically be represented by a graph. 
 
 \newcommand{\Ein}[1]{\delta^-(#1)}
 \newcommand{\Eout}[1]{\delta^+(#1)}
@@ -21,17 +21,16 @@ A graph is an ordered pair $G = (V, E)$ consisting of a vertex (or node) set $V$
 	\label{fig:graph}
 \end{figure}
 
-For problems and algorithms defined on digraphs, it is often convenient to define the set of edges coming into a vertex $v$ and the set of edges leaving it:
+For problems and algorithms defined on digraphs, it is often convenient to define the set of edges coming into a vertex $v$ and zthe set of edges leaving it:
 \begin{align}
-\Ein{v}  &: \{ e=(u,v) \in E \; | \; u,v \in V \} \eqname*[eq:incoming]{incoming edges} \\
-\Eout{v} &: \{ e=(v,w) \in E \; | \; v,w \in V \} \eqname*[eq:outgoing]{outgoing edges} \\
-\nonumber
+\Ein{v}  &: \{ e=(u,v) \in E \; | \; u,v \in V \} \tag*{\eqnameformat{incoming edges}} \\
+\Eout{v} &: \{ e=(v,w) \in E \; | \; v,w \in V \} \tag*{\eqnameformat{outgoing edges}}
 \end{align}
 In above example of a digraph \refFigure{fig:graph}, the vertex $v=2$ has an incoming edge set of $\Ein{2}=\{(0,2),(1,2)\}$ and an outgoing edge set of $\Eout{2}=\{(2,3)\}$.
 
 \newpage
 %\section{computer science}
-Advanced algorithms to solve graph problems rely on common programming principles. The first one is so basic that it actually forms the basis of sorting algorithms such as \textit{MergeSort}.
+Advanced algorithms to solve graph problems rely on common programming principles. The first one is so basic that it actually forms the basis of sorting algorithms such as \texttt{MergeSort}.
 \begin{definition}[divide-and-conquer]
 \textit{In divide-and-conquer, we solve a problem recursively, applying three steps at each level of the recursion:\textbf{Divide} the problem into a number of subproblems that are smaller instances of the same problem. 
 \textbf{Conquer} the subproblems by solving them recursively. If the subproblem sizes are small enough, however, just solve the subproblems in a straightforward manner. 
