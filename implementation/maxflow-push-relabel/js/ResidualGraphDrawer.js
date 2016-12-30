@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * Secondary visualization layer to draw the residual graph
+ * @constructor
+ */
 var ResidualGraphDrawer = function(svgOrigin,algo){
     var leftMargin = 10;
     GraphDrawer.call(this,svgOrigin,{left:leftMargin});

@@ -79,15 +79,8 @@ var GraphEditor = function(svgOrigin){
 
     /**
      * Der aktuell ausgewählte Knoten
-     * @type d3 Selection with typeof datum() == Graph.Node
      */
     var selectedNode = null;
-
-    /**
-     * Die aktuell ausgewählte Kante
-     * @type d3 Selection with typeof datum() == Graph.Edge
-     */
-//     var selectedEdge = null;
 
     /**
       * line that is beeing drawn

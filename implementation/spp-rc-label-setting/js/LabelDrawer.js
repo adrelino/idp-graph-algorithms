@@ -1,3 +1,8 @@
+/**
+ * @classdesc
+ * Secondary visualization layer to draw labels
+ * @constructor
+ */
 var LabelDrawer = function(svgOrigin,algo){
 
     /////////////////

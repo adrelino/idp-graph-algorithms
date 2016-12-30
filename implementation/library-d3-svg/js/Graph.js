@@ -232,8 +232,6 @@ Graph.prototype.setState = function(savedState){
 /**
  * Style node or edge resources
  * @static
- * @param {[]} resources - sequentialized Graph
- * @return {Graph} - parsed Graph object
  */
 Graph.styleResources = function(resources,left,right,f){
   var f = f || function(d){return d};

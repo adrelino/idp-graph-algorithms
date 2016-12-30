@@ -1,4 +1,8 @@
-//http://stackoverflow.com/questions/7481988/multiple-constructor-in-javascript
+/**
+ * @classdesc
+ * Represents a residual edge in the residual Graph  G'
+ * @constructor
+ */
 Graph.ResidualEdge = function(idOrObj, forward) {
   if(idOrObj && forward==null){ //from json.stringify
     this.id = idOrObj.id;
@@ -9,10 +13,16 @@ Graph.ResidualEdge = function(idOrObj, forward) {
   }
 }
 
+/**
+ * The original edge of the graph G
+ */
 Graph.ResidualEdge.prototype.edge = function(){
   return Graph.instance.edges.get(this.id);
 }
 
+/**
+ * The residual capacity
+ */
 Graph.ResidualEdge.prototype.c_dash = function(){
   var edge = this.edge();
   if (this.forward) {
@@ -27,6 +37,9 @@ Graph.ResidualEdge.prototype.notnull = function(){
   return c > 0;
 }
 
+/**
+ * The start vertex
+ */
 Graph.ResidualEdge.prototype.start = function(){
   var edge = this.edge();
   if(this.forward){
@@ -36,6 +49,9 @@ Graph.ResidualEdge.prototype.start = function(){
   }
 }
 
+/**
+ * The end vertex
+ */
 Graph.ResidualEdge.prototype.end = function(){
   var edge = this.edge();
   if(this.forward){

@@ -76,8 +76,10 @@ function translate(x,y){
 GraphAlgos = d3.map();
 
 /**
+ * @classdesc
  * The base class of a Network visualization of a graph. Based on D3 and SVG.
  * Graph Editors and Graph Algorithms should inherit from this class.
+ * @constructor
  */
 GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
@@ -359,17 +361,26 @@ GraphDrawer.prototype.update= function(){
 }
 
 /**
- * Callback functions to be overwritten to style the graph
+ * Called when new nodes are entering
  */
 GraphDrawer.prototype.onNodesEntered = function(selection) {
 //     console.log(selection[0].length + " nodes entered")
 }
+/**
+ * Called when exisitng nodes are updated
+ */
 GraphDrawer.prototype.onNodesUpdated = function(selection) {
 //     console.log(selection[0].length + " nodes updated")
 }
+/**
+ * Called when new edges are entering
+ */
 GraphDrawer.prototype.onEdgesEntered = function(selection) {
 //     console.log(selection[0].length + " edges entered")
 }
+/**
+ * Called when exisitng edges are updated
+ */
 GraphDrawer.prototype.onEdgesUpdated = function(selection) {
 //     console.log(selection[0].length + " edges entered")
 }
@@ -396,11 +407,14 @@ GraphDrawer.prototype.nodeLabel = function(d){
 }
 
 /**
- * Position of node
+ * X Position of a node
  */
 GraphDrawer.prototype.nodeX = function(d){
     return d.x;
 };
+/**
+ * Y Position of a node
+ */
 GraphDrawer.prototype.nodeY = function(d){
     return d.y;
 };
