@@ -15,7 +15,7 @@ var const_Colors = {
     EdgeHighlight3:         "#73B78D",  // Dunkelgrün 55 % aus TUM Styleguide
     EdgeHighlight4:         "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
     RedText:                "#C4071B",  // Helles Rot 100% aus TUM Styleguide
-    GreenText:              "#007C30",   // Dunkelgrün 100 % aus TUM Styleguide
+    GreenText:              "#007C30",  // Dunkelgrün 100 % aus TUM Styleguide
     PQColor : "#FFFF70", // Helles Gelb
     StartNodeColor : "#33CC33", // Dunklgrün
     CurrentNodeColor : "#C4071B", // Helles Rot

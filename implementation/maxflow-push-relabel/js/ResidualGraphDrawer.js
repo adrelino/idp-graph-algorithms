@@ -103,13 +103,13 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
       //TODO:: draw residual edges on active node, not all edges in right side
       algo.onEdgesUpdated(selection);
 
+      var e_dashes_forward_map = algo.getState().e_dashes_forward_star_map;
+
       selection.selectAll("line.arrow")
         .each(function(d){
           var isResidualEdge = false;
-          var e_dashes_forward_map = algo.getState().e_dashes_forward_star_map;
       
           //var currentNodeId = algo.getState().currentNodeId;
-
           
           if(e_dashes_forward_map){//currentNodeId != null && currentNodeId>=0){
 //             var currentNode = Graph.instance.nodes.get(currentNodeId);
@@ -124,7 +124,7 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
 //             }
             var e_dash = e_dashes_forward_map[d.id];
             var isResidualEdge = e_dash != null;
-            d3.select(this).style("visibility",isResidualEdge ? "visible" : "hidden");
+            //d3.select(this).style("visibility",isResidualEdge ? "visible" : "hidden");
             if(isResidualEdge){
               var resEdge = new Graph.ResidualEdge(e_dash);
               d3.select(this).style("stroke-dasharray","5,5");
@@ -133,23 +133,24 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
               //d3.select(this).style("opacity",resEdge.notnull() ? 1 : 0.1);
             }
           }else{
-             d3.select(this).style("visibility","hidden");
+             //d3.select(this).style("visibility","hidden");
           }
         });
 
+      var transTime = (algo.getState().idPrev==STATUS_MAINLOOP) ? 0 : 500;
+
       //on g.edge
-      selection.style("opacity",function(d){ //selectAll("line.arrow").transition()
-        var e_dashes_forward_map = algo.getState().e_dashes_forward_star_map;
-        var op = 1;
+      selection.transition(transTime).style("opacity",function(d){ //selectAll("line.arrow").transition()
+        var op = 0.0;
         if(e_dashes_forward_map){
           var e_dash = e_dashes_forward_map[d.id];
           if(e_dash){
             var resEdge = new Graph.ResidualEdge(e_dash);
-            if(!resEdge.legal()){
-              op = 0.3;
+            if(resEdge.notnull()){
+              op = 0.5;
             }
-            if(!resEdge.notnull()){
-              op = 0.3;
+            if(resEdge.notnull() && resEdge.legal()){
+              op = 1.0;
             }
           }
         }

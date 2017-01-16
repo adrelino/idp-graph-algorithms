@@ -50,6 +50,14 @@ Graph.Node = function(x,y,id){
   this.state={};
 }
 
+Graph.Node.prototype.initResources = function(wantedResourceSize){
+  var toAdd = 0;
+  for(var i = 0, toAdd = wantedResourceSize - this.resources.length; i<toAdd; i++){
+    this.resources.push(Math.round(Math.random()*100));
+  }
+  if(toAdd) this.resources.sort(); //only if we added random resources, we sort them so that they become valid time windows e.g.
+}
+
 /**
  * Incoming edges of the node.
  * @return [Graph.Edge]
@@ -113,18 +121,14 @@ Graph.Edge.prototype.toString = function(full,f){
 Graph.prototype.addNode = function(x,y,resources){
   var node = new Graph.Node(+x,+y,this.nodeIds++);
   node.resources=resources || [];
-  for(var i = 0, toAdd = this.getNodeResourcesSize() - node.resources.length; i<toAdd; i++){
-    node.resources.push(0);
-  }
+  node.initResources(this.getNodeResourcesSize());
   this.nodes.set(node.id,node);
   return node;
 }
 
 Graph.prototype.addNodeDirectly = function(node){
   node.id = this.nodeIds++;
-  for(var i = 0, toAdd = this.getNodeResourcesSize() - node.resources.length; i<toAdd; i++){
-    node.resources.push(0);
-  }
+  node.initResources(this.getNodeResourcesSize());
   this.nodes.set(node.id,node);
   return node;
 }
@@ -151,7 +155,7 @@ Graph.prototype.addEdgeDirectly = function(edge){
   edge.end.inEdges.set(edge.id,edge);
   this.edges.set(edge.id,edge);
   var max = this.getEdgeResourcesSize();
-  while(edge.resources.length<max) edge.resources.push(0);
+  while(edge.resources.length<max) edge.resources.push(Math.round(Math.random()*10));
   return edge;
 }
 

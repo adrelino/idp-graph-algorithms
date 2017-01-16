@@ -74,8 +74,16 @@ Graph.ResidualEdge.prototype.increaseFlow = function(delta){
   }
 }
 
-Graph.ResidualEdge.prototype.toString = function() {
-  return (this.forward ? "forward " : "backward ") + "residual edge e'=("+this.start().id + "," + this.end().id + ") with c'=" + this.c_dash();
+Graph.ResidualEdge.prototype.toString = function(nodeLabel,star) {
+  var nodeLabel = nodeLabel || function(node){return node.id};
+  var edgeText = "("+nodeLabel(this.start()) + "," + nodeLabel(this.end()) + ")" +(this.forward ? " --> " : " <-- ");
+  if(!star){
+    edgeText = "e'="+edgeText + "with c'=" + this.c_dash();
+  }else{
+    edgeText = "e*="+edgeText;
+  }
+
+  return edgeText;
 }
 
 //not necessarily legal, forward star of node in G'

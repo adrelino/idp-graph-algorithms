@@ -18,7 +18,7 @@ var STATUS_FINISHED = 10;
  * @class
  */
 function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
-  GoldbergTarjanPushRelabelAlgorithmInstance=this;
+    GoldbergTarjanPushRelabelAlgorithmInstance=this;
     GraphDrawer.call(this,svgSelection);
 
     /**
@@ -55,6 +55,27 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      */
     this.getState = function(){
       return s;
+    }
+
+    var colors = {
+      s : const_Colors.StartNodeColor, //green,  
+      t : const_Colors.StartNodeColor, //also green
+      v : const_Colors.CurrentNodeColor, //red
+      Q : const_Colors.PQColor, //yellow
+      cap : "#ccc",
+      flow : "lightblue", //in graph-style.css
+      e_dash : "orange",
+      e_star : "mediumpurple"//blueviolet"
+    };
+
+    //Variable status
+    d3.select("#ta_td_v").style("background-color",colors.v);
+    d3.select("#ta_td_queue").style("background-color",colors.Q);
+    d3.select("#ta_td_e_dash").style("background-color",colors.e_dash);
+    d3.select("#ta_td_e_star").style("background-color",colors.e_star);
+
+    function colorizeHtml(variable,text){
+      return "<span style='background-color:"+colors[variable]+"'>"+text+"</span>";
     }
 
     /**
@@ -124,15 +145,16 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         .selectAll("circle")
         .style("fill", function(d) {
             if (d.id == s.currentNodeId){
-              return const_Colors.CurrentNodeColor;
-            }else if (d.id == s.sourceId)
-                return const_Colors.StartNodeColor; //green
-            else if (d.id == s.targetId)
-                return const_Colors.StartNodeColor;//NodeFillingQuestion; // NodeFillingLight
-            else if (s.activeNodeIds.indexOf(d.id) >= 0)
-                return const_Colors.PQColor;
-            else
-                return global_NodeLayout['fillStyle'];
+              return colors.v;
+            }else if (d.id == s.sourceId){
+              return colors.s;
+            }else if (d.id == s.targetId){
+              return colors.t;
+            }else if (s.activeNodeIds.indexOf(d.id) >= 0){
+              return colors.Q;
+            }else{
+              return global_NodeLayout['fillStyle'];
+            }
         //        return colormap[Math.min(10,d.height)];
         })
     }
@@ -169,11 +191,11 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
               var attr = {"stroke":"black","stroke-width":global_Edgelayout['lineWidth'],"marker-end":"url(#arrowhead2)"};
               if(s.e_dash && d.id == s.e_dash.id){// && (s.idPrev==STATUS_PUSH || s.idPrev==STATUS_ADMISSIBLEPUSH || s.idPrev==STATUS_RELABEL)){
                 attr["stroke-width"]=4;
-                attr["stroke"]="orange";
+                attr["stroke"]=colors.e_dash;
                 //attr["marker-end"]="url(#arrowhead2-red)";
               }else if(s.e_star && d.id == s.e_star.id){
                 attr["stroke-width"]=4;
-                attr["stroke"]="green";
+                attr["stroke"]=colors.e_star;
                 //attr["marker-end"]="url(#arrowhead2-green)";
               }
               d3.select(this).style(attr);
@@ -351,19 +373,19 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
           }
         }
 
-        d3.select("#ta_td_v").text(vText);
+        var v_style = d3.select("#ta_td_v").text(vText).style("background-color");
         d3.select("#ta_td_queue").text("{"+s.activeNodeIds.join(",")+"}");
         
         if(s.e_dash){
         var e_dash = new Graph.ResidualEdge(s.e_dash);
-          d3.select("#ta_td_e_dash").text(e_dash.toString());
+          d3.select("#ta_td_e_dash").text(e_dash.toString(that.nodeLabel));
         }else{
           d3.select("#ta_td_e_dash").text('-');
         }
 
         if(s.e_star){
         var e_star = new Graph.ResidualEdge(s.e_star);
-          d3.select("#ta_td_e_star").text(e_star.toString());
+          d3.select("#ta_td_e_star").text(e_star.toString(that.nodeLabel,true));
         }else{
           d3.select("#ta_td_e_star").text('-');
         }
@@ -460,7 +482,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         s.sourceId = d.id;
         that.setDisabledBackward(false);
         setStatus(STATUS_SELECTTARGET,STATUS_SELECTTARGET); //so that idPrev == id so that we see "select target" after we clicked on source node
-        logger.log("selected node <span style='color:rgb(51, 204, 51)'>" + d.id + " as source s</span>");
+        logger.log("selected node " +d.id +" as source " + colorizeHtml("s","s"));
     };
 
     /**
@@ -470,7 +492,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         s.targetId = d.id;
         that.setDisabledForward(false);
         setStatus(STATUS_INITPREFLOW,STATUS_START); //so that after selecting the target, we jump from display before click (on nodes) to display after click (on next button)
-        logger.log("selected node <span style='color:rgb(51, 204, 51)'>" + d.id + " as target t</span>");
+        logger.log("selected node " +d.id +" as target " + colorizeHtml("t","t"));
     };
 
 
@@ -484,30 +506,27 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         var source = Graph.instance.nodes.get(s.sourceId);
         var forwardStar = source.getOutEdges();
 
-        var text = "Init preflow: <span style='color:skyblue'>";
-        var text2 = ", add nodes <span style='color:rgb(255, 255, 112)'>";
+        var preflowEdges = "";
+        var activeNodes = "";
 
         for (var i = 0; i < forwardStar.length; i++) {
             var e = forwardStar[i];
             //init preflow from source node
             e.state.flow = e.resources[0];
-            text +="f("+e.start.id+","+e.end.id+")="+e.state.flow+" ";
+            preflowEdges +="f("+e.start.id+","+e.end.id+")="+e.state.flow+" ";
             source.state.excess -= e.state.flow;
             e.end.state.excess = e.state.flow;
 
             //add node to active queue
             if (e.end.id != s.targetId) {
-                text2 += e.end.id + " ";
+                activeNodes += e.end.id + " ";
                 s.activeNodeIds.push(e.end.id);
             }
         }
 
-        text +="</span>";
-        text2 +="</span> to Q";
-
         setStatus(STATUS_INITDISTANCEFUNCTION);
         
-        logger.log(text + text2);//" source excess: " + source.state.excess);
+        logger.log("Init preflow: "+colorizeHtml("flow",preflowEdges) +", add nodes: "+ colorizeHtml("Q",activeNodes) +"to Q");//" source excess: " + source.state.excess);
     }
 
     /**
@@ -579,7 +598,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         updateResidualEdgesForwardStar(s.currentNodeId);
 
 
-        logger.log("Main loop #" + (s.mainLoopIt++) + ": pop <span style='color:red'>node v=" + s.currentNodeId + "</span> from Q");
+        logger.log("Main loop #" + (s.mainLoopIt++) + ": pop node " + colorizeHtml("v","v="+s.currentNodeId) + " from "+colorizeHtml("Q","Q"));
         
         setStatus(STATUS_ADMISSIBLEPUSH);
     }
@@ -594,10 +613,10 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
             s.e_dash = v.getLegalResidualEdge();
             if(s.e_dash){
               setStatus(STATUS_PUSH);
-              logger.log2("admissible push on " + s.e_dash.toString());
+              logger.log2("admissible push on " + colorizeHtml("e_dash",s.e_dash.toString(that.nodeLabel)));
             }else{
               setStatus(STATUS_ADMISSIBLERELABEL);
-              logger.log2("no admissible push, e(v)=" + v.state.excess);
+              logger.log2("no admissible push, e("+colorizeHtml("v","v")+")=" + v.state.excess);
             }
         } else {
           setStatus(STATUS_MAINLOOP);
@@ -625,7 +644,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         }
         
         var sat = e_dash.c_dash() == 0 ? " [saturating] " : " [nonsaturating] ";
-        logger.log3(sat +" push of " + delta + " from node <span style='color:red'>" + that.nodeLabel(v) + "</span> to " + that.nodeLabel(w) + " along red edge");
+        logger.log3(sat +" push of " + delta + " from node " + colorizeHtml("v",that.nodeLabel(v)) + "</span> to " + that.nodeLabel(w));
         setStatus(STATUS_ADMISSIBLEPUSH);
     }
 
@@ -636,7 +655,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         var v = Graph.instance.nodes.get(s.currentNodeId);
         if (v.state.excess > 0 && (s.e_dash = v.getLegalResidualEdge()) == null) { //todo: check if e_dash can ever be not null here, since we pushed till we saturated all edges beforehand anyways
             setStatus(STATUS_RELABEL);
-            logger.log2("admissible relabel, e(v)=" + v.state.excess);
+            logger.log2("admissible relabel, e("+colorizeHtml("v","v")+")=" + v.state.excess);
         } else {
             setStatus(STATUS_MAINLOOP); //jump to loop head
             logger.log2("no admissible relabel");
@@ -662,7 +681,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         //make ourself 1 higher than him
         var newheight = 1 + s.e_star.end().state.height;
 
-        logger.log3("relabel node <span style='color:red'>v=" + node.id + "</span> from h=" + node.state.height + " to h=" + newheight+ ", add v to <span style='color:yellow'>Q (yellow)</span>");
+        logger.log3("relabel node "+colorizeHtml("v","v="+ node.id)+" from h=" + node.state.height + " to h=" + newheight+ " due to "+colorizeHtml("e_star",s.e_star.toString(that.nodeLabel,true))+", add v to "+colorizeHtml("Q","Q"));
         node.state.height = newheight;
         s.activeNodeIds.push(node.id);
         

@@ -4,7 +4,8 @@
 
 ### Beide:
 - [ ] Zu den dynamischen Kommentaren/Log anzeigen: Das Log finde ich zu technisch, das aber in umformatierter/einfacher Form wäre ok.
-- [ ] Erzeugung von Kanten: Können diese zufällige Kantenbewertungen bekommen statt immer 0?
+- [x] Erzeugung von Kanten: Können diese zufällige Kantenbewertungen bekommen statt immer 0?
+  * (2017-01-17) Ja, jetzt bekommen sie Zufallswerte zwischen 0 und 10. Das geht auch bei mehrdimensionalen resource vectoren wie beim SPPRC. Für den SPPTW bekommen die nodes ausserdem random time-windows im bereich von 0-100, wobei immer arrival<=departure ist.
 - [ ] Ausführung: Zeit für Animation ausblenden, Tabs wieder einführen (dann muss ich die Texte nochmal lesen)
 - [ ] More: Speed and Termination of algorithm: Sketch a nice proof, link to references for more details.
 - [ ] Introduction und Description: Problemstellung sowie Idee des algorithmus text finalisieren
@@ -18,8 +19,10 @@
 ### SPPRC:
 - [ ] Einleitung finde ich sehr knapp, darf gerne noch ein wenig ausführlicher sein
 - [ ] Wie können Zeitfenster angepasst werden?
-- [ ] Ende der Ausführung: Kein Hover, um Pfade zu sehen, sondern ein Klick?
-- [ ] Zielknoten würde ich nicht wählen, lass es so. Könnte man den Start wählen, oder wird der immer vorgegeben?
+  * Im Grapheditor mit Doppelklick auf das Zeitfenster, genauso wie man z.B. Kantengewichte ändert
+- [x] Ende der Ausführung: Kein Hover, um Pfade zu sehen, sondern ein Klick?
+  * (2017-01-17) text gefixed
+- [x] Zielknoten würde ich nicht wählen, lass es so. Könnte man den Start wählen, oder wird der immer vorgegeben?
 - [ ] Beschreibung: Auf Unvergleichbarkeit von Pfaden etwas ausführlicher eingehen (Bsp in 2-3 Sätzen?)
 - [ ] Description: 
   * describe how to extend a label
@@ -65,12 +68,23 @@
   * Kante e wird links fett dargestellt
 
 ### Goldberg-Tarjan:
-- [ ] Ausführung: In den kurzen Beschreibungen gerade zu Beginn kurz darauf eingehen, wie die Begriffe visualisiert sind (Preflow, Active Nodes, Aktiver Knoten, ...)
-- [ ] Kann man Start- und Zielknoten wählen, oder werden die immer vorgegeben?
-- [ ] Beschreibung / Description:
-  * describe how to construct the residual network
+- [ ] Problem Definition as in documentation:
+  * flow network
+  * feasible flow
+  * maximum flow
+  * residual graph: describe how to construct the residual network
+- [ ] Idea of the algorithm as in documentation:
+  * excess and preflow
+  * active node
+  * height, valid labeling
+  * eligible edge
   * describe how to carry out push and relabel operations (like in algoprak reference)
-- [ ] hide or dash with fewer dashes the residual edges with 0 capacity (because by definition, these don't actually exist)
+- [x] Ausführung: In den kurzen Beschreibungen gerade zu Beginn kurz darauf eingehen, wie die Begriffe visualisiert sind (Preflow, Active Nodes, Aktiver Knoten, ...)
+  (2017-01-16) done, die verschiedenen Begriffe (s,t,edge preflow/cap,active nodes, height, current node, eligible edge, minimum height edge) werden nacheinander in den verschiedenen Ausführungsschritten eingeführt und deren Visualisierung und vorallem die dazugehörigen Farben erklärt.
+- [x] Kann man Start- und Zielknoten wählen, oder werden die immer vorgegeben?
+  (2017-01-16) Ja, jetzt wird auch im text darauf hingewiesen wie.
+- [x] hide or dash with fewer dashes the residual edges with 0 capacity (because by definition, these don't actually exist)
+  (2017-01-16) Done, they get opacity 0 and a style transition so that they disappear slowly after a saturating push. For relabeling and searching the neighbouring node with minimal height, it is important that these edges are not displayed, which would be confusing.
 - [x] Stefan Walzer TU Ilmenau: Wir bevorzugen die „height/id“ Ansicht (weil wir den excess Wert nicht so entscheidend finden und weil es passieren kann, dass Knoten in der „height/excess“ Ansicht übereinander liegen). Leider schalten die Implementierung bei jeden Klick auf „next“ zu „height/excess“ um.
   [(2016-11-09)](https://github.com/adrelino/idp-graph-algorithms/commit/4f145861dfba5f8305a24c0f9cc4263cf2b17dcf)
   * added checkbox to fix axis during algorithm execution

@@ -238,9 +238,11 @@
                     <div id="tg_div_statusErklaerung">
                     <ul>
                         <li>To create a node, make a double-click in the drawing area.</li>
-                        <li>To create an edge, first click on the output node and then click on the destination node.</li>
-                        <li>The edge weight can be changed by double clicking on the edge.</li>
+                        <li>To create an edge, first click on the start node and then click on its node. To create an edge, first click on its start node and then on its end node. Alternatively, you may (single-)click on the drawing field to create a new node as end node.</li>
                         <li>Right-clicking deletes edges and nodes.</li>
+                        <br><i>SPPTW specific</i>:
+                        <li>The resource consumptions (time,cost) along an edge can be changed by double clicking on the edge.</li>
+                        <li>The time window [arrival,departure] of a node can be changed by double clicking on it.</li>
                     </ul>
                     </div>
                     
@@ -323,16 +325,16 @@
                 <div id="ta_div_statusWindow" class="statusWindow">
                     <h2 class="">Algorithm status</h2>
                     <div id="ta_div_abspielbuttons"> <!--class="ui-widget-header ui-corner-all"-->
-                        <input  id="ta_button_rewind" type="checkbox"><label for="ta_button_rewind" id="ta_button_text_rewind">rewind</label>
-                        
+<!--                         <input  id="ta_button_rewind" type="checkbox"><label for="ta_button_rewind" id="ta_button_text_rewind">rewind</label>
+                         -->
                         <button id="ta_button_Zurueck">prev</button>
                         
                         <button id="ta_button_1Schritt">next</button>
                         
                         <input  id="ta_button_vorspulen" type="checkbox"><label for="ta_button_vorspulen" id="ta_button_text_fastforward">fast forward</label>
 
-                        <input type="number" id="ta_vorspulen_speed" min="2" max="500" value=5>ms
-
+<!--                         <input type="number" id="ta_vorspulen_speed" min="2" max="500" value=5>ms
+ -->
                         <span id="ta_button_text_pause" style="display:none">pause</span>
                     </div>
 <!--                     <div id="ta_div_statusTabs">
@@ -405,7 +407,7 @@
                                 <p>The algorithm terminated since there are no more unprocessed labels to extend</p>
                                 <p id="finalflow" style="color:green"></p>
                                 <h3>Filtering step</h3>
-                                <p>Hover over a node to see the set of all feasible paths ending in it</p>
+                                <p>Click on a node to see the set of all feasible paths ending in it</p>
                             </div>
                         </div>
                         <div id="loggerLastEntry"></div>

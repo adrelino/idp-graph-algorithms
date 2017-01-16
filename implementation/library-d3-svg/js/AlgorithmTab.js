@@ -20,7 +20,7 @@ function AlgorithmTab(algo,p_tab) {
      * Timeout speed in milliseconds for fast forward
      * @type Number
      */
-    var fastForwardSpeed = 5;
+    var fastForwardSpeed = 500;
 
     /**
      * the logger instance
@@ -30,6 +30,7 @@ function AlgorithmTab(algo,p_tab) {
 
 
     var fastforwardOptions = {label: $("#ta_button_text_fastforward").text(), icons: {primary: "ui-icon-seek-next"}};
+    var rewindOptions = {label: $("#ta_button_text_rewind").text(), icons: {primary: "ui-icon-seek-prev"}};
 
     /**
      * Initialisiert das Zeichenfeld
@@ -39,18 +40,24 @@ function AlgorithmTab(algo,p_tab) {
 
         var pauseOptions = {label: $("#ta_button_text_pause").text(), icons: {primary: "ui-icon-pause"}};
 
-        if(algo.rewindStart && algo.rewindStop){
-        var rewindOptions = {label: $("#ta_button_text_rewind").text(), icons: {primary: "ui-icon-seek-prev"}};
-            $("#ta_button_rewind")
-            .button(rewindOptions)
-            .click(function() {
-                $(this).button("option",this.checked ? pauseOptions : rewindOptions);
-                this.checked ? algo.rewindStart() : algo.rewindStop();
-            })
-        }else{
-            $("#ta_button_rewind").hide();
-            $("#ta_button_text_rewind").hide();
-        }
+//         if(algo.rewindStart && algo.rewindStop){
+//             $("#ta_button_rewind")
+//             .button(rewindOptions)
+//             .click(function() {
+//                 $(this).button("option",this.checked ? pauseOptions : rewindOptions);
+//                 this.checked ? algo.rewindStart() : algo.rewindStop();
+//             })
+//         }else{
+             $("#ta_button_rewind").hide();
+             $("#ta_button_text_rewind").hide();
+//         }
+
+//        $("#ta_button_rewind")
+//             .button(rewindOptions)
+//             .click(function() {
+//                 $(this).button("option",this.checked ? pauseOptions : rewindOptions);
+//                 this.checked ? that.rewindStart() : that.rewindStop();
+//             });
         
         $("#ta_button_Zurueck")
             .button({icons: {primary: "ui-icon-seek-start"}})
@@ -71,9 +78,9 @@ function AlgorithmTab(algo,p_tab) {
                 this.checked ? that.fastForwardAlgorithm() : that.stopFastForward();
             });
 
-        $("#ta_vorspulen_speed").on("input",function(){
-            fastForwardSpeed=+this.value;  
-        });
+//         $("#ta_vorspulen_speed").on("input",function(){
+//             fastForwardSpeed=+this.value;  
+//         });
 
 
 
@@ -98,26 +105,27 @@ function AlgorithmTab(algo,p_tab) {
      * "Spult vor", führt den Algorithmus mit hoher Geschwindigkeit aus.
      * @method
      */
-    this.fastForwardAlgorithm = function() {
-//         $("#ta_button_1Schritt").button("option", "disabled", true);
-//         $("#ta_button_Zurueck").button("option", "disabled", true);
+    algo.fastForwardAlgorithm = function() {
+        $("#ta_button_1Schritt").button("option", "disabled", true);
+        $("#ta_button_Zurueck").button("option", "disabled", true);
 //         $("#ta_button_rewind").button("option", "disabled", true);
 //         var geschwindigkeit = 5; // Geschwindigkeit, mit der der Algorithmus ausgeführt wird in Millisekunden
         
+        algo.nextStepChoice();
         algo.fastForwardIntervalID = window.setInterval(function() {
             algo.nextStepChoice();
         }, fastForwardSpeed);
 
-        algo.update();
+        //algo.update();
     };
 
     /**
      * Stoppt das automatische Abspielen des Algorithmus
      * @method
      */
-    this.stopFastForward = function() {
-//         $("#ta_button_1Schritt").button("option", "disabled", false);
-//         $("#ta_button_Zurueck").button("option", "disabled", false);
+    algo.stopFastForward = function() {
+        $("#ta_button_1Schritt").button("option", "disabled", false);
+        $("#ta_button_Zurueck").button("option", "disabled", false);
 //         $("#ta_button_rewind").button("option", "disabled", false);
         window.clearInterval(algo.fastForwardIntervalID);
         algo.fastForwardIntervalID = null;
@@ -127,17 +135,15 @@ function AlgorithmTab(algo,p_tab) {
     };
     
     
-//     this.setDisabledBackward = function(disabled) {
-//         $("#ta_button_Zurueck").button("option", "disabled", disabled);
-//     };
+    algo.setDisabledBackward = function(disabled) {
+        $("#ta_button_Zurueck").button("option", "disabled", disabled);
+    };
     
-//     this.setDisabledForward = function(disabled, disabledSpulen) {
-//         var disabledSpulen = (disabledSpulen!==undefined) ? disabledSpulen : disabled;
-//         $("#ta_button_1Schritt").button("option", "disabled", disabled);
-//         $("#ta_button_vorspulen").button("option", "disabled", disabledSpulen);
-//     };
-
-    algo.stopFastForward = this.stopFastForward;
+    algo.setDisabledForward = function(disabled, disabledSpulen) {
+        var disabledSpulen = (disabledSpulen!==undefined) ? disabledSpulen : disabled;
+        $("#ta_button_1Schritt").button("option", "disabled", disabled);
+        $("#ta_button_vorspulen").button("option", "disabled", disabledSpulen);
+    };
 }
 
 // Vererbung realisieren

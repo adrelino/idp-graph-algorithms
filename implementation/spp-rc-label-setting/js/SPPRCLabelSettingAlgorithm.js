@@ -298,17 +298,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         this.replayHistory = [];
     //         this.deregisterEventHandlers();
     };
-    
-    
-    this.setDisabledBackward = function(disabled) {
-        $("#ta_button_Zurueck").button("option", "disabled", disabled);
-    };
-    
-    this.setDisabledForward = function(disabled, disabledSpulen) {
-        var disabledSpulen = (disabledSpulen!==undefined) ? disabledSpulen : disabled;
-        $("#ta_button_1Schritt").button("option", "disabled", disabled);
-        $("#ta_button_vorspulen").button("option", "disabled", disabledSpulen);
-    };
 
     /**
      * add a step to the replay stack, serialize stateful data

@@ -232,9 +232,9 @@
                     <div id="tg_div_statusErklaerung">
                     <ul>
                         <li>To create a node, make a double-click in the drawing area.</li>
-                        <li>To create an edge, first click on the output node and then click on the destination node.</li>
-                        <li>The edge weight can be changed by double clicking on the edge.</li>
-                        <li>Right-clicking deletes edges and nodes.</li>
+                        <li>To create an edge, first click on its start node and then on its end node. Alternatively, you may (single-)click on the drawing field to create a new node as end node.</li>
+                        <li>Right-clicking deletes edges and nodes.</li><br><i>Maxflow specific:</i>
+                        <li>The maximum capacity of an edge can be changed by a double-click on the edge or its weight.</li>
                     </ul>
                     </div>
                     
@@ -323,16 +323,16 @@
                 <div id="ta_div_statusWindow" class="statusWindow">
                     <h2 class="">Algorithm status</h2>
                     <div id="ta_div_abspielbuttons"> <!--class="ui-widget-header ui-corner-all"-->
-                        <input  id="ta_button_rewind" type="checkbox"><label for="ta_button_rewind" id="ta_button_text_rewind">rewind</label>
-                        
+<!--                         <input  id="ta_button_rewind" type="checkbox"><label for="ta_button_rewind" id="ta_button_text_rewind">rewind</label>
+                         -->
                         <button id="ta_button_Zurueck">prev</button>
                         
                         <button id="ta_button_1Schritt">next</button>
                         
                         <input  id="ta_button_vorspulen" type="checkbox"><label for="ta_button_vorspulen" id="ta_button_text_fastforward">fast forward</label>
 
-                        <input type="number" id="ta_vorspulen_speed" min="2" max="500" value=5>ms
-
+<!--                         <input type="number" id="ta_vorspulen_speed" min="2" max="500" value=5>ms
+ -->
                         <span id="ta_button_text_pause" style="display:none">pause</span>
                     </div>
 <!--                     <div id="ta_div_statusTabs">
@@ -348,15 +348,18 @@
                             </div>
                             <div>
                                 <h3>Then choose a target node</h3>
-                                <p>Click on a node to select it as the target/sink node t</p>
+                                <p>Click on a node to select it as the target/sink node t. If you want to change the source node, go back with <strong>prev</strong>. </p>
                             </div>
                             <div>
                                 <h3>Goldberg-Tarjan Push-Relabel maximum flow algorithm</h3>
+                                <p>Source and target node have been selected and are filled with green. Per default, these are the nodes with lowest and hightest id. If you want to change the target node, go back with <strong>prev</strong>. </p>
+                                <p>Edges are annotated with preflow/capacity, where the latter corresponds to the thickness of the gray line.</p>
                                 <p>Now the algorithm can begin. Click on <strong>next</strong> to start it</p>
                             </div>
                             <div>
                                 <h3>Initializing the preflow</h3>
-                                <p>Set f(e) = c(e) for all edges emanating s and set f(e) = 0 for all other edges. Add all nodes v &ne; t having (s,v) &isin; E to the queue Q of active nodes.</p>
+                                <p>Set the preflow f(e) (light blue) to the maximum capacity c(e) for all edges emanating s and set f(e) = 0 for all other edges. Add all nodes v &ne; t having (s,v) &isin; E to the queue Q of active nodes (yellow).</p>
+                                <p>The edges in G are labeled with f(e)/c(e) denoting the current preflow along the edge and its maximum capacity. The nodes in G' are labeled with height/excess, where the latter one is also shown as a bar next to the node.</p>
                             </div>
                             <div>
                                 <h3>Initializing the height function</h3>
@@ -365,35 +368,43 @@
                                 This can be done in time O(|V| + |E|) by a breadth first search starting at t and using all edges in the opposite direction. The source s isn’t reached by this BFS.
 
                                 We initialize h(s) by setting h(s) = |V|.</p>
+
+                                <p>We mapped the height of a node to the y axis in G'.</p>
+
                             </div>
                             <div>
                                 <h3>Main loop</h3>
-                                <p>As long as the queue Q containing the active nodes isn’t empty pop the first node v from the front of Q and apply a push/relabel-operation to v.</p>
+                                <p>As long as the queue Q containing the active nodes (in yellow) isn’t empty pop the first node v from the front of the queue. We call v the current node and fill it with red.</p>
+                                <p>In the following, we will try to apply push or relabel operations to v to get rid of its excess flow e(v). These operate on the residual edges E' in G' leaving the active node and are displayed with dashed lines and labeled with their residual capacities c'. </p>
                             </div>
                             <div>
                                 <h3>Check for admissible push operations</h3>
-                                <p>While e(v) > 0 and the residual network G'=(V,E') contains an edge that is legal with respect to the current height function ( i.e., there is an edge e' = (v, w) having h(v) = h(w) +  1 ) apply a push</p>
+                                <p>While the current node has excess e(v)>0 and the residual network G'=(V,E') contains an edge that is eligible or <i>legal with respect to the current height function</i>,
+                                 i.e. there is an edge e'=(v,w) having h(v)==h(w)+1, we can apply a push operation.</p>
+
+                                 <p>All residual edges which are not legal are grayed out. If there is a legal residual edge e' it is displayed in orange.<p>
                             </div>
 <!--                             The residual network G'=(V,E') around a node v can be constructed on the fly. For this, we have to consider both the incoming (u,v) as well as the outgoing (v,w) edges in E. -->
                             <div>
                                 <h3>Push</h3>
-                                <p>Push &delta; = min{e(v), c'(e')} amount of flow from v to w.</p>
-
-                                <p>More precisely, if e' &in; E' is a forward edge with respect to an edge e of G, increase the preflow f(e) of e by &delta;, and if e' is a backward edge, then decrease the preflow f(e) of e by &delta;.</p>
+                                <p>Push &delta; = min{e(v), c'(e')} amount of flow from v to w.
+                                More precisely, if e' &in; E' is a forward edge (-->) with respect to an edge e of G, increase the preflow f(e) of e by &delta;, and if e' is a backward edge (<--), then decrease the preflow f(e) of e by &delta;.</p>
 
                                 <p>By doing so, e(v) is decreased by &delta;, and e(w) is increased by &delta;. If w &ne; s,t, and if w wasn't active before, w becomes active, and is added at the end of the queue Q containing the active nodes.</p>
                             </div>
                             <div>
                                 <h3>Check for an admissible relabel operation</h3>
-                                <p>If v has still excess, i.e., e(v) > 0, and if there is no legal edge emanating from v in the residual network, then apply a relabel operation. </p><!-- as described in the following, and add v at the end of the queue after that. -->
+                                <p>If the current node still has excess e(v)>0 and if there is no legal edge emanating from v in the residual network, then apply a relabel operation. </p><!-- as described in the following, and add v at the end of the queue after that. -->
                             </div>
                             <div>
                                 <h3>Relabel</h3>
-                                <p>Increase the height h(v) of v to the value</p>
-                                <p>min{ h(w)+1 | (v,w) is edge of the residual network G'}</p>
-                                <p>add v at the end of the queue Q after that.</p>
+                                <p>Increase the height h(v) of the current node so that it is exactly one level above the minimum height of its adjacent nodes in the residual Graph G'. The residual edge e* to the adjacent node of minimum height is displayed in purple.</p>
+                                <p>Since the current node still has excess, re-add it to the end of the queue Q of active nodes after that.</p>
                             </div>
                             <div>
+
+
+
                                 <h3>Finished</h3>
                                 <p>The algorithm terminated with a maximum flow value of:</p>
                                 <p id="finalflow" style="color:green"></p>
