@@ -23,15 +23,15 @@ function Tab(algo,p_tab) {
      * @method
      */
     this._init = function() {
-        legendeMax = this.tab.find(".Legende");
-        legendeMin = this.tab.find(".LegendeMinimized");
-        legendeMaxButton = legendeMax.find(".LegendeMin");
-        legendeMinButton = legendeMin.find(".LegendeMin");
+//         legendeMax = this.tab.find(".Legende");
+//         legendeMin = this.tab.find(".LegendeMinimized");
+//         legendeMaxButton = legendeMax.find(".LegendeMin");
+//         legendeMinButton = legendeMin.find(".LegendeMin");
         tabIntroDialog = this.tab.find(".tabIntroDialog");
         tabChangeWarningDialog = this.tab.find(".tabChangeWarningDialog");
         statusWindow = this.tab.find(".statusWindow");
         this.statusBackup = statusWindow.html();
-        this.animateLegende();
+        //this.animateLegende();
 //         this.svgOrigin.attr('user-select','none').attr('unselectable','on').on("selectstart.CanvasDrawer",false);
 //         this.drawIntervalID = setInterval(function() { algo.drawCanvas(); }, 20);
 //         this.needRedraw = true;
@@ -40,7 +40,7 @@ function Tab(algo,p_tab) {
 
         //         this.registerEventHandlers();
 //         this.needRedraw = true;
-        this.minimizeLegend();
+       // this.minimizeLegend();
         algo.init && algo.init();
         this.initialized=true;
     };
@@ -73,26 +73,26 @@ function Tab(algo,p_tab) {
      */
     this.active = false;
     
-    /**
-     * jQuery Objekt der maximierten Legende
-     * @type Object
-     */
-    var legendeMax;
-    /**
-     * jQuery Objekt der minimierten Legende
-     * @type Object
-     */
-    var legendeMin;
-    /**
-     * jQuery Objekt des "Maximieren" Buttons de Legende im aktuellen Tab
-     * @type Object
-     */
-    var legendeMaxButton;
-    /**
-     * jQuery Objekt des "Minimieren" Buttons de Legende im aktuellen Tab
-     * @type Object
-     */
-    var legendeMinButton;
+//     *
+//      * jQuery Objekt der maximierten Legende
+//      * @type Object
+//      */
+//     var legendeMax;
+//     /**
+//      * jQuery Objekt der minimierten Legende
+//      * @type Object
+//      */
+//     var legendeMin;
+//     /**
+//      * jQuery Objekt des "Maximieren" Buttons de Legende im aktuellen Tab
+//      * @type Object
+//      */
+//     var legendeMaxButton;
+//     /**
+//      * jQuery Objekt des "Minimieren" Buttons de Legende im aktuellen Tab
+//      * @type Object
+    
+//     var legendeMinButton;
     /**
      * jQuery Objekt des Dialogs, der zu Beginn des Tabs gezeigt wird.
      * @type Object
@@ -128,23 +128,23 @@ function Tab(algo,p_tab) {
 //         this.removeRefreshFromTabbar();
 //     };
 
-    /**
-     * Minimiert die Legende und positioniert sie korrekt.
-     * @method
-     */
-    this.minimizeLegend = function() {
-        legendeMax.hide();
-        legendeMin.show();
-    };
+//     /**
+//      * Minimiert die Legende und positioniert sie korrekt.
+//      * @method
+//      */
+//     this.minimizeLegend = function() {
+//         legendeMax.hide();
+//         legendeMin.show();
+//     };
 
-    /**
-     * Maximiert die Legende und positioniert sie korrekt.
-     * @method
-     */
-    this.maximizeLegend = function() {
-        legendeMax.show();
-        legendeMin.hide();
-    };
+//     /**
+//      * Maximiert die Legende und positioniert sie korrekt.
+//      * @method
+//      */
+//     this.maximizeLegend = function() {
+//         legendeMax.show();
+//         legendeMin.hide();
+//     };
     
     /**
      * Öffnet die Dialoge, die zu dem Tab gehören: Eingangsdialog und mglw. 

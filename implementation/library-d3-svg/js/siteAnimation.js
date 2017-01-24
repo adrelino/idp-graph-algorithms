@@ -180,6 +180,8 @@ function svgSerializeAndCrop(svgNode,styles,crop){
 
 function svgGraphCanvasDownloadable(){
    var container = d3.selectAll(".svgContainer");
+   
+   //1. bottom left: SVG Download
    //contains a svg and an a
    var links = container.selectAll('a');
    var svgOrigins = container.selectAll('svg');
@@ -197,7 +199,42 @@ function svgGraphCanvasDownloadable(){
      ahref.property("href-lang","image/svg+xml");
      ahref.property("href",href);
 //      window.location=data;
+   });
+
+   //2 bottom right: Legende
+
+   var legende = container.selectAll(".Legende");
+   //var legendeText = container.selectAll(".LegendeText");
+   //var legendeButton = container.selectAll(".LegendeMin");
+
+   //legendeText.style("display","none");
+
+   legende.forEach(function(a){
+      var legendeText = $(a).find(".LegendeText");
+      legendeText.hide();
+
+      var legendeButton = $(a).find(".LegendeMin");
+      legendeButton.button({icons: {primary: "ui-icon-plus"},text: false});
+      legendeButton.on("click",function(){
+        if(legendeText.is(":visible")){
+          legendeText.hide();
+          legendeButton.button({icons: {primary: "ui-icon-plus"},text: false});
+        }else{
+          legendeText.show();
+          legendeButton.button({icons: {primary: "ui-icon-minus"},text: false});
+        }
+        //var foo = legendeText.toggle();
+      })
    })
+
+//    legendeButton.forEach(function(a,b){
+//      var legendeMaxButton = $(a);
+//         legendeMaxButton.button({icons: {primary: "ui-icon-plus"},text: false});
+//    })
+
+//    legendeButton.on('click',function(a,b,c){
+//      legendeText.attr("visibility","hidden");
+//    });
 }
 
 
@@ -207,7 +244,7 @@ function svgGraphCanvasDownloadable(){
  * @global
  * @function
  */
-function initializeSiteLayout(GraphAlgorithmConstructor) {
+function initializeSiteLayout() {
 
     $("button").button();
     $("#te_button_gotoDrawGraph").click(function() { $("#tabs").tabs("option", "active", 1);});
@@ -219,7 +256,7 @@ function initializeSiteLayout(GraphAlgorithmConstructor) {
     graphEditorTab = new GraphEditorTab(new GraphEditor(d3.select("#tg_canvas_graph")),$("#tab_tg"));
     graphEditorTab.init();
     
-    algorithmTab = new AlgorithmTab(new GraphAlgorithmConstructor(d3.select("#ta_canvas_graph"),d3.select("#ta_canvas_graph2")),$("#tab_ta"));
+    algorithmTab = new AlgorithmTab(new GraphAlgorithm(d3.select("#ta_canvas_graph"),d3.select("#ta_canvas_graph2")),$("#tab_ta"));
     algorithmTab.init();
   
     $("#tabs").tabs({
@@ -259,3 +296,23 @@ function getUrlVars() {
 function getUrlHash() {
   return window.location.hash;
 }
+
+
+
+$(function() {
+    initializeSiteLayout();
+    $("#year").html(new Date().getFullYear());
+});
+$(document).ready(function() {
+    $("#menu").mmenu({
+       "navbar": {
+          "title": "Übersicht"
+       },
+       "offCanvas": {
+          "zposition": "front"
+       },
+       "counters": true,
+       "slidingSubmenus": true,
+       "classes": "mm-light",
+    });
+ });
