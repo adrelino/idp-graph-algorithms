@@ -556,7 +556,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
                     queue.push(neighbourNode);
                     neighbourNode.state.visited = true;
                     neighbourNode.state.height = node.state.height + 1;
-                    text +="h("+neighbourNode.id+")="+neighbourNode.state.height+",";
+                    text +="h("+neighbourNode.id+")="+neighbourNode.state.height+", ";
                 }
             }
         }
@@ -644,7 +644,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         }
         
         var sat = e_dash.c_dash() == 0 ? " [saturating] " : " [nonsaturating] ";
-        logger.log3(sat +" push of " + delta + " from node " + colorizeHtml("v",that.nodeLabel(v)) + "</span> to " + that.nodeLabel(w));
+        logger.log3(sat +" push of " + delta + " from " + colorizeHtml("v","v="+that.nodeLabel(v)) + "</span> to " + that.nodeLabel(w));
         setStatus(STATUS_ADMISSIBLEPUSH);
     }
 
@@ -681,7 +681,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         //make ourself 1 higher than him
         var newheight = 1 + s.e_star.end().state.height;
 
-        logger.log3("relabel node "+colorizeHtml("v","v="+ node.id)+" from h=" + node.state.height + " to h=" + newheight+ " due to "+colorizeHtml("e_star",s.e_star.toString(that.nodeLabel,true))+", add v to "+colorizeHtml("Q","Q"));
+        logger.log3("relabel "+colorizeHtml("v","v="+ node.id)+" from h=" + node.state.height + " to h=" + newheight+ " due to "+colorizeHtml("e_star",s.e_star.toString(that.nodeLabel,true))+", add v to "+colorizeHtml("Q","Q"));
         node.state.height = newheight;
         s.activeNodeIds.push(node.id);
         
@@ -692,3 +692,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 // Vererbung realisieren
 GoldbergTarjanPushRelabelAlgorithm.prototype = Object.create(GraphDrawer.prototype);
 GoldbergTarjanPushRelabelAlgorithm.prototype.constructor = GoldbergTarjanPushRelabelAlgorithm;
+
+//Global variable zuweisen
+GraphAlgorithm = GoldbergTarjanPushRelabelAlgorithm;

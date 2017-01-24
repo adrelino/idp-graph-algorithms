@@ -35,15 +35,6 @@
 <!-- MathJax CDN fallback -->
     <script>window.MathJax || document.write('<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG.js&locale=en">\x3C/script>')</script>
 
-<!--     MathJax, used in the more tab in pseudocode -->
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-            showMathMenu: false,
-            showMathMenuMSIE: false
-        });
-    </script>
-
-
 <!--     Adrians d3 related library code -->
     <script src="../library-d3-svg/js/Graph.js"></script>
     <script src="../library-d3-svg/js/GraphDrawer.js"></script>
@@ -55,7 +46,6 @@
     <script src="../library-d3-svg/js/siteAnimation.js"></script>
 
     <link id="graph-style" rel="stylesheet" type="text/css" href="../library-d3-svg/css/graph-style.css" />
-
     <link rel="stylesheet" type="text/css" href="../library-d3-svg/css/style.css" />
 
 <!--     Files used only for this applet -->
@@ -66,88 +56,14 @@
     <title>Shortest Paths with Resource Constraints</title>
 </head>
 <body>
-    <noscript>
-        <div class="ui-widget">
-            <div class="ui-state-error ui-corner-all" style="padding: .7em;">
-                <div class="ui-icon ui-icon-alert errorIcon"></div>
-                <strong>Please activate Javascript!</strong>
-                <ul style="margin: 0px;">
-                    <li>
-                        This website needs Javascript in order to be displayed properly.
-                    </li>
-                    <li>
-                        Javascript is currently deactivated in your browser. A manual for the activation of Javascript can be found <a href="http://www.enable-javascript.com/">here</a>.
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </noscript>
-    <script>
-        $(function() {
-            initializeSiteLayout(SPPRCLabelSettingAlgorithm);
-            $("#year").html(new Date().getFullYear());
-        });
-        $(document).ready(function() {
-            $("#menu").mmenu({
-               "navbar": {
-                  "title": "Übersicht"
-               },
-               "offCanvas": {
-                  "zposition": "front"
-               },
-               "counters": true,
-               "slidingSubmenus": true,
-               "classes": "mm-light",
-            });
-         });
-    </script>
-    <a id="menu_link" href="#menu"></a>
-    <nav id="menu">
-        <ul>
-            <li>
-                <a style="white-space:pre-line" href="http://www-m9.ma.tum.de/Allgemeines/GraphAlgorithmen">
-                <img src="../library/img/logo_ohne.png" alt="Übersichtsseite Graphalgorithmen">
-                Übersichtsseite Graphalgorithmen</a>
-            </li>
-            <li><span>Kürzeste-Wege - Algorithmen</span>
-                <ul>
-                   <li><a href="../spp-dijkstra/index_de.html">Dijkstra - Algorithmus</a></li>
-                   <li><a href="../spp-a-star/index_de.html">A* - Algorithmus</a></li>
-                   <li><a href="../spp-bellman-ford/index_de.html">Bellman-Ford - Algorithmus</a></li>
-                   <li><a href="../spp-floyd-warshall/index_de.html">Floyd-Warshall - Algorithmus</a></li>
-                </ul>
-            </li>
-            <li><span>Spannbaum - Algorithmen</span>
-                <ul>
-                   <li><a href="../mst-prim/index_de.html">Algorithmus von Prim</a></li>
-                   <li><a href="../mst-kruskal/index_de.html">Algorithmus von Kruskal</a></li>
-                </ul>
-            </li>
-            <li><span>Matching - Algorithmen</span>
-                <ul>
-                   <li><a href="../matchings-hopcroft-karp/index_de.html">Algorithmus von Hopcroft-Karp</a></li>
-                   <li><a href="../matchings-hungarian-method/index_de.html">Ungarische Methode</a></li>
-                </ul>
-            </li>
-            <li><span>Eulerwege und Briefträgerproblem</span>
-                <ul>
-                   <li class="Selected"><a href="../hierholzer/index_de.html">Algorithmus von Hierholzer</a></li>
-                   <li><a href="../directed-chinese-postman/index_de.html">Chinesisches Postboten-Problem</a></li>
-                </ul>             
-            </li>
-        </ul>
-    </nav>
     <div>
+    
     <header>
         <img src="img/irnich-small.svg" alt="A feasible path"></img>
         <span class="adrianheader">Shortest Paths with Resource Constraints</span>
         <img style="position:absolute; right:0px" src="../library/img/TUMLogo.png" alt="Technische Universität München">
     </header>
-<!--     <svg height="0px" widht ="0px">
-        <defs>
-        <marker id="arrowhead2" refX="12" refY="2" markerWidth="12" markerHeight="4" orient="auto"><path d="M 0,0 V 4 L6,2 Z"></path></marker>
-        </defs>
-    </svg> -->
+
     <div id="tabs">
         <ul>
             <li><a href="#tab_te"><span>Introduction</span></a></li>
@@ -198,24 +114,21 @@
                     <div class="svgContainer">
                       <svg class="graphCanvas" id="tg_canvas_graph" width="700" height="500"></svg>
                       <a class="svgDownloader" download="spp-rc-graph-editor.svg" href="data:text/plain,test">spp-rc-graph-editor.svg</a>
-                    </div>
-                    <div class="Legende" id="tg_div_Legende">
-                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
-                        <div class="LegendeText">
-                            <table>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/node.svg" alt="node" class="LegendeIcon"></td>
-                                    <td><span>node with time window [arrival,departure]</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/edge.svg" alt="edge" class="LegendeIcon"></td>
-                                    <td><span>edge with 2d resource vector (time,cost)</span></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="LegendeMinimized">
-                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                      <div class="Legende" id="tg_div_Legende">
+                          <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                          <div class="LegendeText">
+                              <table>
+                                  <tr>
+                                      <td class="LegendeTabelle"><img src="img/node.svg" alt="node" class="LegendeIcon"></td>
+                                      <td><span>node with time window [arrival,departure]</span></td>
+                                  </tr>
+                                  <tr>
+                                      <td class="LegendeTabelle"><img src="img/edge.svg" alt="edge" class="LegendeIcon"></td>
+                                      <td><span>edge with 2d resource vector (time,cost)</span></td>
+                                  </tr>
+                              </table>
+                          </div>
+                      </div>
                     </div>
                 </div>
                 <div id="tg_div_statusWindow" class="statusWindow">
@@ -277,50 +190,43 @@
                    <table>
                     <tr>
                       <td class="svgContainer">
-                        Highlight path for label: <select id="highlightPathForLabel" style="margin-left:0%">
-                        </select>
+                        <span class="svgHeader">Highlight path for label: <select id="highlightPathForLabel" style="margin-left:0%">
+                        </select></span>
                         <svg class="graphCanvas" id="ta_canvas_graph" width="350" height="500"></svg>
                         <a class="svgDownloader" download="spp-rc-graph-algorithm-graph.svg" href="data:text/plain,test">spp-rc-graph-algorithm-graph.svg</a>
+                        <div class="Legende">
+                            <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                            <div class="LegendeText">
+                                <table>
+<!--                                     <tr>
+                                        <td class="LegendeTabelle"><img src="img/node-e-h.svg" alt="node" class="LegendeIcon"></td>
+                                        <td><span>node with excess flow and height function</span></td>
+                                    </tr> -->
+                                </table>
+                            </div>
+                        </div>
                       </td>
                       <td class="svgContainer">
+                      <span class="svgHeader">
                           Labels ending in resident node: <select id="filterLabelsByResidentNode" style="margin-left:0%">
                             <option value="all">all</option>
-                        </select>
+                        </select></span>
                         <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="500"></svg>
                         <a class="svgDownloader" download="spp-rc-graph-algorithm-labels.svg" href="data:text/plain,test">spp-rc-graph-algorithm-graph.labels</a>
+                        <div class="Legende">
+                            <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
+                            <div class="LegendeText">
+                                <table>
+<!--                                     <tr>
+                                        <td class="LegendeTabelle"><img src="img/node-e-h.svg" alt="node" class="LegendeIcon"></td>
+                                        <td><span>node with excess flow and height function</span></td>
+                                    </tr> -->
+                                </table>
+                            </div>
+                        </div>
                       </td>
                     </tr>
                     </table>
-                    <div class="Legende">
-                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
-                        <div class="LegendeText">
-                            <table>
-<!--                                 <tr>
-                                    <td class="LegendeTabelle"><img src="img/node-e-h.svg" alt="node" class="LegendeIcon"></td>
-                                    <td><span>node with excess flow and height function</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/node-current.svg" alt="node" class="LegendeIcon"></td>
-                                    <td><span>current node</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/nodes-active.svg" alt="node" class="LegendeIcon"></td>
-                                    <td><span>active nodes</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/edge-flow.svg" alt="edge" class="LegendeIcon"></td>
-                                    <td><span>edge with flow &le; cap</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="LegendeTabelle"><img src="img/st-flow.svg" alt="edge" class="LegendeIcon"></td>
-                                    <td><span>s-t flow</span></td>
-                                </tr> -->
-                            </table>
-                        </div>
-                    </div>
-                    <div class="LegendeMinimized">
-                        <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
-                    </div>
                 </div>
                 <div id="ta_div_statusWindow" class="statusWindow">
                     <h2 class="">Algorithm status</h2>
@@ -337,12 +243,13 @@
  -->
                         <span id="ta_button_text_pause" style="display:none">pause</span>
                     </div>
-<!--                     <div id="ta_div_statusTabs">
-                         <ul>
-                            <li><a href="#ta_div_statusErklaerung">Explanation</a></li>
-                            <li><a href="#ta_div_statusPseudocode">Pseudocode</a></li>
-                            <li><a href="#ta_div_statusLogger">Log</a></li>
-                        </ul> -->
+                    <div id="ta_div_statusTabs">
+                       <ul>
+                          <li><a href="#status_tab_explanation">Explanation</a></li>
+                          <li><a href="#status_tab_pseudocode">Pseudocode</a></li>
+                          <li><a href="#status_tab_logger">Log</a></li>
+                      </ul>
+                      <div id="status_tab_explanation">
                         <div id="ta_div_statusErklaerung">
                             <div>
                                 <h3>First choose a source node</h3>
@@ -410,8 +317,34 @@
                                 <p>Click on a node to see the set of all feasible paths ending in it</p>
                             </div>
                         </div>
+                        <br>
+                        <h3>Last operation:</h3>
                         <div id="loggerLastEntry"></div>
+                        <br>
+                        <h3>Variable status</h3>
+                        <table class="algoInformationen">
+                            <tr>
+                                <th class="algoInfoTH"><span>l'</span></th>
+                                <th class="algoInfoTH"><span>U</span></th>
+                                <th class="algoInfoTH"><span>l</span></th>
+                                <th class="algoInfoTH"><span>P</span></th>
+                            </tr>
+                            <tr>
+                                <td id="ta_td_l_dash" style="background-color:rgba(255,127,0,0.5)" class="algoInfoTD">-</td>
+                                <td id="ta_td_U" style="background-color:rgba(255,255,0,0.5)" class="algoInfoTD">&empty;</td>
+                                <td id="ta_td_l" style="background-color:rgba(255,0,0,0.5)" class="algoInfoTD">-</td>
+                                <td id="ta_td_P" style="background-color:rgba(0,128,0,0.5)" class="algoInfoTD">&empty;</td>
+                            </tr>
+                        </table>
+                        <table id="algoInformationen2">
+                          <tr id="algoInfo2H">
+                          </tr>
+                          <tr id="algoInfo2B">
+                          </tr>
+                        </table>
+                      </div> <!-- status_tab_explanation -->
 
+                      <div id="status_tab_pseudocode">
 <!--var STATUS_SELECTSOURCE = id++;
     var STATUS_START = id++;
     var STATUS_INIT= id++;
@@ -449,37 +382,13 @@
      <p>t &larr; pick(v)</p>
      <p>l* &in; P | cost(l*) == min({cost(l=(~,t)&in;P)}) </p></div>
 </div>
-<!--                     </div> -->
-                    <h3>Variable status</h3>
-                    <table class="algoInformationen">
-                        <tr>
-                            <th class="algoInfoTH"><span>l'</span></th>
-                            <th class="algoInfoTH"><span>U</span></th>
-                            <th class="algoInfoTH"><span>l</span></th>
-                            <th class="algoInfoTH"><span>P</span></th>
-                        </tr>
-                        <tr>
-                            <td id="ta_td_l_dash" style="background-color:rgba(255,127,0,0.5)" class="algoInfoTD">-</td>
-                            <td id="ta_td_U" style="background-color:rgba(255,255,0,0.5)" class="algoInfoTD">&empty;</td>
-                            <td id="ta_td_l" style="background-color:rgba(255,0,0,0.5)" class="algoInfoTD">-</td>
-                            <td id="ta_td_P" style="background-color:rgba(0,128,0,0.5)" class="algoInfoTD">&empty;</td>
-                        </tr>
-                    </table>
-                    <table id="algoInformationen2">
-                      <tr id="algoInfo2H">
-                      </tr>
-                      <tr id="algoInfo2B">
-                      </tr>
-                    </table>
-                        <div id="ta_div_statusLogger">
-                            <h3>Log of algorithm execution</h3>
+                          </div> <!-- status_tab_pseudocode -->
+                       <div id="status_tab_logger">
+<!--                             <h3>Log of algorithm execution</h3> -->
                             <div id="logger"></div>
-                        </div>
+                      </div>
+                    </div>
                 </div>
-            </div>
-            <div id="ta_div_confirmTabChange" title="Algorithmus abbrechen?" class="tabChangeWarningDialog">
-                <h2>Beim Wechsel des Tabs wird der Algorithmus abgebrochen.</h2>
-                <p>Du kannst die Anwendung <a href="#" target="_blank" tabindex=-1> in einem anderen Browserfenster</a> öffnen, um parallel einen anderen Tab zu lesen.</p>
             </div>
         </div>
 
@@ -668,6 +577,7 @@ Feillet, Dominique, et al. "An exact algorithm for the elementary shortest path 
 
                 </div>
         </div>
+    </div>
     </div>
   <footer>
     <p class="Disclaimer">

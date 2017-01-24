@@ -14,7 +14,7 @@ var LabelDrawer = function(svgOrigin,algo){
     var xRange = +svgOrigin.attr("width") || 400;
         yRange = +svgOrigin.attr("height") || 300;
     var wS = global_NodeLayout['borderWidth'];
-    var margin = {top: global_KnotenRadius+wS, right: global_KnotenRadius+wS, bottom: global_KnotenRadius+2*wS, left: global_KnotenRadius+leftMargin},
+    var margin = {top: (12+wS), right: global_KnotenRadius+wS, bottom: global_KnotenRadius+2*wS+25, left: global_KnotenRadius+leftMargin},
         width = xRange - margin.left - margin.right,
         height = yRange - margin.top - margin.bottom;
 
@@ -38,7 +38,7 @@ var LabelDrawer = function(svgOrigin,algo){
         .range([margin.left, width-margin.right]);
 
     var y = d3.scale.linear()
-        .range([height-margin.top, margin.bottom]);
+        .range([height-margin.top, margin.top]);
 
         x.domain([0,10]);
         y.domain([0,10]);
@@ -49,7 +49,7 @@ var LabelDrawer = function(svgOrigin,algo){
 
       svg.append("g")
           .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
+          .attr("transform", "translate(0," + (height) + ")")
           .call(xAxis)
         .append("text")
           .attr("class", "label")
@@ -67,7 +67,7 @@ var LabelDrawer = function(svgOrigin,algo){
 //           .attr("transform", "rotate(-90)")
           //.attr("x",10)
           //.attr("y", -3)
-          .attr("dy", ".71em")
+          .attr("dy", "0.7em")
           .style("text-anchor", "end")
           .style("fill","magenta")
           .text("cost")
@@ -354,7 +354,7 @@ var LabelDrawer = function(svgOrigin,algo){
             x : xStart,
             width : www,
             y: yVals[1],
-            height : yVals[0]+margin.top,
+            height : yVals[0],
             opacity : 1
         })
       }

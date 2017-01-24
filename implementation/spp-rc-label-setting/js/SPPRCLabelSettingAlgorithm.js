@@ -560,7 +560,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
      */
     function labelProcessed() {
         s.P.push(s.lId);
-        logger.log2("processed label " + Graph.Label.toString(Graph.Label.get(s.lId)) + ", added to P");
+        logger.log2("processed l=" + Graph.Label.toString(Graph.Label.get(s.lId)));
         s.lId = null;
         setStatus(STATUS_DOMINANCE);
     }
@@ -571,7 +571,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     function dominance() {
         var nodes = Graph.instance.getNodes();
         var node = null;
-        var text = "Dominance 1/2: ";
+        var text = "";//Dominance 1/2: ";
         var skipped = [];
 
         for(;s.currentNodeIndexDominance<nodes.length;s.currentNodeIndexDominance++){
@@ -615,7 +615,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
           s.currentNodeIdDominance = node.id;
           //labelDrawer.setResidentNodeFilter(s.currentNodeIdDominance,true,true);
           setStatus(STATUS_DOMINANCE_NODE);
-          end = "Checking " + node.state.endingPaths.length + " paths ending in v="+node.id;
+          end = "Checking " + node.state.endingPaths.length + " paths ending in  v="+node.id;
         }
 
         logger.log2(text + skip + end);
@@ -712,3 +712,6 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
 // Vererbung realisieren
 SPPRCLabelSettingAlgorithm.prototype = Object.create(GraphDrawer.prototype);
 SPPRCLabelSettingAlgorithm.prototype.constructor = SPPRCLabelSettingAlgorithm;
+
+// assign global variable
+GraphAlgorithm = SPPRCLabelSettingAlgorithm

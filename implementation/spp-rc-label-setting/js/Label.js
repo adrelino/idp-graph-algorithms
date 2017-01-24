@@ -98,7 +98,7 @@ Graph.Label.prototype.toString = function(full){
 
 //static method, not instance, so that we can serialize more easily
 Graph.Label.toString = function(label) {
-    return label.id /*+" edges:" +label.edgeIdChain() + */+" with resource consumption ("+ label.resources.map(function(d,i){
+    return label.id /*+" edges:" +label.edgeIdChain() + +" with resource consumption */ + " with ("+ label.resources.map(function(d,i){
         return "<span style=color:" + ((i==CONSTRAINED_RESOURCE_INDEX) ? "black" : "magenta") + ">"+d+"</span>";
     }).join(",")+")";
 }

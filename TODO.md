@@ -3,33 +3,36 @@
 ## TODOS
 
 ### Beide:
-- [ ] Zu den dynamischen Kommentaren/Log anzeigen: Das Log finde ich zu technisch, das aber in umformatierter/einfacher Form wäre ok.
-- [x] Erzeugung von Kanten: Können diese zufällige Kantenbewertungen bekommen statt immer 0?
-  * (2017-01-17) Ja, jetzt bekommen sie Zufallswerte zwischen 0 und 10. Das geht auch bei mehrdimensionalen resource vectoren wie beim SPPRC. Für den SPPTW bekommen die nodes ausserdem random time-windows im bereich von 0-100, wobei immer arrival<=departure ist.
-- [ ] Ausführung: Zeit für Animation ausblenden, Tabs wieder einführen (dann muss ich die Texte nochmal lesen)
 - [ ] More: Speed and Termination of algorithm: Sketch a nice proof, link to references for more details.
 - [ ] Introduction und Description: Problemstellung sowie Idee des algorithmus text finalisieren
 - [ ] Legende vervollständigen/ an neue Farben anpassen
-- [ ] Tabs sollten wir am Ende wieder einfügen, von der Synchronisierung passt es aber. 
-- [ ] Die Menge der Informationen und die Visualisierung sollten passen, arbeite wie oben erwähnt noch etwas daran, die Informationen auch mit dem Text zu verknüpfen (sonst wird es etwas unübersichtlich).
+- [ ] Zu den dynamischen Kommentaren/Log anzeigen: Das Log finde ich zu technisch, das aber in umformatierter/einfacher Form wäre ok.
+- [x] Ausführung: Zeit für Animation ausblenden, Tabs wieder einführen (dann muss ich die Texte nochmal lesen)
+  * (2017-01-24) done
+- [x] Tabs sollten wir am Ende wieder einfügen, von der Synchronisierung passt es aber. 
+  * (2017-01-24) done
+- [x] Die Menge der Informationen und die Visualisierung sollten passen, arbeite wie oben erwähnt noch etwas daran, die Informationen auch mit dem Text zu verknüpfen (sonst wird es etwas unübersichtlich).
+  * (2017-01-24) done
+- [x] Erzeugung von Kanten: Können diese zufällige Kantenbewertungen bekommen statt immer 0?
+  * (2017-01-17) Ja, jetzt bekommen sie Zufallswerte zwischen 0 und 10. Das geht auch bei mehrdimensionalen resource vectoren wie beim SPPRC. Für den SPPTW bekommen die nodes ausserdem random time-windows im bereich von 0-100, wobei immer arrival<=departure ist.
 - [x] Beschreibung beschreibt was gerade links passiert ist / ab initialize beschreibungen eins früher anzeigen
-  (2016-05-25)
+  * (2016-05-25)
   * noch offen: BEGIN/START des Algorithmus taucht nicht im LOG auf
 
 ### SPPRC:
 - [ ] Einleitung finde ich sehr knapp, darf gerne noch ein wenig ausführlicher sein
-- [ ] Wie können Zeitfenster angepasst werden?
-  * Im Grapheditor mit Doppelklick auf das Zeitfenster, genauso wie man z.B. Kantengewichte ändert
-- [x] Ende der Ausführung: Kein Hover, um Pfade zu sehen, sondern ein Klick?
-  * (2017-01-17) text gefixed
-- [x] Zielknoten würde ich nicht wählen, lass es so. Könnte man den Start wählen, oder wird der immer vorgegeben?
 - [ ] Beschreibung: Auf Unvergleichbarkeit von Pfaden etwas ausführlicher eingehen (Bsp in 2-3 Sätzen?)
 - [ ] Description: 
   * describe how to extend a label
   * describe how to check for feasability
   * describe dominance step
-- [ ] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
-- [ ] Sicherstellen, dass man bei bis zu 20 Knoten auch noch in beiden Visualisierungsebenen etwas erkennen kann und sich nicht alle knoten dann überlappen
+- [x] Wie können Zeitfenster angepasst werden?
+  * Im Grapheditor mit Doppelklick auf das Zeitfenster, genauso wie man z.B. Kantengewichte ändert
+- [x] Ende der Ausführung: Kein Hover, um Pfade zu sehen, sondern ein Klick?
+  * (2017-01-17) text gefixed
+- [x] Zielknoten würde ich nicht wählen, lass es so. Könnte man den Start wählen, oder wird der immer vorgegeben?
+- [x] Rechter Teil: Zeitfenster weiter hochziehen, obere Label sind außerhalb
+  * (2017-01-24) done
 - [x] Description: 
   * describe incomparable paths / paretor frontier
   (2016-10-01)
