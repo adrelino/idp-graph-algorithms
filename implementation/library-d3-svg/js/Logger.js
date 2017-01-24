@@ -75,6 +75,7 @@ Logger.prototype.update = function(){
   this.parentDiv.selectAll("ol").remove();
   this.lastEntryDiv.html("");
   this.updateRecursive(this.state.map["root"].children,this.parentDiv,0);
+  $ && $(this.parentDiv.node()).scrollTop(99999999999999); //scroll to bottom, needs jquery
 }
 
 Logger.prototype.setState = function(state){

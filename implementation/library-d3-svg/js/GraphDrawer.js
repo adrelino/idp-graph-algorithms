@@ -99,7 +99,7 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
     var margin = {
         top: global_KnotenRadius+wS+ (extraMargin.top || 10),
         right: global_KnotenRadius+wS,
-        bottom: global_KnotenRadius+wS,
+        bottom: global_KnotenRadius+wS+15,//extra for legende and svg downloader
         left: global_KnotenRadius+wS +(extraMargin.left || 0)
     }
 

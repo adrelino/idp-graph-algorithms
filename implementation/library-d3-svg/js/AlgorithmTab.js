@@ -75,7 +75,7 @@ function AlgorithmTab(algo,p_tab) {
             .button(fastforwardOptions)
             .click(function() {
                 $(this).button("option",this.checked ? pauseOptions : fastforwardOptions);
-                this.checked ? that.fastForwardAlgorithm() : that.stopFastForward();
+                this.checked ? algo.fastForwardAlgorithm() : algo.stopFastForward();
             });
 
 //         $("#ta_vorspulen_speed").on("input",function(){
