@@ -1,5 +1,11 @@
 /* for html page */
 
+/* TODO: css browser reset to get rid of 2px extra table width */
+/* {
+  margin: 0;
+  padding: 0;
+}*/
+
 .adrianheader {
   font-size: 35px;
   color: #1B66B0;
@@ -19,25 +25,37 @@ div.canvasWrapper {
 }
 
 a.svgDownloader {
-    /* position: absolute; */
-    bottom: 0px;
-    left:  0px;
+  position: absolute;
+  bottom: 0px;
+  left:  2px;
 }
 
-div.Legende {
-    position: absolute;
-    height: auto;
-    bottom: 0px;
-    right:  0px;
+.algoTable {
+  display : table;
+  margin: 0px;
+  padding: 0px;
+  border-spacing: 0px;
+  border-collapse: collapse;
 }
 
-div.LegendeMinimized {
-    position: absolute;
-    bottom: 0px;
-    right:  0px;
+.svgHeader {
+  position: absolute;
+  top: 0px;
+  left:  2px;
+}
+
+.svgContainer {
+  position:relative;
 }
 
 td.algoInfoTD {
   border-radius: 50%;
   background-clip: content-box;
+}
+
+#logger {
+  overflow-y : scroll;
+  max-width : 100%;
+  height: 350px;
+  /* max-height: 400px; */
 }

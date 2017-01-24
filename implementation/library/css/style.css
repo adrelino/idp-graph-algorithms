@@ -90,8 +90,8 @@ div.statusWindow {
     text-align: center;
     margin-left: 715px;
     width: 370px;
-    min-height: 700px;
-    max-height: 1000px;
+    min-height: 500px;
+    max-height: 500px;
     padding-left: 15px;
     padding-right: 15px;
     border: 2px groove #78C8FF;
@@ -100,24 +100,18 @@ div.statusWindow {
 
 div.canvasWrapper {
     width: 700px;
-    height: 800px;
+    height: 500px;
     float: left;
 }
 
 div.Legende {
     position: absolute;
-    border: 2px groove #78C8FF; 
-    width: 250px;
+    border: 2px groove #78C8FF;
     background-color: #DDDDDD;
     opacity: .9;
-}
-
-div.LegendeMinimized {
-    position: absolute;
-    border: 2px groove #78C8FF; 
-    width: 100px;
-    background-color: #DDDDDD;
-    opacity: .9;
+    bottom: 0px;
+    right:  2px;
+    max-width: 300px;
 }
 
 .ui-effects-transfer { 
@@ -183,7 +177,8 @@ p.Disclaimer {
 }
 
 h2.LegendeHeader {
-    padding-left: 10px;
+    padding: 2px;
+    margin: 0px;
     vertical-align: top;
 }
 
@@ -199,8 +194,9 @@ th.algoInfoTH {
 }
 
 td.algoInfoTD {
+    height: 30px;
     text-align: center;
-    padding: 8px;
+    padding: 1px;
     border:1px solid black;
 }
 
