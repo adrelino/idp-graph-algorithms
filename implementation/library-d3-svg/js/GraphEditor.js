@@ -263,10 +263,15 @@ function addNode(pos){
 GraphEditor.prototype = Object.create(GraphDrawer.prototype);
 GraphEditor.prototype.constructor = GraphEditor;
 
+//Effective JavaScript, Item 38: Call Superclass Constructors from Subclass Constructors
+//
 // function SpaceShip(scene, x, y) {
 //   Actor.call(this, scene, x, y);
 //   this.points = 0;
 // }
+// SpaceShip.prototype = Object.create(Actor.prototype);
+// SpaceShip.prototype.scorePoint = function() { this.points++};
+//
 // Calling the Actor constructor first ensures that all the instance properties created by Actor are added to the new object. After that, SpaceShip can define its own instance properties such as the ship’s current points count.
 // In order for SpaceShip to be a proper subclass of Actor, its prototype must inherit from Actor.prototype. The best way to do the extension is with ES5’s Object.create:
 // SpaceShip.prototype = Object.create(Actor.prototype);

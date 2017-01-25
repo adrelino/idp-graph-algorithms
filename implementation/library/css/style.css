@@ -128,7 +128,7 @@ canvas.graphCanvas {
 }
 
 img.LegendeIcon {
-    height: 22px;
+    /* height: 22px; */
 }
 
 tr.LegendeZeileClickable {

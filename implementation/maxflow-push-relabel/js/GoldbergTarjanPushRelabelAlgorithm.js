@@ -326,7 +326,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         replayHistory.push({
             "graphState": Graph.instance.getState(),
             "s": JSON.stringify(s),
-            "legende": $("#tab_ta").find(".LegendeText").html(),
             "loggerState": logger.getState()
         });
         
@@ -345,7 +344,6 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
         Graph.instance.setState(oldState["graphState"]);
         s = JSON.parse(oldState["s"]);
         logger.setState(oldState["loggerState"]);
-        $("#tab_ta").find(".LegendeText").html(oldState["legende"]);
         
         this.update();
     };
