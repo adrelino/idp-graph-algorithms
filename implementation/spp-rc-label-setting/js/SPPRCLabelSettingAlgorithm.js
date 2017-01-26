@@ -439,9 +439,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
             case STATUS_PATH_EXTEND_UNFEASIBLE:
                 pathExtendFeasible();
                 break;
-            case STATUS_LABEL_PROCESSED:
-                labelProcessed();
-                break;
+//             case STATUS_LABEL_PROCESSED:
+//                 labelProcessed();
+//                 break;
             case STATUS_DOMINANCE:
                 dominance();
                 break;
@@ -485,7 +485,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.U.push(label.id);
         setStatus(STATUS_MAINLOOP);
         
-        logger.log("Initialize: Add trivial label "+label.toString(true)+" to U");
+        logger.log("Initialize: Add trivial path with label "+label.toString(true,that.nodeLabel)+" to U");
     }
         
     /**
@@ -503,7 +503,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         
         s.lId = s.U.shift();
         s.currentResidentNodeEdgeIndex = 0;
-        logger.log("Main loop iteration " + (s.mainLoopIt++) + ": picked  l=" + Graph.Label.get(s.lId).toString(true)+ " from U");
+        logger.log("Main loop iteration " + (s.mainLoopIt++) + ": picked  l=" + Graph.Label.get(s.lId).toString(true,that.nodeLabel)+ " from U");
         
         setStatus(STATUS_PATH_EXTEND);
     }
@@ -517,14 +517,15 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         
         var outEdges = v.getOutEdges();
         if(s.currentResidentNodeEdgeIndex >= outEdges.length){
-            setStatus(STATUS_LABEL_PROCESSED);
-            logger.log2("iterated all neighbours of "+v.id);
+            setStatus(STATUS_LABEL_PROCESSED);//,STATUS_LABEL_PROCESSED);
+            //logger.log2("iterated all neighbours of "+v.id);
+            labelProcessed(l,v,outEdges.length);
         }else{
             var arc = outEdges[s.currentResidentNodeEdgeIndex++];
             s.currentArcId=arc.id;
             var l_dash = Graph.Label.extend(l,arc); //TODO do we need the extended label already here?
             //logger.log2("checking arc "+arc.toString(true,edgeResourceStyle)+" from "+v.toString(true,nodeResourceStyle));
-            logger.log2("Extend l="+l.toString()+" along e="+that.edgeStyle(arc)+" to get l'="+l_dash.toString());
+            logger.log2("Extend l="+l.toString(false,that.nodeLabel)+" along "+arc.toStringAlt(that.nodeLabel)+" with "+that.edgeStyle(arc)+" to get l'="+Graph.Label.toString(l_dash));//.toString(true));
             s.l_dashId = l_dash.id;
             if(Graph.Label.feasible(l_dash)){
               setStatus(STATUS_PATH_EXTEND_FEASIBLE);
@@ -558,9 +559,9 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
     /**
      * put processed label in P
      */
-    function labelProcessed() {
+    function labelProcessed(l,v,eSize) {
         s.P.push(s.lId);
-        logger.log2("processed l=" + Graph.Label.toString(Graph.Label.get(s.lId)));
+        logger.log2("Processed l="+s.lId +". Checked all "+eSize+" outgoing edges of v="+that.nodeLabel(v)+".");
         s.lId = null;
         setStatus(STATUS_DOMINANCE);
     }
@@ -615,7 +616,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
           s.currentNodeIdDominance = node.id;
           //labelDrawer.setResidentNodeFilter(s.currentNodeIdDominance,true,true);
           setStatus(STATUS_DOMINANCE_NODE);
-          end = "Checking " + node.state.endingPaths.length + " paths ending in  v="+node.id;
+          end = "Now checking " + node.state.endingPaths.length + " labels resident in  v="+node.id+".";
         }
 
         logger.log2(text + skip + end);
@@ -695,7 +696,7 @@ function SPPRCLabelSettingAlgorithm(svgSelection,svgSelection2) {
         s.targetId = targetNode.id;
         s.minCostLabelId = minCostLabel.id;
 
-        logger.log("label with minimal cost ending in "+ targetNode.id + " is "+ minCostLabel.id + " with cost of "+minCostLabel.cost());
+        logger.log("The label with minimal cost ending in t="+ targetNode.id + " is "+ minCostLabel.id + " with a cost of "+minCostLabel.cost()+".");
         //this.setHighlightPathForLabel(minCostLabel.id,true,true);
         this.setResidentNodeFilter(targetNode.id,false,true);
     }

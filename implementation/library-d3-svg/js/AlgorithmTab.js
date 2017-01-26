@@ -85,7 +85,7 @@ function AlgorithmTab(algo,p_tab) {
 
 
         $("#ta_div_statusTabs").tabs();
-        $("#ta_div_statusTabs").tabs("option", "active", 2);
+        $("#ta_div_statusTabs").tabs("option", "active", 0); //activate explanation tab
 
         $("#ta_tr_LegendeClickable").removeClass("greyedOutBackground");
         

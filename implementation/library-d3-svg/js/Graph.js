@@ -110,6 +110,16 @@ Graph.Edge.prototype.toString = function(full,f){
   return str;
 }
 
+/**
+ * Returns an alternative string representation of this edge
+ */
+Graph.Edge.prototype.toStringAlt = function(nodeLabel){
+  var str= "e=("+nodeLabel(this.start)+","+nodeLabel(this.end)+")";
+  return str;
+}
+
+
+
 /////////////////
 //MEMBERS
 

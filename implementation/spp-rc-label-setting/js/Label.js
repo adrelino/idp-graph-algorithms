@@ -92,8 +92,11 @@ Graph.Label.prototype.time = function(){
   return this.resources[CONSTRAINED_RESOURCE_INDEX];
 }
 
-Graph.Label.prototype.toString = function(full){
-  return this.id+(full ? "("+this.parentId+","+this.nodeId+")" : "");
+Graph.Label.prototype.toString = function(full,nodeLabel){
+  var parent = (this.parentId == null) ? "&epsilon;" : this.parentId;
+  var nodeLabel = nodeLabel || function(node){return node.id};
+  var nodeFakeObj = {id : this.nodeId};
+  return this.id+(full ? "("+parent+","+nodeLabel(nodeFakeObj)+")" : "");
 }
 
 //static method, not instance, so that we can serialize more easily

@@ -30,8 +30,9 @@ function svgHack(){
 
 
 
-    // replace img with svg  http://www.mediaevent.de/svg-in-html-seiten/
-    /*
+    // TODO: regenerate SVG's with correctly embedded css so we don't need to 
+    // replace img with svg anymore http://www.mediaevent.de/svg-in-html-seiten/
+    if(!isDebug()){
     var imgs = d3.selectAll("img");
     imgs.attr("src",function(a,b,c){
        var src = this.src;
@@ -47,7 +48,7 @@ function svgHack(){
        }
        return src;
     })
-    */
+    }
 }
 
 

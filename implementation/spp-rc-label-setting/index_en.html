@@ -212,7 +212,7 @@
                             <option value="all">all</option>
                         </select></span>
                         <svg class="graphCanvas" id="ta_canvas_graph2" width="350" height="500"></svg>
-                        <a class="svgDownloader" download="spp-rc-graph-algorithm-labels.svg" href="data:text/plain,test">spp-rc-graph-algorithm-graph.labels</a>
+                        <a class="svgDownloader" download="spp-rc-graph-algorithm-labels.svg" href="data:text/plain,test">spp-rc-graph-algorithm-labels.svg</a>
                         <div class="Legende">
                             <h2 class="LegendeHeader"><button class="LegendeMin"></button> Legende</h2>
                             <div class="LegendeText">
@@ -256,65 +256,79 @@
                                 <p>Click on a node to select it as the source/starting node s</p>
                             </div>
                             <div>
-                                <h3>Shortest Path Problem with Time Windows Label Setting Algorithm</h3>
+                                <h3>Label-Setting SPPTW algorithm</h3>
+                                <p>The source node has been selected and is filled with green. Per default, this is the node with lowest id. If you want to change the source node, go back with <strong>prev</strong>. </p>
+                                <p>The target node is selected at the end of the algorithm.</p>
+                                <p>Edges are annotated with resources (time,cost) and nodes with time windows [arrival,departure] for the resource time.</p>
+                                
                                 <p>Now the algorithm can begin. Click on <strong>next</strong> to start it</p>
                             </div>
                             <div>
                                 <h3>Initialize</h3>
-                                <p>The Queue U of unprocessed labels is initialized with the trivial path, ending in start node s. The queue of processed labels P is inititially empty.</p>
+                                <p>The queue U of unprocessed labels (yellow) is initialized with the trivial path, ending in start node s. The queue of processed labels P (dark green) is inititially empty.</p>
                             </div>
                             <div>
                                 <h3>Main loop</h3>
-                                <p>As long as the queue containing the unprocessed labels isn’t empty pop a label l from the front of the queue.</p>
-                                <p>The label l ends in its resident node/vertex v, which is highlighted in red in the graph.</p>
+                                <p>As long as the queue U of unprocessed labels isn’t empty pop a label l (red) from the front of the queue.</p>
+                                <p>The label l ends in its resident node v, which is also highlighted (in red) in the graph.</p>
                             </div>
                             <div>
                                 <h3>Path extension step 1/2: extend the label</h3>
-                                <p>Extend the current path with label l=(~,v) along the edge e=(v,w) to get a new extended path with label l'=(l,w)</p>
-
-                                <p>The accumulated resource consumption of this label is given by
-                                    r(l') = max(r_lower(w),r(l)+r(e))</p>
+                                <p>Extend the path with label l=(~,v) along the edge e=(v,w) to get the new extended path with label l'=(l,w). Both e and l' are highlighted in orange.</p>
+<!-- along the path of the new  -->
+                                <p>The accumulated resource consumption of l' is the sum of its parent label l 
+                                 consumption and the one along the edge e. Furthermore, the resource time is bounded from below by the earliest arrival
+                                  time of the time window [arrival, departure] (blue rectangle) of resident node w (thick blue border) of l':<br>
+                                 time(l') = max(arrival(w),time(l)+time(e))
+                                 </p>
                             </div>
                             <div>
-                                <h3>Path extension step 2/2: check feasability</h3>
-                                <p>The extended path with label l'=(l,w) is feasible in w, meaning that the accumulated resource consumption r(l') along the path is not larger than the upper resource constraint at its end node w.</p>
+                                <h3>Path extension step 2/2: l' feasible in w</h3>
+                                <p>The extended path with label l'=(l,w) is feasible in w, meaning that the accumulated time consumption time(l') along the path of l' is not larger than the upper resource constraint departure(w) at its resident node w.</p>
 
-                                <p>l' &isin; FEASIBLE(w) &hArr; r(l') &le; r_upper(w)</p>
+                                <p>l' &isin; FEASIBLE(w) &hArr; time(l') &le; departure(w)</p>
 
-                                <p>l' is feasible, thus add it to the set Q of unprocessed labels/paths</p>
+                                <p>l' is feasible, thus add it to the set U of unprocessed labels.</p>
                             </div>
                             <div>
-                                <h3>Path extension step 2/2: check feasability</h3>
-                                <p>The extended path with label l'=(l,w) is NOT feasible in w, meaning that the accumulated resource consumption r(l') along the path is larger than the upper resource constraint at its end node w.</p>
+                                <h3>Path extension step 2/2: l' infeasible in w</h3>
+                                <p>The extended path with label l'=(l,w) is NOT feasible in w, meaning that the accumulated time consumption time(l') along the path of l' is larger than the upper resource constraint departure(w) at its resident node w.</p>
 
-                                <p>l' &isin; FEASIBLE(w) &hArr; r(l') &le; r_upper(w)</p>
+                                <p>l' &notin; FEASIBLE(w) &hArr; time(l') > departure(w)</p>
 
-                                <p>l' is infeasible, thus ignore it</p>
+                                <p>l' is infeasible, thus ignore it.</p>
                             </div>
                             <div>
                                 <h3>Label processed</h3>
-                                <p>In the absence of cycles of negative length, a label which has once been fully extended will never be touched again, which is why we speak of a Label Setting algorithm.</p>
+                                <p>All outgoing edges of the resident node v of the label l have been checked for possible label extensions.
+                                In the absence of cycles of negative length, a label which has once been fully extended will never again be extended, which is why we speak of a Label Setting algorithm.</p>
 
-                                <p>Thus, the current label l is now moved to the set of processed labels P, which we will later search for for our solution</p>
+                                <p>Thus, the current label l is now moved to the set of processed labels P (dark green), which we will search for minimum-cost solutions at the very and of the algorithm.</p>
 <!--                                 <p>This is similar to Dijkstra's algorithm, only that the dynamic programming approach is slightly more involved</p> -->
 
 <!--                                 <p>If negative cycles were allowed, one would need to employ a Label Correcting algorithm in the style of Bellmann-Ford</p> -->
                             </div>
                             <div>
-                                <h3>Dominance step 1/2</h3>
-                                <p>For all the paths which end in some node v, prune the paths/labels which are striclty dominated in both sets U and P</p>
+                                <h3>Dominance step 1/2: iterate nodes</h3>
+                                <p>If there are two or more labels resident - or equally paths ending - in some node v, prune the ones which are striclty dominated in both sets U and P.</p>
+                                <p>The dominance algorithm thus checks for each node v with at least two labels resident in it if some labels can be discarded.</p>
                             </div>
                             <div>
-                                <h3>Dominance step 2/2</h3>
-                                <p>l_1=(~,v) dominates l_2=(~,v) &hArr; time(l1) &lt; time(l2) AND cost(l1) &lt; cost(l2) </p>
+                                <h3>Dominance step 2/2: check a node for dominaned labels</h3>
+                                <p>For the node v (thick blue border), all its labels are checked for dominance and some may be discarded.</p>
+                                <p>A label dominates another one if it has strictly lower time and cost consumptions: 
+                                l=(~,v) dominates l*=(~,v) &hArr;<br>time(l) &lt; time(l) AND cost(l) &lt; cost(l*).</p>
+                                <p>The remaining paths are incomparable and their labels pareto-optimal with each other, meaning that we cannot say that one is better than another.</p>
                             </div>
 
                             <div>
                                 <h3>Finished</h3>
-                                <p>The algorithm terminated since there are no more unprocessed labels to extend</p>
+                                <p>The algorithm terminated since there are no more unprocessed labels to extend.</p>
                                 <p id="finalflow" style="color:green"></p>
                                 <h3>Filtering step</h3>
-                                <p>Click on a node to see the set of all feasible paths ending in it</p>
+                                <p>Per default, the node with the highest id was selected as target node t.
+                                The solution of the SPPTW, a feasible minimum-cost s-t path is shown in pink. 
+                                To select another node as target t, just <b>click</b> on it.</p>
                             </div>
                         </div>
                         <br>
