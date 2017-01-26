@@ -19,7 +19,7 @@ var STATUS_FINISHED = 10;
  */
 function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     GoldbergTarjanPushRelabelAlgorithmInstance=this;
-    (isDebug ? GraphEditor : GraphDrawer).call(this,svgSelection);
+    (isDebug() ? GraphEditor : GraphDrawer).call(this,svgSelection);
 
     /**
      * closure variables for this class
@@ -125,6 +125,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      * attach onClick listeners so we can select start/target node
      * @override
      */
+    if(!isDebug){
     this.onNodesEntered = function(selection) {
         //select source and target nodes
         selection
@@ -133,6 +134,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
                   that.nextStepChoice(d);
               }
           })
+    }
     }
     
     /**
@@ -164,6 +166,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
      * Add gray capacity and blue flow lines behind the line with arrow from GraphDrawer
      * @override
      */
+    if(!isDebug()){
     this.onEdgesEntered = function(selection) {
          selection.append("line")
             .attr("class", "cap")
@@ -171,6 +174,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 
           selection.append("line")
             .attr("class", "flow")
+    }
     }
     
     /**

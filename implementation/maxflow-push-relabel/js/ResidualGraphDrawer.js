@@ -200,8 +200,8 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
       xFunName=name;
       selectBox.property("value",xFunName); //does not trigger 'change' event
       var yx = xFunName.split("/");
-      xAxisText.text(yx[1]);
-      yAxisText.text(yx[0]);
+      xAxisText && xAxisText.text(yx[1]);
+      yAxisText && yAxisText.text(yx[0]);
       if(!noUpdate) that.update();
     }
 
@@ -224,6 +224,7 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
 
 
     //Axis
+    if(!isDebug()){
     var xAxis = d3.svg.axis().scale(this.x).orient("bottom").tickFormat(tickForm);
     var yAxis = d3.svg.axis().scale(this.y).orient("left").tickFormat(tickForm);
 
@@ -252,7 +253,7 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
           .attr("dy", ".71em")
           .style("text-anchor", "end")
           .text(yx[0])
-     
+         }
     /////////////////
     //PRIVILEDGED
 
@@ -261,11 +262,13 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
     var that = this;
 
     this.nodeX = function(d){
-        return axisOptions[xFunName]["x"](d);
+        var xFunName2 = isDebug() ? "y/x" : xFunName;
+        return axisOptions[xFunName2]["x"](d);
     };
 
     this.nodeY = function(d){
-        return axisOptions[xFunName]["y"](d);
+        var xFunName2 = isDebug() ? "y/x" : xFunName;
+        return axisOptions[xFunName2]["y"](d);
     }
 
     this.update = function(s){
@@ -284,24 +287,22 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
             this.squeeze();
         }
 
-        yAxis.ticks(d3.max(nodes, function(d){return d.state.height}));
+        yAxis && yAxis.ticks(d3.max(nodes, function(d){return d.state.height}));
 
-        xAxis.ticks(nodes.length);
+        xAxis && xAxis.ticks(nodes.length);
         
-        if(isDebug() && xFunName=="y/x"){
+        if(isDebug()){ //&& xFunName=="y/x"){
           this.x.domain([0,350]); 
           this.y.domain([0,500]);
         }else{
          this.x.domain(d3.extent(nodes, this.nodeX)); 
          this.y.domain(d3.extent(nodes, this.nodeY));
+          var vis = (xFunName==AXIS_GRAPH ? "hidden" : "visible");
+
+          var t = this.svg.transition().duration(250);
+          t.select("g.y.axis").call(yAxis).style("visibility",vis);
+          t.select("g.x.axis").call(xAxis).style("visibility",vis);
         }
-
-
-        var vis = (xFunName==AXIS_GRAPH ? "hidden" : "visible");
-
-        var t = this.svg.transition().duration(250);
-        t.select("g.y.axis").call(yAxis).style("visibility",vis);
-        t.select("g.x.axis").call(xAxis).style("visibility",vis);
 
         ResidualGraphDrawer.prototype.update.call(this);
     }
