@@ -135,12 +135,12 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         .domain([0,yRange]);
 
     var transform = function(d){
-        return translate(this.x(this.nodeX(d)),this.y(this.nodeY(d)));
-    }; transform = transform.bind(this);
+        return translate(this.x(this. nodeX(d)),this.y(this.nodeY(d)));
+    }.bind(this);
 
     //fit the graph extend in a smaller window. needed for algorithm tab 
     //since there the network graph is only half as wide as in the graph editor tab.
-    NOSQUEEZE=false;
+    NOSQUEEZE=false;   //TODO disable for legend generation
     this.squeeze = function(){
         if(NOSQUEEZE) return; //define flag for debug
         var nodes;

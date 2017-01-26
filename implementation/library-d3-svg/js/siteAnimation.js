@@ -30,35 +30,24 @@ function svgHack(){
 
 
 
-//replace img with svg
-
-//     //http://www.mediaevent.de/svg-in-html-seiten/
+    // replace img with svg  http://www.mediaevent.de/svg-in-html-seiten/
+    /*
     var imgs = d3.selectAll("img");
-
-// //    var sources = imgs[0].map(function(d){return d.src});
-
-   imgs.attr("src",function(a,b,c){
+    imgs.attr("src",function(a,b,c){
        var src = this.src;
        var selection = d3.select(this);
        if(src.indexOf(".svg")==src.length-4){
            d3.text(src, function(error,text){
-//             console.log(selection.html());
-//             d3.select("#svgtest").html(text);
             var parent = d3.select(selection.node().parentNode)
-                
-//                 parent.append("p").text("test");
                 parent.insert("span","img").html(text);
                 var newSVGElem = parent.select("span").select("svg");
-
                 newSVGElem.attr("class","svgText");
-
                selection.remove();
-
-//             var foo = selection.node().parentNode.innerHtml; //).append("div").html(text);
         });
        }
        return src;
-   })
+    })
+    */
 }
 
 
@@ -109,7 +98,7 @@ function svgSerialize(svgHtml){//Node){
 
 //http://spin.atomicobject.com/2014/01/21/convert-svg-to-png/
 //http://techslides.com/save-svg-as-an-image
-function svgSerializeAndCrop(svgNode,styles,crop){
+function svgSerializeAndCrop(svgNode,styles){
   var sel=d3.select(svgNode);
   var algo = GraphAlgos.get(sel.attr("id"));
 
@@ -117,6 +106,8 @@ function svgSerializeAndCrop(svgNode,styles,crop){
   var oldClass = sel.attr("class");
   sel.attr("id",null);
   sel.attr("class",null);
+
+  var crop = getUrlVars()["crop"];
 
   if(algo && crop){
     var nodes = Graph.instance.getNodes();
@@ -130,8 +121,11 @@ function svgSerializeAndCrop(svgNode,styles,crop){
 
     var oldWidth = sel.attr("width");
     var oldHeight = sel.attr("height");
-    var width = xR[1]-xR[0]+algo.margin.left+algo.margin.right;
-    var height = yR[1]-yR[0]+algo.margin.top+algo.margin.bottom;
+
+    var wS = global_NodeLayout['borderWidth'];
+
+    var width = xR[1]-xR[0]+2*(global_KnotenRadius+wS);//algo.margin.left+algo.margin.right;
+    var height = yR[1]-yR[0]+2*(global_KnotenRadius+wS);//algo.margin.top+algo.margin.bottom;
 
     //use d3 to select transform, doesnt work with jqyery since it selects all g's, not just the top level one;
     var oldTra = sel.select("g").attr("transform");
@@ -202,13 +196,7 @@ function svgGraphCanvasDownloadable(){
    });
 
    //2 bottom right: Legende
-
    var legende = container.selectAll(".Legende");
-   //var legendeText = container.selectAll(".LegendeText");
-   //var legendeButton = container.selectAll(".LegendeMin");
-
-   //legendeText.style("display","none");
-
    legende.forEach(function(a){
       var legendeText = $(a).find(".LegendeText");
       legendeText.hide();
@@ -223,18 +211,8 @@ function svgGraphCanvasDownloadable(){
           legendeText.show();
           legendeButton.button({icons: {primary: "ui-icon-minus"},text: false});
         }
-        //var foo = legendeText.toggle();
       })
    })
-
-//    legendeButton.forEach(function(a,b){
-//      var legendeMaxButton = $(a);
-//         legendeMaxButton.button({icons: {primary: "ui-icon-plus"},text: false});
-//    })
-
-//    legendeButton.on('click',function(a,b,c){
-//      legendeText.attr("visibility","hidden");
-//    });
 }
 
 
@@ -303,6 +281,7 @@ $(function() {
     initializeSiteLayout();
     $("#year").html(new Date().getFullYear());
 });
+/* //TODO: reenable when menu is readded
 $(document).ready(function() {
     $("#menu").mmenu({
        "navbar": {
@@ -316,3 +295,4 @@ $(document).ready(function() {
        "classes": "mm-light",
     });
  });
+ */
