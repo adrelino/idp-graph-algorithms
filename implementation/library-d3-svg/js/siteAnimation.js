@@ -107,7 +107,7 @@ function svgSerializeAndCrop(svgNode,styles){
   sel.attr("id",null);
   sel.attr("class",null);
 
-  var crop = getUrlVars()["crop"];
+  var crop = isDebug();
 
   if(algo && crop){
     var nodes = Graph.instance.getNodes();
@@ -296,3 +296,10 @@ $(document).ready(function() {
     });
  });
  */
+
+function isDebug(){
+  if(getUrlVars()["debug"] == "true"){
+    return true;
+  }
+  return false;
+}

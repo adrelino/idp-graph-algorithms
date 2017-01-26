@@ -140,9 +140,8 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
 
     //fit the graph extend in a smaller window. needed for algorithm tab 
     //since there the network graph is only half as wide as in the graph editor tab.
-    NOSQUEEZE=false;   //TODO disable for legend generation
     this.squeeze = function(){
-        if(NOSQUEEZE) return; //define flag for debug
+        if(isDebug()) return; //define flag for debug
         var nodes;
 
         if(Graph.instance && (nodes = Graph.instance.getNodes())){

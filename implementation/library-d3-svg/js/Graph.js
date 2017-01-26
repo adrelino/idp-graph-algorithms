@@ -162,13 +162,14 @@ Graph.prototype.addEdgeDirectly = function(edge){
 Graph.prototype.removeNode = function(id){
   var that=this;
   var node = this.nodes.get(id);
-  //TODO disable for legend generation
-  node.outEdges.forEach(function(key,value){
-      that.removeEdge(key);
-  });
-  node.inEdges.forEach(function(key,value){
-      that.removeEdge(key);
-  });
+  if(!isDebug()){
+    node.outEdges.forEach(function(key,value){
+        that.removeEdge(key);
+    });
+    node.inEdges.forEach(function(key,value){
+        that.removeEdge(key);
+    });
+  }
   this.nodes.remove(id);
   return node;
 }

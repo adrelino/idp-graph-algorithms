@@ -19,7 +19,7 @@ var STATUS_FINISHED = 10;
  */
 function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
     GoldbergTarjanPushRelabelAlgorithmInstance=this;
-    GraphDrawer.call(this,svgSelection);
+    (isDebug ? GraphEditor : GraphDrawer).call(this,svgSelection);
 
     /**
      * closure variables for this class
@@ -688,7 +688,7 @@ function GoldbergTarjanPushRelabelAlgorithm(svgSelection,svgSelection2) {
 }
 
 // Vererbung realisieren
-GoldbergTarjanPushRelabelAlgorithm.prototype = Object.create(GraphDrawer.prototype);
+GoldbergTarjanPushRelabelAlgorithm.prototype = Object.create((isDebug() ? GraphEditor : GraphDrawer).prototype);
 GoldbergTarjanPushRelabelAlgorithm.prototype.constructor = GoldbergTarjanPushRelabelAlgorithm;
 
 //Global variable zuweisen

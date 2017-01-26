@@ -287,10 +287,15 @@ var ResidualGraphDrawer = function(svgOrigin,algo){
         yAxis.ticks(d3.max(nodes, function(d){return d.state.height}));
 
         xAxis.ticks(nodes.length);
+        
+        if(isDebug() && xFunName=="y/x"){
+          this.x.domain([0,350]); 
+          this.y.domain([0,500]);
+        }else{
+         this.x.domain(d3.extent(nodes, this.nodeX)); 
+         this.y.domain(d3.extent(nodes, this.nodeY));
+        }
 
-//         this.x.domain([0,d3.max(nodes, function(d) { return xFun(d)})]);
-        this.x.domain(d3.extent(nodes, this.nodeX)); 
-        this.y.domain(d3.extent(nodes, this.nodeY));
 
         var vis = (xFunName==AXIS_GRAPH ? "hidden" : "visible");
 
