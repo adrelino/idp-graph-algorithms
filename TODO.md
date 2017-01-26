@@ -5,8 +5,8 @@
 ### Beide:
 - [ ] More: Speed and Termination of algorithm: Sketch a nice proof, link to references for more details.
 - [ ] Introduction und Description: Problemstellung sowie Idee des algorithmus text finalisieren
-- [ ] Legende vervollständigen/ an neue Farben anpassen
-- [ ] Zu den dynamischen Kommentaren/Log anzeigen: Das Log finde ich zu technisch, das aber in umformatierter/einfacher Form wäre ok.
+- [?] Zu den dynamischen Kommentaren/Log anzeigen: Das Log finde ich zu technisch, das aber in umformatierter/einfacher Form wäre ok.
+  * (2017-01-24): ggf passt es jetzt so mit den Farben und Aufteilung in "last operation" und LOG Tab
 - [x] Ausführung: Zeit für Animation ausblenden, Tabs wieder einführen (dann muss ich die Texte nochmal lesen)
   * (2017-01-24) done
 - [x] Tabs sollten wir am Ende wieder einfügen, von der Synchronisierung passt es aber. 
@@ -26,6 +26,7 @@
   * describe how to extend a label
   * describe how to check for feasability
   * describe dominance step
+- [ ] Legende im Tab "Run the algorithm" füllen.
 - [x] Wie können Zeitfenster angepasst werden?
   * Im Grapheditor mit Doppelklick auf das Zeitfenster, genauso wie man z.B. Kantengewichte ändert
 - [x] Ende der Ausführung: Kein Hover, um Pfade zu sehen, sondern ein Klick?
@@ -82,6 +83,8 @@
   * height, valid labeling
   * eligible edge
   * describe how to carry out push and relabel operations (like in algoprak reference)
+- [x] Legende vervollständigen/ an neue Farben anpassen
+  * (2017-01-26) done.
 - [x] Ausführung: In den kurzen Beschreibungen gerade zu Beginn kurz darauf eingehen, wie die Begriffe visualisiert sind (Preflow, Active Nodes, Aktiver Knoten, ...)
   (2017-01-16) done, die verschiedenen Begriffe (s,t,edge preflow/cap,active nodes, height, current node, eligible edge, minimum height edge) werden nacheinander in den verschiedenen Ausführungsschritten eingeführt und deren Visualisierung und vorallem die dazugehörigen Farben erklärt.
 - [x] Kann man Start- und Zielknoten wählen, oder werden die immer vorgegeben?
