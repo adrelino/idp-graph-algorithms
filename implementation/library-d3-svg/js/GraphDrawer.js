@@ -118,6 +118,33 @@ GraphDrawer = function(svgOrigin,extraMargin,transTime){
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
 
+     /* Add the arrowhead markers for directed edges in the SVG images */   
+     var defs = svgOrigin
+        .attr("id","graph-defs")
+        .append("defs");
+
+     defs.append("marker")
+        .attr("id", "arrowhead2")
+        .attr("refX",24) /*must be smarter way to calculate shift*/
+        .attr("refY",4)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerWidth", 24) 
+        .attr("markerHeight", 8)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M 0,0 V 8 L12,4 Z"); //this is actual shape for arrowhead
+
+     defs.append("marker")
+        .attr("id", "arrowhead3")
+        .attr("refX",24) /*must be smarter way to calculate shift*/
+        .attr("refY",4)
+        .attr("markerUnits","userSpaceOnUse")
+        .attr("markerWidth", 24) 
+        .attr("markerHeight", 8)
+        .attr("orient", "auto-start-reverse")
+        .append("path")
+        .attr("d", "M 0,0 V 8 L12,4 Z"); //this is actual shape for arrowhead
+    
     var svg = svgOrigin.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
